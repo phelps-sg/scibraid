@@ -216,7 +216,8 @@ WORK = {
     "publication_year": 2021,
     "type": "preprint",
     "cited_by_count": 3,
-    "authorships": [{"author": {"display_name": "A. Author"}}],
+    "authorships": [{"author": {"display_name": "A. Author", "id": "https://openalex.org/A5001", "orcid": "https://orcid.org/0000-0002-1825-0097"}},
+                    {"author": {"display_name": "B. Author", "id": "https://openalex.org/A5002", "orcid": None}}],
     "primary_location": {"source": {"display_name": "bioRxiv"}},
     "abstract_inverted_index": {"works": [2], "X": [0, 3], "sometimes": [1]},
     "open_access": {"is_oa": True, "oa_status": "green", "oa_url": "https://arxiv.org/abs/2101.00001"},
@@ -241,6 +242,8 @@ def test_openalex_search_rebuilds_abstract_and_classifies_tier():
     assert paper.abstract == "X sometimes works X"
     assert (paper.oa_status, paper.arxiv_id, paper.pmcid) == ("green", "2101.00001", "PMC123")
     assert paper.oa_url == "https://arxiv.org/pdf/2101.00001"
+    assert paper.authors == ["A. Author", "B. Author"] and paper.author_ids == ["A5001", "A5002"]
+    assert paper.author_orcids == ["0000-0002-1825-0097", None]
 
 
 def test_openalex_searches_a_papers_references_and_the_works_citing_it():
@@ -1130,3 +1133,35 @@ def test_a_question_can_be_framed_with_hypotheses_conditions_and_a_brief(tmp_pat
     assert main(["show", "told"]) == 0
     shown = capsys.readouterr().out
     assert "brief: Cover superrationality" in shown and "[framed]" in shown
+
+
+def test_surnames_are_read_from_either_name_order():
+    from scibraid.models import surname
+    assert [surname(n) for n in ["Olivia Long", "Long, Olivia", "Jan van der Berg", "Plato", " "]] == ["Long", "Long", "Berg", "Plato", ""]
+    paper = Paper(id="W5", title="The AI in the Mirror", year=2025, authors=["Long, Olivia", "Teplica, Carter"])
+    assert bibtex.cite_key(paper) == "long2025ai"
+
+
+def test_a_wrong_edge_or_node_is_retracted_with_a_record(capsys):
+    sg = Subgraph(slug="q", question="Does X work?")
+    store.add_batch(sg, batch())
+    store.save_subgraph(sg)
+    edge = ["o:no-reduction", "contradicts", "h:x-reduces-growth"]
+
+    assert main(["retract", "q", "--edge", "o:no-reduction", "supports", "h:x-reduces-growth", "--reason", "there is no such edge"]) == 1
+    capsys.readouterr()
+    assert main(["retract", "q", "--edge", *edge, "--reason", "The null was under hypoxia only and does not bear on the claim."]) == 0
+    assert json.loads(capsys.readouterr().out)["edges_removed"] == 1
+    sg = store.load_subgraph("q")
+    assert len(sg.edges) == 3 and sg.retracted[0].edges[0].key == tuple(edge) and sg.retracted[0].by.model == "model-a"
+
+    again = store.add_batch(sg, batch())  # adding it back is allowed, and said out loud
+    assert again.ok and any("retracted earlier" in w for w in again.warnings)
+
+    assert main(["retract", "q", "--node", "c:hypoxia", "--reason", "Not a condition of this experiment at all."]) == 0
+    out = json.loads(capsys.readouterr().out)
+    assert out["node_removed"] == "c:hypoxia" and out["edges_removed"] == 1
+    sg = store.load_subgraph("q")
+    assert "c:hypoxia" not in sg.nodes and all("c:hypoxia" not in (e.source, e.target) for e in sg.edges)
+    assert sg.retracted[-1].node.label == "Hypoxic conditions"
+    assert main(["show", "q"]) == 0 and "retracted: node c:hypoxia" in capsys.readouterr().out

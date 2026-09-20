@@ -240,6 +240,13 @@ def add_batch(sg: Subgraph, batch: Batch) -> AddReport:
     if report.errors:
         return report
 
+    withdrawn = {(*e.key, e.provenance[0].paper_id): r.reason for r in sg.retracted for e in r.edges}
+    for edge in batch.edges:
+        if reason := withdrawn.get((*edge.key, edge.provenance[0].paper_id)):
+            report.warnings.append(
+                f"edge {edge.source} -{edge.relation}-> {edge.target}: this was retracted earlier ({reason}); adding it again"
+            )
+
     sg.papers.update(papers)
     for node in batch.nodes:
         if (existing := sg.nodes.get(node.id)) is None:
@@ -410,3 +417,31 @@ def frame(sg: Subgraph, hypotheses: list[str] = (), conditions: list[str] = (), 
     if brief is not None:
         sg.brief = brief.strip()
     return []
+
+
+def retract(sg: Subgraph, reason: str, by=None, node: str | None = None, edge: tuple[str, str, str] | None = None, paper: str | None = None) -> tuple[int, list[str]]:
+    """Take a wrong node (with its edges) or a wrong edge out of a subgraph, keeping a record of it.
+
+    Returns (edges removed, errors). An edge is named by source, relation and target, and by paper
+    when more than one paper evidences it.
+    """
+    from .models import Retraction
+
+    if (node is None) == (edge is None):
+        return 0, ["name a node or an edge, not both"]
+    if node is not None:
+        if node not in sg.nodes:
+            return 0, [f"unknown node {node!r}"]
+        gone = [e for e in sg.edges if node in (e.source, e.target)]
+        record = Retraction(reason=reason, node=sg.nodes.pop(node), edges=gone, by=by)
+    else:
+        gone = [e for e in sg.edges if e.key == tuple(edge) and paper in (None, e.provenance[0].paper_id)]
+        if not gone:
+            return 0, [f"no edge {edge[0]} -{edge[1]}-> {edge[2]}" + (f" from {paper}" if paper else "")]
+        if len(gone) > 1:
+            papers = sorted(e.provenance[0].paper_id for e in gone)
+            return 0, [f"{len(gone)} papers evidence that edge ({', '.join(papers)}); say which with --paper"]
+        record = Retraction(reason=reason, edges=gone, by=by)
+    sg.edges = [e for e in sg.edges if all(e is not g for g in gone)]
+    sg.retracted.append(record)
+    return len(gone), []

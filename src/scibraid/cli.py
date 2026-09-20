@@ -345,6 +345,9 @@ def cmd_show(args: argparse.Namespace) -> int:
                 f"  {e.source} -{e.relation}-> {e.target}"
                 f"  conf={e.confidence:.2f} by={e.asserted_by} src={paper}"
             )
+        for r in sg.retracted:
+            what = f"node {r.node.id} and {len(r.edges)} edge(s)" if r.node else "; ".join(f"{e.source} -{e.relation}-> {e.target}" for e in r.edges)
+            print(f"  retracted: {what}  ({r.reason})")
     return 0
 
 
@@ -384,6 +387,29 @@ def cmd_merge(args: argparse.Namespace) -> int:
     dangling = [f"verdict {x.a} ~ {x.b}" for x in pool.alignments() if gone in (x.a, x.b)]
     dangling += [f"lead {lead.id}" for lead in pool.leads() if gone in lead.nodes]
     _emit({"ok": True, "kept": args.keep, "dropped": args.drop, "totals": _totals(sg), "now_dangling_in_pool": dangling})
+    return 0
+
+
+def cmd_retract(args: argparse.Namespace) -> int:
+    with store.subgraph_lock(args.slug):
+        sg = store.load_subgraph(args.slug)
+        builder = _builder(args)
+        removed, errors = store.retract(sg, args.reason, builder, node=args.node, edge=args.edge, paper=args.paper)
+        if not errors:
+            if builder not in sg.builders:
+                sg.builders.append(builder)
+            store.save_subgraph(sg)
+    if errors:
+        _emit({"ok": False, "errors": errors})
+        return 1
+    dangling = []
+    if args.node:  # verdicts and leads name nodes by id
+        gone = f"{args.slug}/{args.node}"
+        pool = get_pool()
+        dangling = [f"verdict {x.a} ~ {x.b}" for x in pool.alignments() if gone in (x.a, x.b)]
+        dangling += [f"lead {lead.id}" for lead in pool.leads() if gone in lead.nodes]
+    _emit({"ok": True, "edges_removed": removed, "node_removed": args.node, "totals": _totals(sg),
+           "retractions_on_record": len(sg.retracted), "now_dangling_in_pool": dangling})
     return 0
 
 
@@ -859,6 +885,16 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("drop")
     p.add_argument("--model", help="the language model doing this work (the tool cannot see it)")
     p.set_defaults(func=cmd_merge)
+
+    p = sub.add_parser("retract", help="take a wrong node or edge out of a subgraph, keeping a record of what it was and why")
+    p.add_argument("slug")
+    what = p.add_mutually_exclusive_group(required=True)
+    what.add_argument("--edge", nargs=3, metavar=("SOURCE", "RELATION", "TARGET"))
+    what.add_argument("--node", help="the node and every edge that touches it")
+    p.add_argument("--paper", help="which paper's edge, when several papers evidence the same relation")
+    p.add_argument("--reason", required=True, help="what was wrong with it")
+    p.add_argument("--model", help="the language model doing this work (the tool cannot see it)")
+    p.set_defaults(func=cmd_retract)
 
     p = sub.add_parser("list", help="list local subgraphs")
     p.add_argument("--format", choices=["text", "markdown"], default="text")

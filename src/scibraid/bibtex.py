@@ -5,7 +5,7 @@ from __future__ import annotations
 import re
 import unicodedata
 
-from .models import Paper
+from .models import Paper, surname as family_name
 
 _STOP = {"a", "an", "the", "on", "of", "in", "for", "and", "to", "is", "are", "do", "does", "can", "how", "why", "what", "with", "from"}
 _ARXIV = re.compile(r"(?:arxiv[:.]|arxiv\.org/abs/)(\d{4}\.\d{4,5})", re.I)
@@ -22,7 +22,7 @@ def _escape(text: str) -> str:
 
 
 def cite_key(paper: Paper) -> str:
-    surname = _ascii((paper.authors[0] if paper.authors else "anon").split()[-1]).lower()
+    surname = _ascii(family_name(paper.authors[0]) if paper.authors else "anon").lower()
     words = [w for w in re.findall(r"[a-z0-9]+", _ascii(paper.title).lower()) if w not in _STOP]
     return re.sub(r"[^a-z0-9]", "", surname) + str(paper.year or "") + (words[0] if words else "")
 

@@ -217,6 +217,7 @@ Graphs can be filtered by node type, who asserted a relationship and confidence.
 | `lint <slug>` | Find structural gaps and unverified evidence |
 | `duplicates <slug>` | List conditions and hypotheses within a subgraph that may be one thing under two ids |
 | `merge <slug> <keep> <drop>` | Fold one node into another, moving its links and passages |
+| `retract <slug> --edge <source> <relation> <target> \| --node <id> --reason "..."` | Take out a wrong link, or a node with its links, keeping a record of what it was and why |
 | `view [slug ...]` | Browse a graph in the browser |
 | `pool <slug>` | Add a subgraph to the pool |
 | `candidates [--budget N] [--type T] [--lexical]` | Rank unjudged cross-graph pairs |
@@ -325,6 +326,7 @@ The current system is a research prototype.
 - Word search finds a minority of the relevant papers. Three hand-written queries per question, top 25 results each, returned 20 of the 62 papers the six example subgraphs cite; the rest were found through reference lists and the agent's own knowledge. Following citations (`--citing`, `--references-of`) is the remedy the skill prescribes, and its effect has not been measured.
 - OpenAlex's default search also matches full text, which it holds only for open papers: on the same queries 2% of its results were closed, against 19% when matching on title and abstract, which is now the default. Recall was the same either way (18 and 20 of 62).
 - OpenAlex files a few unrelated records under the arXiv DOIs of well-known papers (2 of the 22 arXiv ids tried, one of them Wei et al.'s chain-of-thought paper). `paper get` checks an arXiv id against arXiv's own title and then looks for the paper by title. A DOI that is not an arXiv DOI is not checked.
+- Authors are not resolved to people. Each paper keeps OpenAlex's author ids and ORCIDs where OpenAlex has them (every author in 52 of the 66 papers the example subgraphs cite, some in 12, none in 2, the last being recent preprints), but nothing yet uses them, so two results from one group count as independent.
 - OpenAlex metadata can contain errors. BibTeX is generated from that metadata: author lists are stored cut at eight names (the entry then ends "and others"), and venues and entry types should be checked before use.
 - Full text comes only from open copies. A closed paper is found by search and can be extracted from its abstract, but its body is unread unless someone attaches the text by hand, so `open` and "not found posed anywhere" describe the literature that could be read. The share that is closed varies widely by field and rises with age; it was about two thirds for one materials-science query.
 - Text taken from a PDF loses section headings and mangles mathematics. Some publishers refuse automated requests even for open papers, and `fetch` then reports the failure.

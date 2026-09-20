@@ -54,12 +54,19 @@ def _paper(work: dict) -> Paper:
     access = work.get("open_access") or {}
     best = work.get("best_oa_location") or {}
     pmcid = ((work.get("ids") or {}).get("pmcid") or "").rstrip("/").rsplit("/", 1)[-1] or None
+    people = [a.get("author") or {} for a in work.get("authorships", [])[:8]]
+
+    def tail(url: str | None) -> str | None:
+        return url.rstrip("/").rsplit("/", 1)[-1] if url else None
+
     return Paper(
         id=work["id"].rsplit("/", 1)[-1],
         title=work.get("title") or "(untitled)",
         doi=(work.get("doi") or "").removeprefix("https://doi.org/") or None,
         year=work.get("publication_year"),
-        authors=[a["author"]["display_name"] for a in work.get("authorships", [])[:8]],
+        authors=[p.get("display_name") or "?" for p in people],
+        author_ids=[tail(p.get("id")) for p in people],
+        author_orcids=[tail(p.get("orcid")) for p in people],
         venue=source.get("display_name"),
         url=location.get("landing_page_url") or work.get("doi"),
         cited_by_count=work.get("cited_by_count"),

@@ -133,6 +133,9 @@ dt { color: var(--text-3); } dd { margin: 0; word-break: break-word; }
 <script id="data" type="application/json">/*__DATA__*/</script>
 <script src="https://cdn.jsdelivr.net/npm/cytoscape@3.30.2/dist/cytoscape.min.js"></script>
 <script>
+  // "Olivia Long" and "Long, Olivia" both occur in the metadata.
+  const surname = (name) => (name.includes(",") ? name.split(",")[0] : name.trim().split(" ").pop()).trim();
+
 "use strict";
 const DATA = JSON.parse(document.getElementById("data").textContent);
 const TYPES = ["hypothesis", "experiment", "condition", "observation", "interpretation"];
@@ -357,7 +360,7 @@ function restsOn(paperId) {
 function provenance(list) {
   return (list || []).map((p) => {
     const paper = model.papers[p.paper_id] || {};
-    const cite = [paper.authors && paper.authors.length ? paper.authors[0].split(" ").pop() + (paper.authors.length > 1 ? " et al." : "") : null, paper.year].filter(Boolean).join(" ");
+    const cite = [paper.authors && paper.authors.length ? surname(paper.authors[0]) + (paper.authors.length > 1 ? " et al." : "") : null, paper.year].filter(Boolean).join(" ");
     const mark = p.verified === true ? "✓ verified" : p.verified === false ? "✗ not in source" : "unverified";
     return el("div", {}, el("blockquote", {}, "“" + p.passage + "”"),
       el("div", { class: "src" }, el("a", { href: "#", onclick: (ev) => { ev.preventDefault(); select("paper:" + p.paper_id); } }, cite || p.paper_id),
@@ -493,7 +496,7 @@ function overview(panel) {
 // ---- table view -----------------------------------------------------------------
 function renderTable() {
   const cols = [["source", (e) => model.nodes.get(e.s).label], ["relation", (e) => e.relation], ["target", (e) => model.nodes.get(e.t).label],
-    ["confidence", (e) => e.confidence], ["by", (e) => e.asserted_by], ["paper", (e) => { const p = model.papers[e.provenance[0].paper_id] || {}; return `${(p.authors || [""])[0].split(" ").pop()} ${p.year || ""}`; }]];
+    ["confidence", (e) => e.confidence], ["by", (e) => e.asserted_by], ["paper", (e) => { const p = model.papers[e.provenance[0].paper_id] || {}; return `${surname((p.authors || [""])[0])} ${p.year || ""}`; }]];
   const [key, dir] = state.sort, get = cols.find((c) => c[0] === key)[1];
   const rows = visible().edges.sort((a, b) => (get(a) > get(b) ? 1 : get(a) < get(b) ? -1 : 0) * dir);
   $("table").replaceChildren(el("table", {},

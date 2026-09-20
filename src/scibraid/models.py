@@ -92,6 +92,14 @@ class Provenance(BaseModel):
     verified: bool | None = None
 
 
+def surname(name: str) -> str:
+    """The family name, whether the source wrote "Olivia Long" or "Long, Olivia"."""
+    name = name.strip()
+    if "," in name:
+        return name.split(",", 1)[0].strip() or name
+    return name.split()[-1] if name.split() else name
+
+
 class Paper(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -100,6 +108,11 @@ class Paper(BaseModel):
     doi: str | None = None
     year: int | None = None
     authors: list[str] = []
+    # Parallel to `authors`, where the source gives them: OpenAlex's disambiguated author id, and an
+    # ORCID if the author has one. OpenAlex both splits and merges people, so an id match suggests
+    # a shared author and an ORCID match establishes one.
+    author_ids: list[str | None] = []
+    author_orcids: list[str | None] = []
     venue: str | None = None
     url: str | None = None
     cited_by_count: int | None = None
@@ -192,6 +205,18 @@ def _now() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
 
 
+class Retraction(BaseModel):
+    """Something taken out of a subgraph because it was wrong, kept so that the correction can be seen."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    reason: str = Field(min_length=10)
+    node: Node | None = None
+    edges: list[Edge] = []
+    by: Builder | None = None
+    at: str = Field(default_factory=_now)
+
+
 class Subgraph(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -207,6 +232,7 @@ class Subgraph(BaseModel):
     papers: dict[str, Paper] = {}
     nodes: dict[str, Node] = {}
     edges: list[Edge] = []
+    retracted: list[Retraction] = []
 
 
 class Verdict(StrEnum):

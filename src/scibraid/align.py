@@ -22,7 +22,7 @@ from itertools import combinations
 from . import identity
 from .embed import Embedder, calibrated
 from .embed import cosine as cosine_of
-from .models import Alignment, Edge, Lead, Node, NodeType, Outcome, Relation, Subgraph, Verdict
+from .models import surname, Alignment, Edge, Lead, Node, NodeType, Outcome, Relation, Subgraph, Verdict
 
 STOPWORDS = frozenset(
     "a an and are as at be by for from in is it its of on or that the their this to under "
@@ -83,7 +83,7 @@ class PoolIndex:
         index = cls()
         for sg in subgraphs:
             for paper in sg.papers.values():
-                index.titles[paper.id] = f"{(paper.authors or ['?'])[0].split()[-1]} {paper.year}"
+                index.titles[paper.id] = f"{surname((paper.authors or ['?'])[0])} {paper.year}"
             for node in sg.nodes.values():
                 key = f"{sg.slug}/{node.id}"
                 index.nodes[key], index.slug_of[key] = node, sg.slug
