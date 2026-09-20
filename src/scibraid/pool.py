@@ -17,7 +17,7 @@ from typing import Protocol
 
 import httpx
 
-from .models import Alignment, Lead, Subgraph, _now
+from .models import Alignment, Builder, Lead, Subgraph, _now
 from .store import home
 
 SCHEMA = """
@@ -59,6 +59,8 @@ class LocalPool:
         db = sqlite3.connect(self.path)
         db.execute("PRAGMA foreign_keys = ON")
         db.executescript(SCHEMA)
+        if "judge" not in {row[1] for row in db.execute("PRAGMA table_info(alignments)")}:
+            db.execute("ALTER TABLE alignments ADD COLUMN judge TEXT")  # pools made before judges were recorded
         return db
 
     def push(self, sg: Subgraph) -> str:
@@ -97,11 +99,11 @@ class LocalPool:
             rows = db.execute(
                 "SELECT s.slug, s.question, s.pushed,"
                 " (SELECT COUNT(*) FROM nodes n WHERE n.slug = s.slug),"
-                " (SELECT COUNT(*) FROM edges e WHERE e.slug = s.slug)"
-                " FROM subgraphs s ORDER BY s.pushed"
+                " (SELECT COUNT(*) FROM edges e WHERE e.slug = s.slug),"
+                " s.payload FROM subgraphs s ORDER BY s.pushed"
             ).fetchall()
         keys = ("slug", "question", "pushed", "nodes", "edges")
-        return [dict(zip(keys, row)) for row in rows]
+        return [{**dict(zip(keys, row[:5])), "builders": json.loads(row[5]).get("builders", [])} for row in rows]
 
     def subgraphs(self) -> list[Subgraph]:
         with self._connect() as db:
@@ -111,15 +113,23 @@ class LocalPool:
     def add_alignments(self, alignments: list[Alignment]) -> None:
         with self._connect() as db:
             db.executemany(
-                "INSERT OR REPLACE INTO alignments VALUES (?, ?, ?, ?, ?, ?)",
-                [(x.a, x.b, x.verdict, x.confidence, x.rationale, x.judged) for x in alignments],
+                "INSERT OR REPLACE INTO alignments VALUES (?, ?, ?, ?, ?, ?, ?)",
+                [
+                    (x.a, x.b, x.verdict, x.confidence, x.rationale, x.judged, x.judge.model_dump_json() if x.judge else None)
+                    for x in alignments
+                ],
             )
 
     def alignments(self) -> list[Alignment]:
         with self._connect() as db:
-            rows = db.execute("SELECT * FROM alignments ORDER BY judged, a, b").fetchall()
+            rows = db.execute(
+                "SELECT a, b, verdict, confidence, rationale, judged, judge FROM alignments ORDER BY judged, a, b"
+            ).fetchall()
         keys = ("a", "b", "verdict", "confidence", "rationale", "judged")
-        return [Alignment(**dict(zip(keys, row))) for row in rows]
+        return [
+            Alignment(**dict(zip(keys, row[:6])), judge=Builder.model_validate_json(row[6]) if row[6] else None)
+            for row in rows
+        ]
 
     def add_leads(self, leads: list[Lead]) -> None:
         with self._connect() as db:

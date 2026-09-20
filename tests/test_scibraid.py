@@ -5,10 +5,10 @@ import pytest
 
 import threading
 
-from scibraid import align, main, openalex, store
+from scibraid import align, bibtex, identity, main, openalex, store
 from scibraid.cli import _md_table, make_server
 from scibraid.lint import lint
-from scibraid.models import Alignment, Batch, Lead, Paper, Subgraph
+from scibraid.models import Alignment, Batch, Builder, Lead, Paper, Subgraph
 from scibraid.pool import HttpPool, LocalPool
 
 ABSTRACT = (
@@ -22,6 +22,8 @@ ABSTRACT = (
 def scibraid_home(tmp_path, monkeypatch):
     monkeypatch.setenv("SCIBRAID_HOME", str(tmp_path))
     monkeypatch.delenv("SCIBRAID_POOL_URL", raising=False)
+    for name, value in {"SCIBRAID_PERSON": "Ada", "SCIBRAID_AGENT": "test-harness", "SCIBRAID_MODEL": "model-a", "SCIBRAID_SESSION": "s1"}.items():
+        monkeypatch.setenv(name, value)
     store.save_paper(Paper(id="W1", title="Compound X under hypoxia", abstract=ABSTRACT))
     store.save_paper(Paper(id="W2", title="No abstract held"))
 
@@ -235,7 +237,7 @@ def test_local_pool_namespaces_nodes_and_repush_replaces():
     pool.push(sg)
     assert pool.listing() == [
         {"slug": "q", "question": "Does X work?", "pushed": pool.listing()[0]["pushed"],
-         "nodes": 4, "edges": 4}
+         "nodes": 4, "edges": 4, "builders": []}
     ]
 
 
@@ -750,3 +752,91 @@ def test_a_stale_copy_of_a_lead_is_refused(tmp_path, capsys):
     second.pop("updated")
     path.write_text(json.dumps([second]))
     assert main(["lead", "add", str(path)]) == 1
+
+
+ADA = Builder(person="Ada", agent="test-harness", model="model-a", session="s1")
+
+
+def test_who_did_the_work_is_recorded_on_subgraphs_verdicts_and_leads(tmp_path, monkeypatch, capsys):
+    assert main(["new", "mine", "--question", "Mine?"]) == 0
+    assert store.load_subgraph("mine").builders == [ADA]
+    # a second session by someone else, with another model, adds to it
+    monkeypatch.setenv("SCIBRAID_PERSON", "Grace")
+    path = tmp_path / "b.json"
+    path.write_text(batch().model_dump_json())
+    assert main(["add", "mine", str(path), "--model", "model-b"]) == 0
+    assert main(["add", "mine", str(path), "--model", "model-b"]) == 0  # the same builder is not listed twice
+    builders = store.load_subgraph("mine").builders
+    assert [(b.person, b.model) for b in builders] == [("Ada", "model-a"), ("Grace", "model-b")]
+
+    pool = pooled_pair()
+    verdicts = tmp_path / "v.json"
+    verdicts.write_text(json.dumps([{"a": "q/o:no-reduction", "b": "y/o:y-no-effect", "verdict": "related", "confidence": 0.5, "rationale": "Both are failures under low oxygen."}]))
+    assert main(["align", "add", str(verdicts)]) == 0
+    judged = [x for x in pool.alignments() if x.a == "q/o:no-reduction"][0]
+    assert (judged.judge.person, judged.judge.model) == ("Grace", "model-a")
+    assert pool.alignments()[0].judge is None  # verdicts recorded without a judge still load
+
+    leads = tmp_path / "l.json"
+    leads.write_text(json.dumps([lead().model_dump(mode="json", exclude={"updated"})]))
+    assert main(["lead", "add", str(leads)]) == 0
+    assert pool.leads()[0].by.person == "Grace"
+    assert main(["builder", "add", "mine", "--person", "Alan", "--model", "model-c"]) == 0
+    assert len(store.load_subgraph("mine").builders) == 3
+    capsys.readouterr()
+    assert main(["list"]) == 0
+    assert "Ada / model-a / test-harness; Grace / model-b / test-harness; Alan / model-c" in capsys.readouterr().out
+
+
+def test_independence_has_to_be_shown():
+    grace_b = Builder(person="Grace", model="model-b")
+    assert identity.relation([ADA], [grace_b]) == "different model"
+    assert identity.relation([ADA], [Builder(person="Ada", model="model-a", session="another-session")]) == "same reader"
+    assert identity.relation([ADA], [Builder(person="Grace", model="model-a")]) == "same model"  # shared blind spots
+    assert identity.relation([ADA], [Builder(person="Ada", model="model-b")]) == "different model"
+    assert identity.relation([ADA], [Builder(person="Grace")]) == "unknown"  # no model recorded
+    assert identity.relation([ADA], []) == "unknown"
+    assert identity.relation([ADA, grace_b], [grace_b]) == "same reader"  # the weakest pair decides
+
+
+def test_observe_and_agenda_report_how_independent_the_readers_were():
+    first = Subgraph(slug="q", question="Does X work?", builders=[ADA])
+    store.add_batch(first, batch())
+    second = second_subgraph()
+    same = Alignment(a="q/c:hypoxia", b="y/c:low-oxygen", verdict="same", confidence=0.9, rationale="Both mean hypoxic culture.")
+    readers = lambda: align.observe([first, second], [same])["shared_condition_failures"][0]["readers"]
+    assert readers() == "unknown"  # y's builder was never recorded
+    second.builders = [Builder(person="Grace", model="model-b")]
+    assert readers() == "different model"
+    second.builders = [Builder(person="Grace", model="model-a")]
+    assert readers() == "same model"
+    second.builders = [ADA]
+    assert readers() == "same reader"
+
+    settle = {"status": "open", "checks": CHECKS, "posed_in": [], "would_confirm": "Run it.", "would_refute": "It fails."}
+    own = lead(id="own", by=ADA.model_dump(), **settle)
+    other = lead(id="other", by={"person": "Grace", "model": "model-b"}, **settle)
+    agenda = {q["lead"]: q for q in align.agenda([own, other], [first, second])}
+    assert agenda["own"]["checker_vs_builders"] == "same reader" and agenda["other"]["checker_vs_builders"] == "different model"
+
+
+def test_bibtex_entries_and_unique_keys(tmp_path, capsys):
+    preprint = Paper(id="arxiv:2301.00001", title="On the Naming of Things", year=2023, authors=["Ada Lovelace", "Grace Hopper"], url="http://arxiv.org/abs/2301.00001")
+    article = Paper(id="W7", title="A Study of 50% Gains & Losses", year=2023, authors=["Ada Lovelace"], venue="Journal of Results", doi="10.1/xyz")
+    twin = Paper(id="W8", title="Naming Revisited", year=2023, authors=["Ada Lovelace"], venue="Journal of Results")
+    many = Paper(id="W9", title="Big Team", year=2020, authors=[f"Author {i}" for i in range(8)])
+    bib = bibtex.bibliography([preprint, article, twin, many])
+    assert bib["arxiv:2301.00001"]["entry"].startswith("@misc{lovelace2023naminga,") and "eprint = {2301.00001}" in bib["arxiv:2301.00001"]["entry"]
+    assert bib["W7"]["entry"].startswith("@article{lovelace2023study,") and "50\\% Gains \\& Losses" in bib["W7"]["entry"] and "doi = {10.1/xyz}" in bib["W7"]["entry"]
+    assert bib["W8"]["key"] == "lovelace2023naming"  # first by title keeps the plain key; the second gets a suffix
+    assert "and others" in bib["W9"]["entry"]  # author lists are stored cut at eight
+
+    first = Subgraph(slug="q", question="Does X work?")
+    store.add_batch(first, batch())
+    store.save_subgraph(first)
+    out = tmp_path / "refs.bib"
+    assert main(["bibtex", "q", "-o", str(out)]) == 0
+    assert out.read_text().startswith("@misc{anon") and "Compound X under hypoxia" in out.read_text()
+    view = tmp_path / "v.html"
+    assert main(["view", "-o", str(view)]) == 0
+    assert '"bibtex": {"W1": {"key":' in view.read_text()

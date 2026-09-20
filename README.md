@@ -180,6 +180,8 @@ scibraid view
 
 The viewer opens a local page at `http://127.0.0.1:8765/`. It shows hypotheses, experiments, conditions, observations and interpretations as distinct node types.
 
+Every quoted passage links to its paper. The citation opens a paper panel with links out to the paper, its DOI, arXiv and OpenAlex, the abstract, a BibTeX entry with a copy button, and every relationship in the graph that rests on that paper, which are highlighted. The papers list has buttons to copy all the BibTeX or download it as a `.bib` file.
+
 Selecting a link reveals the evidence behind it: its confidence, whether it was asserted by the paper or inferred by the agent, the agent's rationale, and the source passage used to support it.
 
 Graphs can be filtered by node type, who asserted a relationship and confidence. Choosing "All subgraphs together" shows the local graphs side by side with the pool's alignment judgements between them and the rationale behind each. Leads show the evidence and checks on which they depend.
@@ -203,6 +205,7 @@ Graphs can be filtered by node type, who asserted a relationship and confidence.
 | `lead add\|list` | Record or inspect checked leads |
 | `followups` | Show follow-up questions raised by leads |
 | `agenda` | Show open research questions, the experiment each needs, and whether the literature already poses it |
+| `bibtex [slug ...] [-o refs.bib]` | BibTeX for the papers the subgraphs cite, generated from cached metadata |
 | `builder add <slug> --person --model ...` | Record who built a subgraph made before builders were recorded |
 | `repair list\|resolve` | List and resolve faults in subgraphs or judgements found while checking leads (recorded on the lead) |
 
@@ -277,7 +280,7 @@ The current system is a research prototype.
 - Builders are recorded per subgraph, not per link, so a subgraph that two readers contributed to counts as the weaker of the two everywhere.
 - No domain expert has audited the example extractions.
 - The example comparison with related work is based on the author's knowledge and a brief search rather than a systematic survey.
-- OpenAlex search can miss relevant papers, and metadata can contain errors.
+- OpenAlex search can miss relevant papers, and metadata can contain errors. BibTeX is generated from that metadata: author lists are stored cut at eight names (the entry then ends "and others"), and venues and entry types should be checked before use.
 - Full text is currently obtained from open-access sources, and conversion to plain text can lose inline mathematics.
 - An observation inherits every condition recorded for its experiment, including ones that do not apply to it, which produces spurious shared-condition patterns.
 - A condition that a paper used but the agent did not record looks the same as a condition that was never tested, which produces spurious "experiments that have not been run".

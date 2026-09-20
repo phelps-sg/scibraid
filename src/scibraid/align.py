@@ -19,6 +19,7 @@ from collections import Counter, defaultdict
 from dataclasses import dataclass, field
 from itertools import combinations
 
+from . import identity
 from .embed import Embedder, calibrated
 from .embed import cosine as cosine_of
 from .models import Alignment, Edge, Lead, Node, NodeType, Outcome, Relation, Subgraph, Verdict
@@ -239,6 +240,16 @@ def observe(subgraphs: list[Subgraph], alignments: list[Alignment], min_confiden
                 todo.append(up)
         return seen
 
+    builders = {sg.slug: sg.builders for sg in subgraphs}
+
+    def readers(slugs) -> str:
+        """How independent were the builders of the subgraphs involved: unknown, same reader,
+        same model or different model (the weakest relation between any two of them)."""
+        slugs = sorted(set(slugs))
+        if len(slugs) < 2:
+            return "one subgraph"
+        return identity.weakest(identity.relation(builders[a], builders[b]) for a, b in combinations(slugs, 2))
+
     members: dict[str, list[str]] = defaultdict(list)
     for key in index.nodes:
         members[clusters.find(key)].append(key)
@@ -302,6 +313,7 @@ def observe(subgraphs: list[Subgraph], alignments: list[Alignment], min_confiden
                 "condition": sorted(label(k) for k in keys),
                 "specificity": specificity(root),
                 "alignment_confidence": clusters.confidence.get(root, 1.0),
+                "readers": readers(sides),
                 "experiments": {slug: sorted(label(k) for k in ks) for slug, ks in sides.items()},
                 "hypotheses_reached": {
                     slug: sorted({label(h) for k in ks for h in hypotheses_of(k)}) for slug, ks in sides.items()
@@ -325,6 +337,7 @@ def observe(subgraphs: list[Subgraph], alignments: list[Alignment], min_confiden
                     "observations": sorted(f"[{index.nodes[k].outcome.value}] {label(k)}" for k in failed),
                     "papers": sorted(index.titles.get(p, p) for p in papers),
                     "subgraphs": sorted({index.slug_of[k] for k in failed}),
+                    "readers": readers(index.slug_of[k] for k in failed),
                 }
             )
     shared_failures.sort(key=lambda f: (-len(f["subgraphs"]), -f["specificity"], -len(f["papers"])))
@@ -365,6 +378,7 @@ def observe(subgraphs: list[Subgraph], alignments: list[Alignment], min_confiden
                     "may_bear_on": label(h),
                     "in": index.slug_of[h],
                     "shared_conditions": sorted(label(r) for r in overlap),
+                    "readers": readers([index.slug_of[key], index.slug_of[h]]),
                     "score": round(sum(specificity(r) for r in overlap), 2),
                     "confidence": round(min(clusters.confidence.get(r, 1.0) for r in overlap), 2),
                 }
@@ -446,6 +460,7 @@ def observe(subgraphs: list[Subgraph], alignments: list[Alignment], min_confiden
                         "which_scope_results_on": label(source),
                         "from": index.slug_of[source],
                         "those_results": sorted({o for obs in missing.values() for o in obs}),
+                        "readers": readers([index.slug_of[source], index.slug_of[target]]),
                         "hypotheses_judged": x.verdict.value,
                         "confidence": x.confidence,
                         "rationale": x.rationale,
@@ -690,6 +705,7 @@ def derivation_links(sg: Subgraph, pooled: list[Subgraph]) -> list[Alignment]:
 def agenda(leads: list[Lead], pooled: list[Subgraph]) -> list[dict]:
     """The open research questions the pool has produced, each with the experiment it needs."""
     reviews = defaultdict(list)
+    built_by = {sg.slug: sg.builders for sg in pooled}
     for sg in pooled:
         if sg.prompted_by:
             reviews[sg.prompted_by].append(sg.slug)
@@ -702,6 +718,11 @@ def agenda(leads: list[Lead], pooled: list[Subgraph]) -> list[dict]:
             "would_refute": x.would_refute,
             "literature_reviewed_in": reviews[x.id],
             "posed_in": x.posed_in,
+            "checked_by": " / ".join(p for p in (x.by.person, x.by.model, x.by.agent) if p) if x.by else None,
+            # A lead checked by whoever built the evidence it rests on has not had a second reader.
+            "checker_vs_builders": identity.weakest(
+                identity.relation([x.by] if x.by else [], built_by.get(key.split("/", 1)[0], [])) for key in x.nodes
+            ),
             "rests_on": x.nodes,
         }
         for x in leads

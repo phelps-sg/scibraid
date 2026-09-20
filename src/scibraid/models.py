@@ -107,6 +107,17 @@ class Paper(BaseModel):
     abstract: str | None = None
 
 
+class Builder(BaseModel):
+    """Who did a piece of work. Any field may be unknown."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    person: str | None = None
+    agent: str | None = None  # the harness, e.g. claude-code
+    model: str | None = None  # the language model doing the reading and judging
+    session: str | None = None
+
+
 class Derivation(BaseModel):
     """Where a hypothesis came from when it came from the pool rather than from a paper."""
 
@@ -178,6 +189,7 @@ class Subgraph(BaseModel):
     slug: str = Field(pattern=r"^[a-z0-9][a-z0-9\-]*$")
     question: str
     prompted_by: str | None = None  # id of the lead whose follow-up this subgraph answers
+    builders: list[Builder] = []  # everyone who has added to it, in order of first contribution
     created: str = Field(default_factory=_now)
     updated: str = Field(default_factory=_now)
     papers: dict[str, Paper] = {}
@@ -207,6 +219,7 @@ class Alignment(BaseModel):
     confidence: float = Field(ge=0.0, le=1.0)
     rationale: str = Field(min_length=10)
     judged: str = Field(default_factory=_now)
+    judge: Builder | None = None  # set by the tool when the verdict is recorded
 
     @model_validator(mode="after")
     def _canonical_order(self) -> Alignment:
@@ -287,6 +300,7 @@ class Lead(BaseModel):
     posed_in: list[str] | None = None
     follow_up: str | None = None  # a question to hand back to evidence-subgraph
     repairs: list[Repair] = []
+    by: Builder | None = None  # who last checked and recorded it; set by the tool
     updated: str = Field(default_factory=_now)
 
     @model_validator(mode="after")

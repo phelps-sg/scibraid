@@ -15,7 +15,7 @@ With the `embeddings` extra installed, plausibility is the mean of word overlap 
 
 1. `scibraid pool --list` to see what is pooled. Fewer than two subgraphs: nothing to do. `scibraid repair list` shows any verdicts that a later check found wrong (`kind: alignment`, target `a ~ b`): re-judge those first, replace them with `align add`, and `scibraid repair resolve <lead-id> <n> --note "..."`.
 2. `scibraid candidates [--budget 40] [--type condition]` returns JSON pairs. Each has both nodes' labels, descriptions, attrs and `context` (how each node is used in its own subgraph), and the signals behind the score. Pairs already judged are not proposed again.
-3. Judge each pair, write a JSON list (in your own scratch directory, since other sessions may share this one), and `scibraid align add verdicts.json`. Run `candidates` again until it proposes nothing you have not judged.
+3. Judge each pair, write a JSON list (in your own scratch directory, since other sessions may share this one), and `scibraid align add verdicts.json --model <your model id>`. The tool records who did the work: the person, the harness and the session come from the environment, but it cannot see which model you are, so pass `--model <your model id>` on `align add`. Run `candidates` again until it proposes nothing you have not judged.
 4. Hypotheses are handled differently. `scibraid hypotheses` prints, for each pair of subgraphs, both hypothesis lists in full, with the verdicts already recorded between them. Pairs of subgraphs that aligned conditions already bridge come first. Read both lists and nominate the pairs yourself: whether one hypothesis bears on another is not a matter of similarity, and no cheap signal finds it. Record `same`, `broader`, `narrower` and `related` pairs, and `different` only for tempting look-alikes. Do this after the conditions, since knowing what the two subgraphs share tells you where their hypotheses might meet.
 5. `scibraid observe` and report what it shows (below).
 6. If an observation looks important and rests on a link you were unsure of, go back to the sources (`scibraid paper show <id>`, the subgraph's passages via `scibraid show <slug> --format json`) and revise the verdict: `align add` with the same pair replaces it.
@@ -62,5 +62,7 @@ With the `embeddings` extra installed, plausibility is the mean of word overlap 
 - **cross-bearing**: a result from one question that sits under the conditions another question's hypothesis is tested under, scored so that rare conditions count for more than ubiquitous ones;
 - **contradictions by regime**: conflicting results with the conditions unique to each side;
 - **linked hypotheses** and their pooled evidence; **thinly evidenced** ones.
+
+Each candidate that spans subgraphs carries `readers`: how independent the builders of those subgraphs were (`unknown`, `same reader`, `same model`, `different model`). Two subgraphs read by the same model agree more easily than they should, so say which it was when you report a candidate.
 
 These are leads, not findings. For each one you report, say what it rests on (which alignment links, at what confidence) and what would confirm or refute it. The useful ones suggest a new question: hand it back to the `evidence-subgraph` skill.

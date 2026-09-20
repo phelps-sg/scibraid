@@ -18,9 +18,9 @@ from pathlib import Path
 import httpx
 from pydantic import ValidationError
 
-from . import align, embed, openalex, store
+from . import align, bibtex, embed, identity, openalex, store
 from .lint import lint
-from .models import Alignment, Batch, Lead, Paper, Subgraph
+from .models import Alignment, Batch, Builder, Lead, Paper, Subgraph
 from .pool import get_pool
 
 
@@ -43,6 +43,17 @@ def _md_table(headers: list[str], rows: list[list[object]]) -> str:
     lines = ["| " + " | ".join(headers) + " |", "|" + "|".join(" --- " for _ in headers) + "|"]
     lines += ["| " + " | ".join(cell(v) for v in row) + " |" for row in rows]
     return "\n".join(lines)
+
+
+def _who(builders: list[Builder]) -> list[str]:
+    return [" / ".join(part for part in (b.person, b.model or "model unknown", b.agent) if part) for b in builders]
+
+
+def _builder(args: argparse.Namespace) -> Builder:
+    builder = identity.current_builder(getattr(args, "model", None))
+    if builder.model is None:
+        print("note: no model recorded for this work; pass --model <model id> or set SCIBRAID_MODEL", file=sys.stderr)
+    return builder
 
 
 def _errors(exc: ValidationError) -> list[str]:
@@ -118,7 +129,7 @@ def _new(args: argparse.Namespace) -> int:
         print("give --question, or --lead for a lead that has a follow-up", file=sys.stderr)
         return 2
     try:
-        sg = Subgraph(slug=args.slug, question=question, prompted_by=lead.id if lead else None)
+        sg = Subgraph(slug=args.slug, question=question, prompted_by=lead.id if lead else None, builders=[_builder(args)])
         if lead:
             seed = align.derived_hypothesis(lead)
             sg.nodes[seed.id] = seed
@@ -141,6 +152,9 @@ def cmd_add(args: argparse.Namespace) -> int:
         sg = store.load_subgraph(args.slug)
         report = store.add_batch(sg, batch)
         if report.ok:
+            builder = _builder(args)
+            if builder not in sg.builders:
+                sg.builders.append(builder)
             store.save_subgraph(sg)
     _emit({"ok": report.ok, **vars(report), "totals": _totals(sg)})
     return 0 if report.ok else 1
@@ -210,11 +224,12 @@ def cmd_lint(args: argparse.Namespace) -> int:
 
 def cmd_list(args: argparse.Namespace) -> int:
     if args.format == "markdown":
-        rows = [[f"`{sg.slug}`", sg.question, len(sg.papers), len(sg.nodes), len(sg.edges), sg.prompted_by or ""] for sg in store.list_subgraphs()]
-        print(_md_table(["subgraph", "question", "papers", "nodes", "links", "prompted by lead"], rows))
+        rows = [[f"`{sg.slug}`", sg.question, len(sg.papers), len(sg.nodes), len(sg.edges), _who(sg.builders), sg.prompted_by or ""] for sg in store.list_subgraphs()]
+        print(_md_table(["subgraph", "question", "papers", "nodes", "links", "built by", "prompted by lead"], rows))
         return 0
     for sg in store.list_subgraphs():
         print(f"{sg.slug}  {_totals(sg)}  {sg.question}")
+        print(f"    built by: {'; '.join(_who(sg.builders)) or 'not recorded'}")
     return 0
 
 
@@ -226,7 +241,13 @@ def render_view(subgraphs: list[Subgraph]) -> str:
         leads = [x.model_dump(mode="json") for x in pool.leads()]
     except httpx.HTTPError:
         alignments, leads = [], []
-    payload = {"subgraphs": [sg.model_dump(mode="json") for sg in subgraphs], "alignments": alignments, "leads": leads}
+    papers = {p.id: p for sg in subgraphs for p in sg.papers.values()}
+    payload = {
+        "subgraphs": [sg.model_dump(mode="json") for sg in subgraphs],
+        "alignments": alignments,
+        "leads": leads,
+        "bibtex": bibtex.bibliography(list(papers.values())),
+    }
     data = json.dumps(payload, ensure_ascii=False)
     # Embedded in a <script> block: keep any "</script>" or "<!--" in the data inert.
     data = data.replace("<", "\\u003c")
@@ -284,6 +305,30 @@ def cmd_view(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_bibtex(args: argparse.Namespace) -> int:
+    subgraphs = [store.load_subgraph(s) for s in args.slugs] if args.slugs else store.list_subgraphs()
+    papers = {p.id: p for sg in subgraphs for p in sg.papers.values()}
+    text = "\n\n".join(item["entry"] for item in bibtex.bibliography(list(papers.values())).values()) + "\n"
+    if args.output:
+        Path(args.output).write_text(text)
+        print(f"{len(papers)} entries -> {args.output}")
+    else:
+        print(text, end="")
+    return 0
+
+
+def cmd_builder_add(args: argparse.Namespace) -> int:
+    """Record a builder after the fact, for subgraphs made before builders were recorded."""
+    with store.subgraph_lock(args.slug):
+        sg = store.load_subgraph(args.slug)
+        builder = Builder(person=args.person, agent=args.agent, model=args.model, session=args.session)
+        if builder not in sg.builders:
+            sg.builders.append(builder)
+            store.save_subgraph(sg)
+    print(f"{sg.slug} built by: {'; '.join(_who(sg.builders))}   (pool it again to share this)")
+    return 0
+
+
 def cmd_pool(args: argparse.Namespace) -> int:
     pool = get_pool()
     if args.list:
@@ -338,6 +383,9 @@ def cmd_align_add(args: argparse.Namespace) -> int:
     if errors := align.check_alignments(pool.subgraphs(), verdicts):
         _emit({"ok": False, "errors": errors})
         return 1
+    judge = _builder(args)
+    for verdict in verdicts:
+        verdict.judge = judge
     pool.add_alignments(verdicts)
     _emit({"ok": True, "added": len(verdicts), "verdicts": Counter(v.verdict.value for v in verdicts)})
     return 0
@@ -398,8 +446,10 @@ def cmd_lead_add(args: argparse.Namespace) -> int:
         _emit({"ok": False, "errors": stale})
         return 1
     stamp = datetime.now(timezone.utc).isoformat(timespec="microseconds")
+    checker = _builder(args)
     for x in leads:
         x.updated = stamp
+        x.by = checker
     pool.add_leads(leads)
     _emit({"ok": True, "added": len(leads), "status": Counter(x.status.value for x in leads)})
     return 0
@@ -453,8 +503,9 @@ def cmd_agenda(args: argparse.Namespace) -> int:
         return 0
     if args.format == "markdown":
         asked = lambda q: "not checked" if q["posed_in"] is None else (q["posed_in"] or "not found posed anywhere")
-        rows = [[q["confidence"], q["question"], q["experiment_needed"], q["would_refute"], asked(q), [f"`{s}`" for s in q["literature_reviewed_in"]]] for q in found]
-        print(_md_table(["confidence", "open question", "experiment needed", "would refute", "already asked?", "literature reviewed in"], rows))
+        rows = [[q["confidence"], q["question"], q["experiment_needed"], q["would_refute"], asked(q), [f"`{s}`" for s in q["literature_reviewed_in"]],
+                 q["checker_vs_builders"]] for q in found]
+        print(_md_table(["confidence", "open question", "experiment needed", "would refute", "already asked?", "literature reviewed in", "checker vs builders"], rows))
         return 0
     for q in found:
         print(f"{q['confidence']:.2f}  {q['question']}")
@@ -462,6 +513,7 @@ def cmd_agenda(args: argparse.Namespace) -> int:
         print(f"      would refute:      {q['would_refute']}")
         reviewed = ", ".join(q["literature_reviewed_in"]) or "no literature question applied"
         print(f"      literature:        {reviewed}   (lead {q['lead']})")
+        print(f"      checked by:        {q['checked_by'] or 'not recorded'}  (against the builders of its evidence: {q['checker_vs_builders']})")
         if q["posed_in"] is None:
             print("      already asked?     not checked")
         elif q["posed_in"]:
@@ -577,11 +629,13 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("slug")
     p.add_argument("--question", help="defaults to the lead's follow-up when --lead is given")
     p.add_argument("--lead", help="id of the lead this subgraph follows up; seeds its claim as a derived hypothesis")
+    p.add_argument("--model", help="the language model doing this work (the tool cannot see it)")
     p.set_defaults(func=cmd_new)
 
     p = sub.add_parser("add", help="validate a batch of nodes and edges and apply it")
     p.add_argument("slug")
     p.add_argument("batch", help="JSON file, or - for stdin")
+    p.add_argument("--model", help="the language model doing this work (the tool cannot see it)")
     p.set_defaults(func=cmd_add)
 
     p = sub.add_parser("show", help="print a subgraph")
@@ -596,6 +650,19 @@ def build_parser() -> argparse.ArgumentParser:
     p = sub.add_parser("list", help="list local subgraphs")
     p.add_argument("--format", choices=["text", "markdown"], default="text")
     p.set_defaults(func=cmd_list)
+
+    p = sub.add_parser("bibtex", help="BibTeX for the papers cited by subgraphs (all local ones by default)")
+    p.add_argument("slugs", nargs="*")
+    p.add_argument("-o", "--output", help="write a .bib file instead of printing")
+    p.set_defaults(func=cmd_bibtex)
+
+    bd = sub.add_parser("builder", help="who built a subgraph")
+    bd_sub = bd.add_subparsers(dest="builder_command", required=True)
+    p = bd_sub.add_parser("add", help="record a builder on an existing subgraph")
+    p.add_argument("slug")
+    for flag in ("--person", "--agent", "--model", "--session"):
+        p.add_argument(flag)
+    p.set_defaults(func=cmd_builder_add)
 
     p = sub.add_parser("view", help="browse subgraphs in the browser (all local ones by default)")
     p.add_argument("slugs", nargs="*")
@@ -625,6 +692,7 @@ def build_parser() -> argparse.ArgumentParser:
     al_sub = al.add_subparsers(dest="align_command", required=True)
     p = al_sub.add_parser("add", help="validate a JSON list of verdicts and store it in the pool")
     p.add_argument("file", help="JSON file, or - for stdin")
+    p.add_argument("--model", help="the language model doing this work (the tool cannot see it)")
     p.set_defaults(func=cmd_align_add)
     p = al_sub.add_parser("list", help="print the pool's alignment verdicts")
     p.add_argument("--format", choices=["text", "markdown"], default="text")
@@ -634,6 +702,7 @@ def build_parser() -> argparse.ArgumentParser:
     ld_sub = ld.add_subparsers(dest="lead_command", required=True)
     p = ld_sub.add_parser("add", help="validate a JSON list of leads and store it in the pool")
     p.add_argument("file", help="JSON file, or - for stdin")
+    p.add_argument("--model", help="the language model doing this work (the tool cannot see it)")
     p.set_defaults(func=cmd_lead_add)
     p = ld_sub.add_parser("list", help="print the pool's leads")
     p.add_argument("--status", choices=["candidate", "holds", "open", "known", "refuted"])

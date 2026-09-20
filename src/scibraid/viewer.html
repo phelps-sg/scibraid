@@ -84,6 +84,8 @@ aside h3 { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; co
 .rel { font-weight: 600; } .rel.supports { color: var(--text); } .rel.contradicts { color: var(--text); }
 .pill { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text-2); }
 blockquote { margin: 6px 0 2px; padding: 2px 0 2px 10px; border-left: 3px solid var(--border); color: var(--text-2); font-size: 13px; }
+.mini { font: inherit; font-size: 11px; padding: 1px 7px; margin-left: 6px; border-radius: 5px; }
+pre.bib { font: 11px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; overflow-x: auto; white-space: pre; margin: 6px 0; }
 .note { font-size: 13px; color: var(--text-2); font-style: italic; margin-top: 4px; }
 .src { font-size: 12px; color: var(--text-3); } .src a { color: inherit; }
 .bar { display: flex; height: 8px; gap: 2px; margin: 6px 0 2px; }
@@ -262,6 +264,17 @@ function highlight() {
   cy.elements().removeClass("faded lit hit near").unselect();
   const q = state.query.toLowerCase();
   if (q) cy.nodes().forEach((n) => { const m = model.nodes.get(n.id()); if ((m.label + " " + m.id + " " + (m.description || "")).toLowerCase().includes(q)) n.addClass("hit"); });
+  if ((state.selected || "").startsWith("paper:")) {
+    const { edges, nodes } = restsOn(state.selected.slice(6));
+    let hood = cy.collection();
+    edges.forEach((e) => { hood = hood.union(cy.getElementById(e.key)); });
+    nodes.forEach((n) => { hood = hood.union(cy.getElementById(n.key)); });
+    hood = hood.union(hood.edges().connectedNodes());
+    cy.elements().not(hood).addClass("faded");
+    hood.edges().addClass("lit");
+    hood.nodes().addClass("near");
+    return;
+  }
   const lead = model.leads.find((l) => l.key === state.selected);
   if (lead) {
     let hood = cy.collection();
@@ -310,6 +323,36 @@ function select(key, centre) {
   }
 }
 
+// ---- papers -------------------------------------------------------------------
+const bib = (id) => (DATA.bibtex || {})[id];
+
+function paperLinks(p) {
+  const links = [];
+  if (p.url) links.push(["open paper", p.url]);
+  if (p.doi) links.push(["DOI", "https://doi.org/" + p.doi]);
+  const arxiv = ((p.id + " " + (p.url || "")).match(/(\d{4}\.\d{4,5})/) || [])[1];
+  if (arxiv && !(p.url || "").includes("arxiv.org")) links.push(["arXiv", "https://arxiv.org/abs/" + arxiv]);
+  if (/^W\d+$/.test(p.id)) links.push(["OpenAlex", "https://openalex.org/" + p.id]);
+  return links.map(([text, href]) => el("a", { href, target: "_blank", rel: "noopener", style: "margin-right:10px" }, text + " ↗"));
+}
+
+function copyButton(label, text) {
+  return el("button", { class: "mini", onclick: (ev) => {
+    ev.stopPropagation();
+    const button = ev.currentTarget, done = () => { button.textContent = "copied"; setTimeout(() => { button.textContent = label; }, 1200); };
+    const fallback = () => { const area = el("textarea", {}, text); document.body.append(area); area.select(); document.execCommand("copy"); area.remove(); done(); };
+    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(done, fallback); else fallback();
+  } }, label);
+}
+
+const allBibtex = () => Object.keys(model.papers).map((id) => (bib(id) || {}).entry).filter(Boolean).join("\n\n") + "\n";
+
+function restsOn(paperId) {
+  const edges = model.edges.filter((e) => e.provenance.some((p) => p.paper_id === paperId));
+  const nodes = [...model.nodes.values()].filter((n) => (n.provenance || []).some((p) => p.paper_id === paperId));
+  return { edges, nodes };
+}
+
 // ---- side panel ---------------------------------------------------------------
 function provenance(list) {
   return (list || []).map((p) => {
@@ -317,8 +360,9 @@ function provenance(list) {
     const cite = [paper.authors && paper.authors.length ? paper.authors[0].split(" ").pop() + (paper.authors.length > 1 ? " et al." : "") : null, paper.year].filter(Boolean).join(" ");
     const mark = p.verified === true ? "✓ verified" : p.verified === false ? "✗ not in source" : "unverified";
     return el("div", {}, el("blockquote", {}, "“" + p.passage + "”"),
-      el("div", { class: "src" }, paper.url ? el("a", { href: paper.url, target: "_blank", rel: "noopener" }, cite || p.paper_id) : (cite || p.paper_id),
-        paper.title ? ` · ${short(paper.title, 70)}` : "", ` · ${p.location} · ${mark}`));
+      el("div", { class: "src" }, el("a", { href: "#", onclick: (ev) => { ev.preventDefault(); select("paper:" + p.paper_id); } }, cite || p.paper_id),
+        paper.title ? ` · ${short(paper.title, 70)}` : "", ` · ${p.location} · ${mark}`),
+      el("div", { class: "src" }, paperLinks(paper), bib(p.paper_id) ? [el("span", { class: "id" }, bib(p.paper_id).key), copyButton("copy BibTeX", bib(p.paper_id).entry)] : null));
   });
 }
 
@@ -367,11 +411,26 @@ function renderPanel() {
       edge.note ? el("div", { class: "note" }, edge.note) : null,
       el("h3", {}, "From"), nodeLink(model.nodes.get(edge.s)), el("h3", {}, "To"), nodeLink(model.nodes.get(edge.t)),
       el("h3", {}, "Source passage"), provenance(edge.provenance));
+  } else if ((state.selected || "").startsWith("paper:")) {
+    const paper = model.papers[state.selected.slice(6)];
+    if (!paper) return overview(panel);
+    const { edges, nodes } = restsOn(paper.id), entry = bib(paper.id);
+    add(panel, el("div", { class: "meta" }, "paper", paper.year || "n.d.", paper.source_tier, paper.cited_by_count != null ? `cited by ${paper.cited_by_count}` : ""),
+      el("h2", {}, paper.title), el("div", { class: "src" }, (paper.authors || []).join(", ") + ((paper.authors || []).length >= 8 ? ", et al." : "")),
+      paper.venue ? el("div", { class: "src" }, paper.venue) : null, el("p", {}, paperLinks(paper)),
+      entry ? [el("h3", {}, "BibTeX", copyButton("copy", entry.entry)), el("pre", { class: "bib" }, entry.entry)] : null,
+      paper.abstract ? [el("h3", {}, "Abstract"), el("p", { class: "src", style: "font-size:13px" }, paper.abstract)] : null,
+      el("h3", {}, `Relationships resting on this paper (${edges.length})`),
+      edges.map((e) => el("div", { class: "card link", onclick: () => select(e.key, true) },
+        el("div", {}, short(model.nodes.get(e.s).label, 70)), el("div", { class: "meta" }, el("span", { class: "rel" }, e.relation.replace(/_/g, " ")), e.confidence.toFixed(2), `by ${e.asserted_by}`),
+        el("div", {}, short(model.nodes.get(e.t).label, 70)))),
+      nodes.length ? [el("h3", {}, `Nodes quoting it (${nodes.length})`), nodes.map(nodeLink)] : null);
   } else if (model.leads.some((l) => l.key === state.selected)) {
     const lead = model.leads.find((l) => l.key === state.selected);
     const STATUS = { candidate: "not yet checked", holds: "holds up so far, literature review pending", open: "open research question: needs new empirical work", known: "already in the literature", refuted: "refuted" };
     add(panel, el("div", { class: "meta" }, "lead", lead.kind.replace(/_/g, " "), `${lead.status}: ${STATUS[lead.status]}`), el("h2", {}, lead.claim),
-      el("dl", {}, el("dt", {}, "confidence"), el("dd", {}, lead.confidence.toFixed(2)), el("dt", {}, "updated"), el("dd", {}, lead.updated)),
+      el("dl", {}, el("dt", {}, "confidence"), el("dd", {}, lead.confidence.toFixed(2)), el("dt", {}, "updated"), el("dd", {}, lead.updated),
+        el("dt", {}, "checked by"), el("dd", {}, lead.by ? [lead.by.person, lead.by.model || "model unknown", lead.by.agent].filter(Boolean).join(" / ") : "not recorded")),
       lead.follow_up ? [el("h3", {}, "Next question"), el("div", { class: "card" }, lead.follow_up)] : null,
       lead.checks.length ? [el("h3", {}, "Checks"), lead.checks.map((c) => el("div", { class: "card" }, el("div", { class: "rel" }, c.question), el("div", {}, c.finding),
         c.sources.length ? el("div", { class: "src" }, c.sources.join(" · ")) : null))] : null,
@@ -383,7 +442,8 @@ function renderPanel() {
       lead.present.length < lead.nodes.length ? el("p", { class: "src" }, `${lead.nodes.length - lead.present.length} more node(s) are in a subgraph not shown. Choose "All subgraphs together".`) : null);
   } else if (link) {
     add(panel, el("div", { class: "meta" }, "alignment verdict"), el("h2", {}, link.verdict === "same" ? "Judged to be the same thing" : `First is ${link.verdict} ${link.verdict === "related" ? "to" : "than"} second`),
-      el("dl", {}, el("dt", {}, "confidence"), el("dd", {}, link.confidence.toFixed(2)), el("dt", {}, "judged"), el("dd", {}, link.judged || "")),
+      el("dl", {}, el("dt", {}, "confidence"), el("dd", {}, link.confidence.toFixed(2)), el("dt", {}, "judged"), el("dd", {}, link.judged || ""),
+        el("dt", {}, "judged by"), el("dd", {}, link.judge ? [link.judge.person, link.judge.model || "model unknown", link.judge.agent].filter(Boolean).join(" / ") : "not recorded")),
       el("div", { class: "note" }, link.rationale), el("h3", {}, "First"), nodeLink(model.nodes.get(link.s)), el("h3", {}, "Second"), nodeLink(model.nodes.get(link.t)));
   } else if (same) {
     add(panel, el("div", { class: "meta" }, "alignment candidate"), el("h2", {}, "Same id in two subgraphs"), el("div", { class: "id" }, same.id),
@@ -398,6 +458,7 @@ function overview(panel) {
   add(panel, el("h2", {}, model.many ? "All subgraphs" : model.graphs[0].slug),
     el("div", { class: "meta" }, `${Object.keys(model.papers).length} papers`, `${model.nodes.size} nodes`, `${model.edges.length} relationships`,
       `${count((e) => e.asserted_by === "model")} model-asserted`),
+    el("div", { class: "src" }, model.graphs.map((g) => el("div", {}, `${model.many ? g.slug + ": " : ""}built by ${(g.builders || []).map((b) => [b.person, b.model || "model unknown", b.agent].filter(Boolean).join(" / ")).join("; ") || "not recorded"}`))),
     el("p", { class: "src" }, "Click a node or an edge for its passages. Click empty space to come back here."),
     el("h3", {}, "Hypotheses: evidence for and against"));
   for (const h of [...model.nodes.values()].filter((n) => n.type === "hypothesis")) {
@@ -420,8 +481,11 @@ function overview(panel) {
     short(model.nodes.get(x.s).label, 70), el("div", { class: "src" }, short(model.nodes.get(x.t).label, 70)), el("div", { class: "note" }, short(x.rationale, 160)))));
   if (model.same.length) add(panel, el("h3", {}, `Identical ids not yet judged (${model.same.length})`), model.same.map((s) =>
     el("div", { class: "card link", onclick: () => select(s.key, true) }, el("span", { class: "id" }, s.id))));
-  add(panel, el("h3", {}, "Papers"), Object.values(model.papers).sort((a, b) => (a.year || 0) - (b.year || 0)).map((p) =>
-    el("div", { class: "src", style: "margin:4px 0" }, p.url ? el("a", { href: p.url, target: "_blank", rel: "noopener" }, p.title) : p.title, ` (${p.year || "n.d."}, ${p.source_tier})`)));
+  add(panel, el("h3", {}, `Papers (${Object.keys(model.papers).length})`, copyButton("copy all BibTeX", allBibtex()),
+      el("button", { class: "mini", onclick: () => { const a = el("a", { href: URL.createObjectURL(new Blob([allBibtex()], { type: "text/plain" })), download: (model.many ? "scibraid" : model.graphs[0].slug) + ".bib" }); a.click(); } }, "download .bib")),
+    Object.values(model.papers).sort((a, b) => (a.year || 0) - (b.year || 0)).map((p) =>
+      el("div", { class: "src", style: "margin:6px 0" }, el("a", { href: "#", onclick: (ev) => { ev.preventDefault(); select("paper:" + p.id); } }, p.title), ` (${p.year || "n.d."}, ${p.source_tier}) `,
+        p.url ? el("a", { href: p.url, target: "_blank", rel: "noopener", title: "open paper" }, "↗") : null, bib(p.id) ? copyButton("BibTeX", bib(p.id).entry) : null)));
 }
 
 // ---- table view -----------------------------------------------------------------

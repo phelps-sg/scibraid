@@ -14,7 +14,7 @@ A lead is recorded as carefully as a link. It names the nodes and alignment verd
 1. `scibraid observe --new --format json` for candidates that no recorded lead covers yet, and `scibraid lead list` for what has been pursued. Without `--new` each candidate carries the `leads` that cover it, with their status. Return to a covered candidate only if new subgraphs or verdicts bear on it.
 2. Triage. Pick the few worth the effort (see below). Five well-checked leads beat twenty unchecked ones.
 3. For each, make the checks below, going back to the sources.
-4. Write the leads as a JSON list (in your own scratch directory) and `scibraid lead add leads.json`. Re-adding an id replaces it, which is how a lead's status changes. To change an existing lead, start from `scibraid lead list --format json` and keep its `updated` field as you found it: the tool uses it to tell whether someone else changed the lead after you read it, and refuses a stale copy.
+4. Write the leads as a JSON list (in your own scratch directory) and `scibraid lead add leads.json --model <your model id>`. The tool records who did the work: the person, the harness and the session come from the environment, but it cannot see which model you are, so pass `--model <your model id>` on `lead add`; `scibraid agenda` then shows whether each open question was checked by a different reader from the one who built its evidence. Re-adding an id replaces it, which is how a lead's status changes. To change an existing lead, start from `scibraid lead list --format json` and keep its `updated` field as you found it: the tool uses it to tell whether someone else changed the lead after you read it, and refuses a stale copy.
 5. Report: what holds, what was already known, what fell over and why. `scibraid followups` lists every lead's follow-up question and how far the work on it has got (`pending`, `in_progress`, `reviewed`). A pending one is taken up with `scibraid new <slug> --lead <lead-id>` and the `evidence-subgraph` skill, which is how the pool grows where it matters. `scibraid agenda` lists the open research questions, which are the point of the whole exercise.
 
 ## Triage
@@ -64,6 +64,10 @@ If a check shows that a subgraph or a verdict is wrong, add a repair to the lead
 `confidence` is how likely the claim is to be true of the world, given everything you checked. It cannot exceed the confidence of the weakest alignment verdict the lead rests on, and the tool enforces that. It should usually be well below it: an alignment being right is necessary, not sufficient. Two papers and one shared condition is thin evidence, so most leads that hold belong between 0.3 and 0.6.
 
 Write the `claim` about the world ("instruction tuning, not parameter count, gates chain-of-thought gains"), not about the graph ("two observations share a condition"). Write `follow_up` as a question a literature review could answer; if only a new experiment could answer it, say so in `would_confirm` and make the follow-up the nearest question the literature can address.
+
+## Checking your own work
+
+If you built the subgraphs a lead rests on, your check is a re-reading, not a second reading: you will tend to find what you found before. Do the checks anyway, say so in your report, and prefer leads whose evidence someone else built. `scibraid agenda` reports this as the relation between the checker and the builders of the evidence (`same reader`, `same model`, `different model`).
 
 ## What not to do
 
