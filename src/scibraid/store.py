@@ -11,7 +11,7 @@ from contextlib import contextmanager
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from .models import ALLOWED_ENDPOINTS, Batch, Paper, Subgraph, _now
+from .models import ALLOWED_ENDPOINTS, AssertedBy, Batch, Paper, Subgraph, _now
 
 
 def home() -> Path:
@@ -200,6 +200,12 @@ def add_batch(sg: Subgraph, batch: Batch) -> AddReport:
             report.errors.append(
                 f"{name}: {edge.relation} cannot link {pair[0]}->{pair[1]} (allowed: {allowed})"
             )
+        if edge.asserted_by is AssertedBy.MODEL and edge.confidence > 0.85:
+            report.errors.append(
+                f"{name}: model-asserted at {edge.confidence:.2f}, above 0.85. If the paper states the "
+                "relationship itself (as it usually does for its own conditions and results) it is "
+                "author-asserted; if you inferred it, no inference deserves more than 0.85"
+            )
         if len({p.paper_id for p in edge.provenance}) > 1:
             report.errors.append(
                 f"{name}: one edge is one paper's evidence; split it into an edge per paper"
@@ -260,3 +266,48 @@ def add_batch(sg: Subgraph, batch: Batch) -> AddReport:
             sg.edges.append(edge)
             report.edges_added += 1
     return report
+
+
+def merge_nodes(sg: Subgraph, keep: str, drop: str) -> list[str]:
+    """Fold node `drop` into `keep`: one thing that was recorded under two ids.
+
+    Edges move to `keep`. Where that makes two edges from the same paper say the same thing,
+    they become one, holding both passages and the higher confidence. Returns the errors, and
+    changes nothing if there are any.
+    """
+    missing = [nid for nid in (keep, drop) if nid not in sg.nodes]
+    if missing:
+        return [f"unknown node(s) {missing}"]
+    if keep == drop:
+        return ["a node cannot be merged into itself"]
+    kept, dropped = sg.nodes[keep], sg.nodes[drop]
+    if kept.type is not dropped.type:
+        return [f"{keep} is a {kept.type} and {drop} is a {dropped.type}"]
+    if kept.outcome is not dropped.outcome:
+        return [f"{keep} is {kept.outcome} and {drop} is {dropped.outcome}: not one observation"]
+
+    seen = {(p.paper_id, p.passage) for p in kept.provenance}
+    kept.provenance += [p for p in dropped.provenance if (p.paper_id, p.passage) not in seen]
+    kept.description = kept.description or dropped.description
+    kept.attrs = {**dropped.attrs, **kept.attrs}
+    kept.attrs["merged_from"] = [*kept.attrs.get("merged_from", []), *dropped.attrs.get("merged_from", []), drop]
+    del sg.nodes[drop]
+
+    merged: dict[tuple, int] = {}
+    edges = []
+    for edge in sg.edges:
+        edge.source = keep if edge.source == drop else edge.source
+        edge.target = keep if edge.target == drop else edge.target
+        if edge.source == edge.target:
+            continue  # a relation between the two ids says nothing once they are one node
+        key = (*edge.key, edge.provenance[0].paper_id)
+        if key not in merged:
+            merged[key] = len(edges)
+            edges.append(edge)
+            continue
+        first = edges[merged[key]]
+        passages = {p.passage for p in first.provenance}
+        first.provenance += [p for p in edge.provenance if p.passage not in passages]
+        first.confidence = max(first.confidence, edge.confidence)
+    sg.edges = edges
+    return []

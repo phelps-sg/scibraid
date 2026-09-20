@@ -8,7 +8,7 @@ import threading
 from scibraid import align, bibtex, identity, main, openalex, store
 from scibraid.cli import _md_table, make_server
 from scibraid.lint import lint
-from scibraid.models import Alignment, Batch, Builder, Lead, Paper, Subgraph
+from scibraid.models import Alignment, AssertedBy, Batch, Builder, Lead, Paper, Subgraph
 from scibraid.pool import HttpPool, LocalPool
 
 ABSTRACT = (
@@ -840,3 +840,64 @@ def test_bibtex_entries_and_unique_keys(tmp_path, capsys):
     view = tmp_path / "v.html"
     assert main(["view", "-o", str(view)]) == 0
     assert '"bibtex": {"W1": {"key":' in view.read_text()
+
+
+def test_two_ids_for_one_condition_are_found_and_merged(tmp_path, capsys):
+    sg = Subgraph(slug="q", question="Does X work?")
+    store.add_batch(sg, Batch.model_validate(batch()))
+    twin = {
+        "nodes": [{"id": "c:hypoxic", "type": "condition", "label": "Hypoxic conditions (low oxygen)", "attrs": {"o2_percent": 1}}],
+        "edges": [
+            {"source": "e:mouse-hypoxia", "target": "c:hypoxic", "relation": "performed_under", "confidence": 0.8,
+             "asserted_by": "author", "provenance": prov("depends on oxygen tension")},
+            {"source": "o:no-reduction", "target": "c:hypoxic", "relation": "observed_under", "confidence": 0.7,
+             "asserted_by": "author", "provenance": prov("Under hypoxic conditions")},
+        ],
+    }
+    assert store.add_batch(sg, Batch.model_validate(twin)).ok
+    store.save_subgraph(sg)
+
+    assert [(d["a"], d["b"]) for d in align.duplicates(sg)] == [("c:hypoxia", "c:hypoxic")]
+
+    assert main(["merge", "q", "c:hypoxia", "o:no-reduction"]) == 1  # different types
+    capsys.readouterr()
+    assert main(["merge", "q", "c:hypoxia", "c:hypoxic"]) == 0
+    assert json.loads(capsys.readouterr().out)["dropped"] == "c:hypoxic"
+
+    sg = store.load_subgraph("q")
+    assert "c:hypoxic" not in sg.nodes
+    kept = sg.nodes["c:hypoxia"]
+    assert kept.attrs == {"o2_percent": 1, "merged_from": ["c:hypoxic"]}
+    # The two performed_under edges came from one paper, so they are one edge with both passages.
+    under = [e for e in sg.edges if e.key == ("e:mouse-hypoxia", "performed_under", "c:hypoxia")]
+    assert len(under) == 1 and under[0].confidence == 0.95
+    assert {p.passage for p in under[0].provenance} == {"Under hypoxic conditions", "depends on oxygen tension"}
+    assert any(e.key == ("o:no-reduction", "observed_under", "c:hypoxia") for e in sg.edges)
+    assert not lint(sg) or all("c:hypoxic" not in f for f in lint(sg))
+
+
+def test_merging_a_pooled_node_reports_what_now_dangles(capsys):
+    a, b = Subgraph(slug="a", question="?"), Subgraph(slug="b", question="?")
+    for sg in (a, b):
+        store.add_batch(sg, Batch.model_validate(batch()))
+    extra = {"nodes": [{"id": "c:low-oxygen", "type": "condition", "label": "Low oxygen"}],
+             "edges": [{"source": "e:mouse-hypoxia", "target": "c:low-oxygen", "relation": "performed_under",
+                        "confidence": 0.8, "asserted_by": "author", "provenance": prov("Under hypoxic conditions")}]}
+    store.add_batch(a, Batch.model_validate(extra))
+    pool = LocalPool()
+    for sg in (a, b):
+        store.save_subgraph(sg)
+        pool.push(sg)
+    pool.add_alignments([Alignment(a="a/c:low-oxygen", b="b/c:hypoxia", verdict="same", confidence=0.9, rationale="Both are low oxygen.")])
+
+    assert main(["merge", "a", "c:hypoxia", "c:low-oxygen"]) == 0
+    assert json.loads(capsys.readouterr().out)["now_dangling_in_pool"] == ["verdict a/c:low-oxygen ~ b/c:hypoxia"]
+
+
+def test_an_inference_cannot_be_recorded_as_near_certain():
+    data = batch()
+    data.edges[1].asserted_by, data.edges[1].confidence = AssertedBy.MODEL, 0.9
+    report = store.add_batch(Subgraph(slug="q", question="?"), Batch.model_validate(data.model_dump()))
+    assert not report.ok and "author-asserted" in report.errors[0]
+    data.edges[1].confidence = 0.85
+    assert store.add_batch(Subgraph(slug="q", question="?"), Batch.model_validate(data.model_dump())).ok

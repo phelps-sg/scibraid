@@ -44,6 +44,28 @@ def _trigrams(text: str) -> set[str]:
     return {text[i : i + 3] for i in range(len(text) - 2)}
 
 
+class _Lexical:
+    """Word-overlap similarity between short texts: TF-IDF cosine, and trigram overlap of labels."""
+
+    def __init__(self, texts: dict[str, str], labels: dict[str, str]) -> None:
+        self.bags = {key: Counter(_tokens(text)) for key, text in texts.items()}
+        self.grams = {key: _trigrams(label) for key, label in labels.items()}
+        df = Counter(token for bag in self.bags.values() for token in bag)
+        self.idf = {token: math.log(1 + len(self.bags) / count) for token, count in df.items()}
+        self.norm = {
+            k: math.sqrt(sum((c * self.idf[t]) ** 2 for t, c in bag.items())) or 1.0 for k, bag in self.bags.items()
+        }
+
+    def cosine(self, a: str, b: str) -> float:
+        shared = self.bags[a].keys() & self.bags[b].keys()
+        dot = sum(self.bags[a][t] * self.bags[b][t] * self.idf[t] ** 2 for t in shared)
+        return dot / (self.norm[a] * self.norm[b])
+
+    def trigram(self, a: str, b: str) -> float:
+        union = self.grams[a] | self.grams[b]
+        return len(self.grams[a] & self.grams[b]) / len(union) if union else 0.0
+
+
 @dataclass
 class PoolIndex:
     """Pooled subgraphs with namespaced keys, plus adjacency."""
@@ -107,11 +129,7 @@ def candidates(
     """
     index = PoolIndex.build(subgraphs)
     done = {(x.a, x.b) for x in judged}
-    bags = {key: Counter(_tokens(index.text(key))) for key in index.nodes}
-    grams = {key: _trigrams(index.nodes[key].label) for key in index.nodes}
-    df = Counter(token for bag in bags.values() for token in bag)
-    idf = {token: math.log(1 + len(bags) / count) for token, count in df.items()}
-    norm = {k: math.sqrt(sum((c * idf[t]) ** 2 for t, c in bag.items())) or 1.0 for k, bag in bags.items()}
+    lexical = _Lexical({k: index.text(k) for k in index.nodes}, {k: n.label for k, n in index.nodes.items()})
     top_degree = max((index.degree(k) for k in index.nodes), default=1) or 1
     vector: dict[str, list[float]] = {}
     if embedder is not None:
@@ -126,10 +144,7 @@ def candidates(
             continue
         if node_type and na.type.value != node_type:
             continue
-        shared = bags[a].keys() & bags[b].keys()
-        cosine = sum(bags[a][t] * bags[b][t] * idf[t] ** 2 for t in shared) / (norm[a] * norm[b])
-        union = grams[a] | grams[b]
-        trigram = len(grams[a] & grams[b]) / len(union) if union else 0.0
+        cosine, trigram = lexical.cosine(a, b), lexical.trigram(a, b)
         signals = {"cosine": round(cosine, 3), "label_trigram": round(trigram, 3)}
         plausibility = 0.6 * cosine + 0.4 * trigram
         if vector:
@@ -161,6 +176,32 @@ def candidates(
         )
     found.sort(key=lambda c: -c["priority"])
     return found[:budget]
+
+
+def duplicates(sg: Subgraph, min_score: float = 0.5, embedder: Embedder | None = None) -> list[dict]:
+    """Pairs of conditions or hypotheses within one subgraph that may be the same thing twice.
+
+    Extractors working on different papers at once cannot see each other's ids, so they mint
+    `c:zero-shot` and `c:zero-shot-prompting` side by side. Scored like alignment candidates;
+    whether a pair really is one node is a judgement, and `merge_nodes` acts on it.
+    """
+    reusable = {k: n for k, n in sg.nodes.items() if n.type in (NodeType.CONDITION, NodeType.HYPOTHESIS)}
+    texts = {k: f"{n.label} {n.description} {_ID_PREFIX.sub('', k).replace('-', ' ')}" for k, n in reusable.items()}
+    lexical = _Lexical(texts, {k: n.label for k, n in reusable.items()})
+    vector: dict[str, list[float]] = {}
+    if embedder is not None and reusable:
+        keys = list(reusable)
+        vector = dict(zip(keys, embedder.vectors([f"{reusable[k].label}. {reusable[k].description}".strip() for k in keys])))
+    found = []
+    for a, b in combinations(sorted(reusable), 2):
+        if reusable[a].type is not reusable[b].type:
+            continue
+        score = 0.6 * lexical.cosine(a, b) + 0.4 * lexical.trigram(a, b)
+        if vector:
+            score = 0.5 * score + 0.5 * calibrated(cosine_of(vector[a], vector[b]))
+        if score >= min_score:
+            found.append({"a": a, "b": b, "score": round(score, 3), "a_label": reusable[a].label, "b_label": reusable[b].label})
+    return sorted(found, key=lambda d: -d["score"])
 
 
 def _brief(index: PoolIndex, key: str) -> dict:

@@ -222,6 +222,37 @@ def cmd_lint(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_duplicates(args: argparse.Namespace) -> int:
+    embedder = None if args.lexical else embed.default_embedder()
+    found = align.duplicates(store.load_subgraph(args.slug), args.min_score, embedder)
+    if args.format == "markdown":
+        print(_md_table(["score", "a", "b"], [[d["score"], f"`{d['a']}` {d['a_label']}", f"`{d['b']}` {d['b_label']}"] for d in found]))
+    else:
+        _emit(found)
+    return 0
+
+
+def cmd_merge(args: argparse.Namespace) -> int:
+    with store.subgraph_lock(args.slug):
+        sg = store.load_subgraph(args.slug)
+        errors = store.merge_nodes(sg, args.keep, args.drop)
+        if not errors:
+            builder = _builder(args)
+            if builder not in sg.builders:
+                sg.builders.append(builder)
+            store.save_subgraph(sg)
+    if errors:
+        _emit({"ok": False, "errors": errors})
+        return 1
+    # Verdicts and leads name nodes by id, so a pooled node that disappears leaves them dangling.
+    gone = f"{args.slug}/{args.drop}"
+    pool = get_pool()
+    dangling = [f"verdict {x.a} ~ {x.b}" for x in pool.alignments() if gone in (x.a, x.b)]
+    dangling += [f"lead {lead.id}" for lead in pool.leads() if gone in lead.nodes]
+    _emit({"ok": True, "kept": args.keep, "dropped": args.drop, "totals": _totals(sg), "now_dangling_in_pool": dangling})
+    return 0
+
+
 def cmd_list(args: argparse.Namespace) -> int:
     if args.format == "markdown":
         rows = [[f"`{sg.slug}`", sg.question, len(sg.papers), len(sg.nodes), len(sg.edges), _who(sg.builders), sg.prompted_by or ""] for sg in store.list_subgraphs()]
@@ -646,6 +677,20 @@ def build_parser() -> argparse.ArgumentParser:
     p = sub.add_parser("lint", help="structural checks: what to look at again")
     p.add_argument("slug")
     p.set_defaults(func=cmd_lint)
+
+    p = sub.add_parser("duplicates", help="conditions or hypotheses within a subgraph that may be one thing under two ids")
+    p.add_argument("slug")
+    p.add_argument("--min-score", type=float, default=0.5)
+    p.add_argument("--lexical", action="store_true", help="word overlap only, even if embeddings are installed")
+    p.add_argument("--format", choices=["json", "markdown"], default="json")
+    p.set_defaults(func=cmd_duplicates)
+
+    p = sub.add_parser("merge", help="fold one node into another: the same thing recorded under two ids")
+    p.add_argument("slug")
+    p.add_argument("keep")
+    p.add_argument("drop")
+    p.add_argument("--model", help="the language model doing this work (the tool cannot see it)")
+    p.set_defaults(func=cmd_merge)
 
     p = sub.add_parser("list", help="list local subgraphs")
     p.add_argument("--format", choices=["text", "markdown"], default="text")
