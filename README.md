@@ -30,6 +30,65 @@ command-line tool does everything that should be deterministic: literature
 search, schema validation, quote verification, storage, pooling, candidate
 ranking and the structural queries.
 
+## Related work
+
+Most scientific graphs take the paper as the node. [OpenAlex](https://openalex.org)
+and [Semantic Scholar](https://www.semanticscholar.org) link papers by citation
+and metadata. [scite](https://scite.ai) goes a step further and labels each
+citation as supporting, mentioning or contrasting the cited paper. These graphs
+say which papers are connected. They do not say what experiment was run, under
+what conditions, or what it found.
+
+Extraction pipelines go below the paper, to triples of entities.
+[SemMedDB](https://lhncbc.nlm.nih.gov/ii/tools/SemRep_SemMedDB_SKR.html) holds
+millions of subject-predicate-object statements mined from PubMed sentences, of
+the form "drug treats disease".
+[GraphRAG](https://github.com/microsoft/graphrag) and its descendants use a
+language model to do the same over any corpus, and
+[MR-KG](https://www.medrxiv.org/content/10.64898/2025.12.14.25342218) extracts
+structured evidence from 15,000 Mendelian randomisation studies. These systems
+process the whole corpus before anyone asks a question, which is expensive and
+fixes the schema to what the builders anticipated. A triple asserts that a
+relation holds. It drops the experiment behind the claim and the conditions it was
+run under. A null result survives at best as a negated predicate, with nothing
+to say where the effect was absent.
+
+Curated approaches keep more of the structure. The
+[Open Research Knowledge Graph](https://orkg.org) describes each paper's
+contribution as structured properties so that papers can be compared in a table.
+[Nanopublications](https://nanopub.net) package a single assertion with its
+provenance. [Discourse graphs](https://discoursegraphs.com) link questions,
+claims and evidence in a researcher's notes. scigraph shares their view that a
+claim should travel with its source. They depend on people doing the structuring
+by hand, and that has limited how much of the literature they cover.
+
+The closest recent system is
+[ASKS](https://arxiv.org/abs/2608.29612) (2026), in which an agent compiles
+papers one at a time into a persistent graph, with deterministic checks on the
+model's output and links back to each source. It compiles a fixed corpus into one
+canonical graph of concepts and research directions. It is not driven by
+questions, and it integrates each paper into the shared graph as it goes.
+
+The idea that pooling separate literatures reveals new connections is Don
+Swanson's. In 1986 he linked fish oil to Raynaud's syndrome through intermediate
+terms that appeared in two literatures which did not cite each other. Much of
+literature-based discovery since has joined literatures on shared terms or
+extracted triples.
+
+scigraph differs from these on what it records, when it is built, how far it can
+be trusted and how graphs are combined. It records the experiment, its
+conditions, what was observed and what the authors made of it, as separate
+nodes, with failures given the same standing as successes. It is built on
+demand, one question at a time, so the cost is paid only where someone wants an
+answer and the graph reflects what researchers ask. Every link carries a quote
+that a program has checked against the source, a confidence, and a mark of
+whether the paper's authors or the model drew it, so an inference is never
+stored as a fact. Graphs are combined by judged links and never merged. Two
+researchers can disagree about what a term means without either graph being
+overwritten, and a bad alignment can be withdrawn. The join between graphs is an
+experimental condition, which is more specific than a shared term and is where
+conflicting results tend to separate.
+
 ## Example
 
 Two questions were put to the agent separately:
@@ -173,6 +232,10 @@ Setting `SCIGRAPH_POOL_URL` switches to a remote pool over HTTP (`/subgraphs`,
 one does.
 
 ## Limitations
+
+The comparison with related work draws on the author's knowledge of the field and
+a brief search. It is not a systematic survey, and the descriptions of other
+systems are from their public documentation.
 
 The example graphs were built and aligned by the same agent in one session, so
 they were not independent in the way two researchers' graphs would be. No domain
