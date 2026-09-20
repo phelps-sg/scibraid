@@ -17,9 +17,9 @@ from pathlib import Path
 import httpx
 from pydantic import ValidationError
 
-from . import openalex, store
+from . import align, openalex, store
 from .lint import lint
-from .models import Batch, Paper, Subgraph
+from .models import Alignment, Batch, Paper, Subgraph
 from .pool import get_pool
 
 
@@ -169,8 +169,13 @@ def cmd_list(args: argparse.Namespace) -> int:
 
 
 def render_view(subgraphs: list[Subgraph]) -> str:
-    """A self-contained HTML page for browsing the given subgraphs."""
-    data = json.dumps({"subgraphs": [sg.model_dump(mode="json") for sg in subgraphs]}, ensure_ascii=False)
+    """A self-contained HTML page for browsing the given subgraphs and their alignments."""
+    try:
+        alignments = [x.model_dump(mode="json") for x in get_pool().alignments()]
+    except httpx.HTTPError:
+        alignments = []
+    payload = {"subgraphs": [sg.model_dump(mode="json") for sg in subgraphs], "alignments": alignments}
+    data = json.dumps(payload, ensure_ascii=False)
     # Embedded in a <script> block: keep any "</script>" or "<!--" in the data inert.
     data = data.replace("<", "\\u003c")
     template = Path(__file__).with_name("viewer.html").read_text()
@@ -243,6 +248,58 @@ def cmd_pool(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_candidates(args: argparse.Namespace) -> int:
+    pool = get_pool()
+    found = align.candidates(pool.subgraphs(), pool.alignments(), args.budget, args.min_plausibility, args.type)
+    _emit(found)
+    return 0
+
+
+def cmd_align_add(args: argparse.Namespace) -> int:
+    pool = get_pool()
+    raw = sys.stdin.read() if args.file == "-" else Path(args.file).read_text()
+    try:
+        verdicts = [Alignment.model_validate(item) for item in json.loads(raw)]
+    except ValidationError as exc:
+        _emit({"ok": False, "errors": _errors(exc)})
+        return 1
+    if errors := align.check_alignments(pool.subgraphs(), verdicts):
+        _emit({"ok": False, "errors": errors})
+        return 1
+    pool.add_alignments(verdicts)
+    _emit({"ok": True, "added": len(verdicts), "verdicts": Counter(v.verdict.value for v in verdicts)})
+    return 0
+
+
+def cmd_align_list(args: argparse.Namespace) -> int:
+    for x in get_pool().alignments():
+        print(f"{x.verdict.value:9} {x.confidence:.2f}  {x.a}  ~  {x.b}")
+        print(f"          {x.rationale}")
+    return 0
+
+
+def _print_observations(report: dict) -> None:
+    print("pool:", report["pool"])
+    for title, key in [
+        ("Conditions reached independently from different questions", "bridging_conditions"),
+        ("Failures sharing a condition across papers", "shared_condition_failures"),
+        ("Results that may bear on another question's hypothesis", "cross_bearing"),
+        ("Contradictions, and the conditions that differ", "contradictions_by_regime"),
+        ("Hypotheses linked across questions", "linked_hypotheses"),
+        ("Thinly evidenced hypotheses (fewer than 2 papers)", "thinly_evidenced_hypotheses"),
+    ]:
+        print(f"\n## {title} ({len(report[key])})")
+        for item in report[key]:
+            print("-", json.dumps(item, ensure_ascii=False))
+
+
+def cmd_observe(args: argparse.Namespace) -> int:
+    pool = get_pool()
+    report = align.observe(pool.subgraphs(), pool.alignments(), args.min_confidence)
+    _emit(report) if args.format == "json" else _print_observations(report)
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="scigraph", description=__doc__.splitlines()[0])
     sub = parser.add_subparsers(dest="command", required=True)
@@ -302,6 +359,25 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("slug", nargs="?")
     p.add_argument("--list", action="store_true")
     p.set_defaults(func=cmd_pool)
+
+    p = sub.add_parser("candidates", help="rank unjudged cross-subgraph node pairs in the pool")
+    p.add_argument("--budget", type=int, default=40, help="how many pairs to propose")
+    p.add_argument("--min-plausibility", type=float, default=0.3)
+    p.add_argument("--type", choices=["hypothesis", "experiment", "condition", "observation", "interpretation"])
+    p.set_defaults(func=cmd_candidates)
+
+    al = sub.add_parser("align", help="record or list alignment verdicts")
+    al_sub = al.add_subparsers(dest="align_command", required=True)
+    p = al_sub.add_parser("add", help="validate a JSON list of verdicts and store it in the pool")
+    p.add_argument("file", help="JSON file, or - for stdin")
+    p.set_defaults(func=cmd_align_add)
+    p = al_sub.add_parser("list", help="print the pool's alignment verdicts")
+    p.set_defaults(func=cmd_align_list)
+
+    p = sub.add_parser("observe", help="read candidate observations off the aligned pool")
+    p.add_argument("--min-confidence", type=float, default=0.7, help="'same' verdicts below this are ignored")
+    p.add_argument("--format", choices=["text", "json"], default="text")
+    p.set_defaults(func=cmd_observe)
     return parser
 
 

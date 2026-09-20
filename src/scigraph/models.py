@@ -166,3 +166,37 @@ class Subgraph(BaseModel):
     papers: dict[str, Paper] = {}
     nodes: dict[str, Node] = {}
     edges: list[Edge] = []
+
+
+class Verdict(StrEnum):
+    """The judged relationship between two nodes from different subgraphs."""
+
+    SAME = "same"
+    BROADER = "broader"  # a is broader than b
+    NARROWER = "narrower"  # a is narrower than b
+    RELATED = "related"
+    DIFFERENT = "different"
+
+
+class Alignment(BaseModel):
+    """A judgement linking nodes across subgraphs. Nodes are never merged: the link
+    carries its own confidence and rationale, so it can be inspected and revised."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    a: str = Field(pattern=r"^[a-z0-9\-]+/.+$", description="<slug>/<node id>")
+    b: str = Field(pattern=r"^[a-z0-9\-]+/.+$")
+    verdict: Verdict
+    confidence: float = Field(ge=0.0, le=1.0)
+    rationale: str = Field(min_length=10)
+    judged: str = Field(default_factory=_now)
+
+    @model_validator(mode="after")
+    def _canonical_order(self) -> Alignment:
+        if self.a.split("/", 1)[0] == self.b.split("/", 1)[0]:
+            raise ValueError(f"{self.a} and {self.b} are in the same subgraph")
+        if self.a > self.b:
+            self.a, self.b = self.b, self.a
+            flip = {Verdict.BROADER: Verdict.NARROWER, Verdict.NARROWER: Verdict.BROADER}
+            self.verdict = flip.get(self.verdict, self.verdict)
+        return self

@@ -5,10 +5,10 @@ import pytest
 
 import threading
 
-from scigraph import main, openalex, store
+from scigraph import align, main, openalex, store
 from scigraph.cli import make_server
 from scigraph.lint import lint
-from scigraph.models import Batch, Paper, Subgraph
+from scigraph.models import Alignment, Batch, Paper, Subgraph
 from scigraph.pool import HttpPool, LocalPool
 
 ABSTRACT = (
@@ -288,10 +288,93 @@ def test_view_server_rerenders_on_each_request():
     threading.Thread(target=server.serve_forever, daemon=True).start()
     url = f"http://127.0.0.1:{server.server_address[1]}/"
     try:
-        assert '"subgraphs": []' in httpx.get(url).text
+        assert '"subgraphs": [], "alignments": []' in httpx.get(url).text
         store.save_subgraph(Subgraph(slug="later", question="Added after the server started?"))
         assert "Added after the server started?" in httpx.get(url).text
         assert httpx.get(url + "etc/passwd").status_code == 404
     finally:
         server.shutdown()
         server.server_close()
+
+
+def second_subgraph():
+    """A different question whose experiment shares the hypoxia condition under another name."""
+    store.save_paper(Paper(id="W5", title="Drug Y in low oxygen", abstract="Under low oxygen, drug Y failed to slow growth."))
+    sg = Subgraph(slug="y", question="Does Y work?")
+    report = store.add_batch(sg, Batch.model_validate({
+        "nodes": [
+            {"id": "h:y-slows-growth", "type": "hypothesis", "label": "Y slows tumour growth"},
+            {"id": "e:y-low-oxygen", "type": "experiment", "label": "Y under low oxygen"},
+            {"id": "c:low-oxygen", "type": "condition", "label": "Low oxygen (hypoxic) culture conditions"},
+            {"id": "c:normoxia", "type": "condition", "label": "Normal oxygen, not hypoxic conditions"},
+            {"id": "o:y-no-effect", "type": "observation", "outcome": "negative", "label": "Y failed to slow growth"},
+        ],
+        "edges": [
+            {"source": "e:y-low-oxygen", "target": "h:y-slows-growth", "relation": "tests", "confidence": 0.9,
+             "asserted_by": "author", "provenance": prov("drug Y failed to slow growth", "W5")},
+            {"source": "e:y-low-oxygen", "target": "c:low-oxygen", "relation": "performed_under", "confidence": 0.9,
+             "asserted_by": "author", "provenance": prov("Under low oxygen", "W5")},
+            {"source": "e:y-low-oxygen", "target": "o:y-no-effect", "relation": "yields", "confidence": 0.9,
+             "asserted_by": "author", "provenance": prov("drug Y failed to slow growth", "W5")},
+        ],
+    }))
+    assert report.ok, report.errors
+    return sg
+
+
+def test_candidates_propose_cross_subgraph_pairs_and_skip_judged_ones():
+    first = Subgraph(slug="q", question="Does X work?")
+    store.add_batch(first, batch())
+    found = align.candidates([first, second_subgraph()])
+    pairs = {(c["a"], c["b"]) for c in found}
+    assert ("q/c:hypoxia", "y/c:low-oxygen") in pairs
+    assert ("q/h:x-reduces-growth", "y/h:y-slows-growth") in pairs  # hypotheses are always proposed
+    assert all(c["a"].split("/")[0] != c["b"].split("/")[0] for c in found)
+    assert not any("e:" in c["a"] and "c:" in c["b"] for c in found)  # same type only
+
+    judged = [Alignment(a="q/c:hypoxia", b="y/c:low-oxygen", verdict="same", confidence=0.9, rationale="Both mean hypoxic culture.")]
+    assert ("q/c:hypoxia", "y/c:low-oxygen") not in {(c["a"], c["b"]) for c in align.candidates([first, second_subgraph()], judged)}
+
+
+def test_alignment_verdicts_are_validated_and_canonicalised():
+    flipped = Alignment(a="y/c:low-oxygen", b="q/c:hypoxia", verdict="broader", confidence=0.8, rationale="Low oxygen covers more.")
+    assert (flipped.a, flipped.verdict) == ("q/c:hypoxia", "narrower")
+    with pytest.raises(ValueError, match="same subgraph"):
+        Alignment(a="q/c:a", b="q/c:b", verdict="same", confidence=0.9, rationale="Same subgraph, so not allowed.")
+    first = Subgraph(slug="q", question="Does X work?")
+    store.add_batch(first, batch())
+    bad = [Alignment(a="q/c:hypoxia", b="y/e:y-low-oxygen", verdict="same", confidence=0.9, rationale="A condition is not an experiment."),
+           Alignment(a="q/c:hypoxia", b="y/c:missing", verdict="same", confidence=0.9, rationale="Points at nothing in the pool.")]
+    errors = "\n".join(align.check_alignments([first, second_subgraph()], bad))
+    assert "can only be 'related'" in errors and "not in the pool" in errors
+
+
+def test_observe_finds_failures_sharing_an_aligned_condition():
+    first = Subgraph(slug="q", question="Does X work?")
+    store.add_batch(first, batch())
+    graphs = [first, second_subgraph()]
+    assert align.observe(graphs, [])["shared_condition_failures"] == []
+
+    same = Alignment(a="q/c:hypoxia", b="y/c:low-oxygen", verdict="same", confidence=0.9, rationale="Both mean hypoxic culture.")
+    report = align.observe(graphs, [same])
+    [failure] = report["shared_condition_failures"]
+    assert failure["subgraphs"] == ["q", "y"] and len(failure["observations"]) == 2
+    [bridge] = report["bridging_conditions"]
+    assert set(bridge["experiments"]) == {"q", "y"}
+    # a 'same' below the threshold joins nothing
+    same.confidence = 0.5
+    assert align.observe(graphs, [same])["shared_condition_failures"] == []
+
+
+def test_alignments_round_trip_through_the_local_pool(capsys):
+    first = Subgraph(slug="q", question="Does X work?")
+    store.add_batch(first, batch())
+    pool = LocalPool()
+    pool.push(first)
+    pool.push(second_subgraph())
+    assert main(["candidates", "--type", "condition"]) == 0
+    assert "q/c:hypoxia" in capsys.readouterr().out
+    pool.add_alignments([Alignment(a="q/c:hypoxia", b="y/c:low-oxygen", verdict="same", confidence=0.9, rationale="Both mean hypoxic culture.")])
+    assert [x.verdict for x in pool.alignments()] == ["same"]
+    assert main(["observe"]) == 0 and main(["align", "list"]) == 0
+    assert "Both mean hypoxic culture." in capsys.readouterr().out
