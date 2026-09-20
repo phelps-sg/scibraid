@@ -102,14 +102,52 @@ def cmd_paper_get(args: argparse.Namespace) -> int:
     failed = 0
     for identifier in args.identifiers:
         try:
-            paper = openalex.get(identifier)
+            paper, note = openalex.get(identifier)
         except openalex.OpenAlexError as exc:
             print(f"{identifier}: {exc}", file=sys.stderr)
             failed += 1
             continue
         store.save_paper(_keeping_text_source(paper))
-        print(f"{paper.id}  {paper.year}  [{_access(paper)}]  {paper.title}")
+        print(f"{paper.id}  {paper.year}  [{_access(paper)}]  {paper.title}" + (f"\n    note: {note}" if note else ""))
     return 1 if failed else 0
+
+
+def cmd_paper_reid(args: argparse.Namespace) -> int:
+    if store.load_paper(args.old) is None:
+        print(f"paper {args.old!r} is not cached", file=sys.stderr)
+        return 1
+    try:
+        paper, note = openalex.get(args.identifier or args.old)
+    except openalex.OpenAlexError as exc:
+        print(f"{args.old}: {exc}", file=sys.stderr)
+        return 1
+    held = store.load_paper(args.old)
+    if not args.force and not openalex._alike(held.title, paper.title):
+        _emit({"ok": False, "old": args.old, "new": paper.id, "errors": [
+            f"the record found is titled {paper.title!r}, not {held.title!r}; name the right work as a second argument, or pass --force"]})
+        return 1
+    rewritten, errors = store.reidentify_paper(args.old, paper)
+    if errors:
+        _emit({"ok": False, "old": args.old, "new": paper.id, "errors": errors})
+        return 1
+    # Leads name the papers they consulted by id; pooled subgraphs are copies and need pooling again.
+    pool = get_pool()
+    changed = []
+    for lead in pool.leads():
+        before = lead.model_dump_json()
+        for check in lead.checks:
+            check.sources = [paper.id if src == args.old else src for src in check.sources]
+        lead.known_in = [text.replace(args.old, paper.id) for text in lead.known_in]
+        if lead.posed_in is not None:
+            lead.posed_in = [text.replace(args.old, paper.id) for text in lead.posed_in]
+        if lead.model_dump_json() != before:
+            changed.append(lead)
+    if changed:
+        pool.add_leads(changed)
+    pooled = {sg.slug for sg in pool.subgraphs()}
+    _emit({"ok": True, "old": args.old, "new": paper.id, "note": note, "subgraphs_rewritten": rewritten,
+           "pool_again": sorted(pooled & set(rewritten)), "leads_updated": [lead.id for lead in changed]})
+    return 0
 
 
 def cmd_fetch(args: argparse.Namespace) -> int:
@@ -130,7 +168,7 @@ def cmd_fetch(args: argparse.Namespace) -> int:
             continue
         if paper.oa_status is None and paper.id.startswith("W"):
             try:  # cached before open-access locations were recorded
-                paper = _keeping_text_source(openalex.get(paper.id))
+                paper = _keeping_text_source(openalex.get(paper.id)[0])
             except openalex.OpenAlexError:
                 pass
         if results and results[-1].get("url"):
@@ -728,6 +766,12 @@ def build_parser() -> argparse.ArgumentParser:
     p = paper_sub.add_parser("get", help="cache a paper from OpenAlex by DOI, arXiv id or URL, PubMed id or OpenAlex id")
     p.add_argument("identifiers", nargs="+")
     p.set_defaults(func=cmd_paper_get)
+
+    p = paper_sub.add_parser("reid", help="give a hand-added paper its OpenAlex record, in every subgraph and lead that cites it")
+    p.add_argument("old", help="the id it was added under, e.g. arxiv:2201.11903")
+    p.add_argument("identifier", nargs="?", help="DOI, arXiv id or OpenAlex id to look up (default: the old id)")
+    p.add_argument("--force", action="store_true", help="accept a record whose title differs from the one held")
+    p.set_defaults(func=cmd_paper_reid)
 
     p = paper_sub.add_parser("add", help="cache a paper from a JSON file (non-OpenAlex sources)")
     p.add_argument("file")

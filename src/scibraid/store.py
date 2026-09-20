@@ -311,3 +311,54 @@ def merge_nodes(sg: Subgraph, keep: str, drop: str) -> list[str]:
         first.confidence = max(first.confidence, edge.confidence)
     sg.edges = edges
     return []
+
+
+def reidentify_paper(old: str, paper: Paper) -> tuple[list[str], list[str]]:
+    """Give a cached paper its proper record: every local subgraph that cites `old` cites `paper` instead.
+
+    The full text moves with it, since recorded passages were checked against that text. If the new
+    id already holds a different text, the passages must all be found in it, or nothing is changed.
+    Returns (slugs rewritten, errors).
+    """
+    if old == paper.id:
+        return [], [f"{old} already has that id"]
+    citing = [sg for sg in list_subgraphs() if old in sg.papers]
+    old_text, new_text = load_text(old), load_text(paper.id)
+    if old_text is not None and new_text is not None and old_text != new_text:
+        passages = {
+            p.passage
+            for sg in citing
+            for item in [*sg.nodes.values(), *sg.edges]
+            for p in item.provenance
+            if p.paper_id == old and p.location != "abstract"
+        }
+        if lost := [q for q in passages if not passage_in_text(q, new_text)]:
+            return [], [f"{paper.id} already holds a full text in which {len(lost)} recorded passage(s) are not found, e.g. {lost[0][:80]!r}"]
+    elif old_text is not None:
+        attach_text(paper.id, old_text)
+        paper.text_source = paper.text_source or (load_paper(old) or paper).text_source
+    # Passages quoted from the abstract were checked against the old record's wording of it.
+    if (held := load_paper(old)) is not None and held.abstract:
+        quoted = {
+            p.passage
+            for sg in citing
+            for item in [*sg.nodes.values(), *sg.edges]
+            for p in item.provenance
+            if p.paper_id == old and p.location == "abstract"
+        }
+        if not paper.abstract or not all(passage_in_text(q, paper.abstract) for q in quoted):
+            paper.abstract = held.abstract
+    save_paper(paper)
+    for sg in citing:
+        with subgraph_lock(sg.slug):
+            sg = load_subgraph(sg.slug)
+            del sg.papers[old]
+            sg.papers[paper.id] = paper
+            for item in [*sg.nodes.values(), *sg.edges]:
+                for prov in item.provenance:
+                    if prov.paper_id == old:
+                        prov.paper_id = paper.id
+            save_subgraph(sg)
+    for folder, suffix in (("papers", ".json"), ("fulltext", ".txt")):
+        (home() / folder / f"{_safe(old)}{suffix}").unlink(missing_ok=True)
+    return [sg.slug for sg in citing], []

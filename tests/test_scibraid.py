@@ -22,6 +22,9 @@ ABSTRACT = (
 def scibraid_home(tmp_path, monkeypatch):
     monkeypatch.setenv("SCIBRAID_HOME", str(tmp_path))
     monkeypatch.delenv("SCIBRAID_POOL_URL", raising=False)
+    monkeypatch.delenv("OPENALEX_API_KEY", raising=False)
+    monkeypatch.setattr(openalex, "ARXIV_PAUSE", 0)
+    monkeypatch.setenv("OPENALEX_API_KEY_FILE", str(tmp_path / "no-key"))
     for name, value in {"SCIBRAID_PERSON": "Ada", "SCIBRAID_AGENT": "test-harness", "SCIBRAID_MODEL": "model-a", "SCIBRAID_SESSION": "s1"}.items():
         monkeypatch.setenv(name, value)
     store.save_paper(Paper(id="W1", title="Compound X under hypoxia", abstract=ABSTRACT))
@@ -277,7 +280,7 @@ def test_a_paper_is_fetched_by_whatever_identifier_is_to_hand():
         return httpx.Response(429 if "spent" in request.url.path else 404, json={})
 
     client = httpx.Client(transport=httpx.MockTransport(handler))
-    assert openalex.get("10.1234/abc", client).id == "W99"
+    assert openalex.get("10.1234/abc", client)[0].id == "W99"
     with pytest.raises(openalex.OpenAlexError, match="no such work"):
         openalex.get("10.1234/missing", client)
     with pytest.raises(openalex.OpenAlexError, match="OPENALEX_API_KEY"):
@@ -1018,3 +1021,77 @@ def test_fetch_attaches_text_records_its_source_and_keeps_text_already_held(monk
 
     assert main(["fetch", "W2", "--force"]) == 0
     assert "under hypoxia" in store.load_text("W2")
+
+
+def test_the_openalex_key_comes_from_the_environment_or_a_file(tmp_path, monkeypatch):
+    assert openalex.api_key() is None
+    (tmp_path / "no-key").write_text("from-file\n")
+    assert openalex.api_key() == "from-file"
+    monkeypatch.setenv("OPENALEX_API_KEY", "from-env")
+    assert openalex.api_key() == "from-env"
+
+
+ATOM = """<feed xmlns="http://www.w3.org/2005/Atom"><entry><title>Chain-of-Thought Prompting Elicits
+ Reasoning</title><published>2022-01-28T00:00:00Z</published><summary>We explore.</summary>
+<author><name>Jason Wei</name></author></entry></feed>"""
+
+
+def test_an_arxiv_id_is_checked_against_arxivs_own_title():
+    junk = {**WORK, "id": "https://openalex.org/W1", "title": "Pillars of a Systemic Revolution"}
+    real = {**WORK, "id": "https://openalex.org/W2", "title": "Chain-of-thought prompting elicits reasoning", "open_access": {"oa_status": "closed"}, "best_oa_location": None}
+    answers = {"by_title": [real]}
+
+    def handler(request):
+        if request.url.host == "export.arxiv.org":
+            return httpx.Response(200, text=ATOM)
+        if request.url.path.endswith("doi:10.48550/arXiv.2201.11903"):
+            return httpx.Response(200, json=junk)
+        return httpx.Response(200, json={"results": answers["by_title"]})
+
+    client = httpx.Client(transport=httpx.MockTransport(handler))
+    paper, note = openalex.get("arxiv:2201.11903", client)
+    assert paper.id == "W2" and "found by title" in note
+    assert (paper.arxiv_id, paper.oa_status) == ("2201.11903", "green")
+
+    answers["by_title"] = []
+    paper, note = openalex.get("arxiv:2201.11903", client)
+    assert paper.id == "arxiv:2201.11903" and paper.authors == ["Jason Wei"] and paper.year == 2022
+    assert paper.title == "Chain-of-Thought Prompting Elicits Reasoning" and "made from arXiv" in note
+
+
+def test_a_hand_added_paper_takes_its_openalex_record_everywhere(monkeypatch, capsys):
+    store.save_paper(Paper(id="arxiv:2101.00001", title="Compound X under hypoxia", abstract=ABSTRACT))
+    store.attach_text("arxiv:2101.00001", "Methods. Mice were kept at 1% oxygen throughout.")
+    data = batch().model_dump()
+    for item in data["nodes"] + data["edges"]:
+        for p in item["provenance"]:
+            p["paper_id"] = "arxiv:2101.00001"
+    data["edges"][0]["provenance"] = prov("Mice were kept at 1% oxygen", "arxiv:2101.00001", "methods")
+    sg = Subgraph(slug="q", question="Does X work?")
+    assert store.add_batch(sg, Batch.model_validate(data)).ok
+    store.save_subgraph(sg)
+    pool = LocalPool()
+    pool.push(sg)
+    pool.add_leads([Lead(id="a-lead", claim="Compound X fails only when oxygen is low.", kind="other", confidence=0.3, nodes=["q/c:hypoxia", "q/o:no-reduction"],
+                         checks=[{"question": "Is the premise in the source?", "finding": "Yes, in the methods.", "sources": ["arxiv:2101.00001"]}])])
+    record = Paper(id="W99", title="Compound X under hypoxia", abstract="A different wording of the abstract.", oa_status="green")
+    monkeypatch.setattr(openalex, "get", lambda identifier: (record, ""))
+
+    wrong = Paper(id="W13", title="Pillars of a Systemic Revolution")
+    monkeypatch.setattr(openalex, "get", lambda identifier: (wrong, ""))
+    assert main(["paper", "reid", "arxiv:2101.00001"]) == 1 and "not 'Compound X under hypoxia'" in capsys.readouterr().out
+    monkeypatch.setattr(openalex, "get", lambda identifier: (record, ""))
+
+    assert main(["paper", "reid", "arxiv:2101.00001"]) == 0
+    out = json.loads(capsys.readouterr().out)
+    assert (out["new"], out["subgraphs_rewritten"], out["pool_again"], out["leads_updated"]) == ("W99", ["q"], ["q"], ["a-lead"])
+
+    sg = store.load_subgraph("q")
+    assert set(sg.papers) == {"W99"}
+    assert {p.paper_id for item in [*sg.nodes.values(), *sg.edges] for p in item.provenance} == {"W99"}
+    assert store.load_paper("arxiv:2101.00001") is None and store.load_text("arxiv:2101.00001") is None
+    assert "1% oxygen" in store.load_text("W99")
+    assert store.load_paper("W99").abstract == ABSTRACT  # the wording the quoted passages were checked against
+    assert pool.leads()[0].checks[0].sources == ["W99"]
+    # Everything recorded still verifies under the new id.
+    assert store.add_batch(Subgraph(slug="r", question="?"), Batch.model_validate(json.loads(json.dumps(data).replace("arxiv:2101.00001", "W99")))).ok

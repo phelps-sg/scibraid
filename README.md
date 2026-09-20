@@ -55,9 +55,9 @@ When a question reaches the point where the existing literature cannot settle it
 
 ## How it works
 
-There are no language-model calls and no API keys in the Python code itself. The only model it runs is the optional local embedding model. The agent harness, currently Claude Code, does the reading, extraction and judgement through three skills. The `scibraid` command-line tool handles the deterministic parts:
+There are no language-model calls and no model API keys in the Python code itself. The only model it runs is the optional local embedding model. The agent harness, currently Claude Code, does the reading, extraction and judgement through three skills and one subagent that extracts a single paper. The `scibraid` command-line tool handles the deterministic parts:
 
-- literature search
+- literature search and retrieval of open full text
 - schema validation
 - quote verification
 - storage
@@ -117,6 +117,8 @@ git clone <this repo> scibraid && cd scibraid
 uv tool install --editable ".[embeddings]"
 ```
 
+Literature search uses [OpenAlex](https://openalex.org/), which needs no account. Requests without a key share one free daily budget per IP address, and a day of building subgraphs can exhaust it, so get a free key and either set `OPENALEX_API_KEY` or put the key in `~/.openalex-tok` (another path can be named in `OPENALEX_API_KEY_FILE`). A file is the easier of the two, because every session and subagent on the machine finds it.
+
 The `embeddings` extra adds a small local embedding model (fastembed, about 70 MB on first use, no API key) to help the alignment stage find matching conditions that share no words. Leave it off and the system still works using word overlap.
 
 Inside this repository Claude Code finds the skills and the extractor agent through `.claude/skills` and `.claude/agents`. To use them elsewhere, load the repository as a plugin:
@@ -127,7 +129,7 @@ claude --plugin-dir /path/to/scibraid
 
 ## Use
 
-Ask a question. The agent searches, reads and extracts the papers, checks its work with `scibraid lint`, reports what the evidence shows, and can pool the result with other reviews.
+Ask a question. The agent frames the hypotheses in contention, searches, fetches open full text, hands each paper to an extractor subagent, and then draws the links that span papers itself. It checks the result with `scibraid lint`, reports what the evidence shows, and can pool it with other reviews.
 
 ```text
 /evidence-subgraph why is the ego-depletion effect still disputed?
@@ -165,7 +167,10 @@ The tools can also be driven by hand. A batch is a JSON file of nodes and links;
 
 ```bash
 scibraid search "ego depletion replication" --limit 10
+scibraid search "replication" --citing W2499154041   # among the works that cite a paper
+scibraid paper get 10.1177/1745691616652873          # a paper you already know of, by DOI or arXiv id
 scibraid paper show W2499154041
+scibraid fetch W2499154041                           # attach open full text, if there is any
 scibraid new ego-depletion --question "Why is ego depletion still disputed?"
 scibraid add ego-depletion batch.json
 scibraid lint ego-depletion
@@ -192,7 +197,8 @@ Graphs can be filtered by node type, who asserted a relationship and confidence.
 |---|---|
 | `search "<query>"` | Search OpenAlex by title and abstract, and cache the results with their abstracts and whether an open copy exists |
 | `search --citing <id>` / `--references-of <id>` | Search among the works that cite a paper, or among its references |
-| `paper get <identifier>` | Cache a paper's OpenAlex record by DOI, arXiv id or URL, PubMed id or OpenAlex id |
+| `paper get <identifier>` | Cache a paper's OpenAlex record by DOI, arXiv id or URL, PubMed id or OpenAlex id. An arXiv id is checked against arXiv's own title |
+| `paper reid <old id> [identifier]` | Give a hand-added paper its OpenAlex record in every subgraph and lead that cites it, keeping the text its passages were checked against |
 | `paper show\|add\|text` | Read a paper, add one OpenAlex lacks, or attach full text by hand |
 | `fetch <id ...> \| --subgraph <slug>` | Find an open copy (arXiv HTML, Europe PMC, PDF) and attach its full text |
 | `new <slug> --question "..."` | Start a subgraph |
@@ -296,10 +302,12 @@ The current system is a research prototype.
 - Builders are recorded per subgraph, not per link, so a subgraph that two readers contributed to counts as the weaker of the two everywhere.
 - No domain expert has audited the example extractions.
 - The example comparison with related work is based on the author's knowledge and a brief search rather than a systematic survey.
-- OpenAlex search can miss relevant papers, and metadata can contain errors. BibTeX is generated from that metadata: author lists are stored cut at eight names (the entry then ends "and others"), and venues and entry types should be checked before use.
+- Word search finds a minority of the relevant papers. Three hand-written queries per question, top 25 results each, returned 20 of the 62 papers the six example subgraphs cite; the rest were found through reference lists and the agent's own knowledge. Following citations (`--citing`, `--references-of`) is the remedy the skill prescribes, and its effect has not been measured.
+- OpenAlex's default search also matches full text, which it holds only for open papers: on the same queries 2% of its results were closed, against 19% when matching on title and abstract, which is now the default. Recall was the same either way (18 and 20 of 62).
+- OpenAlex files a few unrelated records under the arXiv DOIs of well-known papers (2 of the 22 arXiv ids tried, one of them Wei et al.'s chain-of-thought paper). `paper get` checks an arXiv id against arXiv's own title and then looks for the paper by title. A DOI that is not an arXiv DOI is not checked.
+- OpenAlex metadata can contain errors. BibTeX is generated from that metadata: author lists are stored cut at eight names (the entry then ends "and others"), and venues and entry types should be checked before use.
 - Full text comes only from open copies. A closed paper is found by search and can be extracted from its abstract, but its body is unread unless someone attaches the text by hand, so `open` and "not found posed anywhere" describe the literature that could be read. The share that is closed varies widely by field and rises with age; it was about two thirds for one materials-science query.
 - Text taken from a PDF loses section headings and mangles mathematics. Some publishers refuse automated requests even for open papers, and `fetch` then reports the failure.
-- Without a key, OpenAlex requests share one free daily budget per IP address, and a day of heavy use exhausts it. A free key (`OPENALEX_API_KEY`) has its own budget.
 - An observation inherits every condition recorded for its experiment, including ones that do not apply to it, which produces spurious shared-condition patterns.
 - A condition that a paper used but the agent did not record looks the same as a condition that was never tested, which produces spurious "experiments that have not been run".
 - An observation's outcome is relative to what its own experiment was looking for, so two "negative" results can point in opposite directions. `observe` treats them as comparable.
