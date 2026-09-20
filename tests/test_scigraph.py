@@ -91,6 +91,22 @@ def test_passage_matching_ignores_typography_and_allows_ordered_elision():
     assert not store.passage_in_text("...", ABSTRACT)
 
 
+def test_passage_cut_off_mid_word_is_rejected():
+    assert store.passage_in_text("no reduction in tumour volume", ABSTRACT)
+    assert not store.passage_in_text("no reduction in tumour vol", ABSTRACT)
+    assert not store.passage_in_text("eated animals showed no reduction", ABSTRACT)
+    assert not store.passage_in_text("treated ani ... tumour volume", ABSTRACT)
+    # punctuation at either end is a boundary, and a later whole-word match still counts
+    assert store.passage_in_text("in mice. Under hypoxic conditions,", ABSTRACT)
+    assert store.passage_in_text("on", "reduction depends on oxygen")
+
+    sg = Subgraph(slug="q", question="Does X work?")
+    bad = batch()
+    bad.edges[0].provenance[0].passage = "We tested whether compound X reduces tumour gro"
+    [error] = store.add_batch(sg, bad).errors
+    assert "starts or ends mid-word" in error
+
+
 def test_add_applies_valid_batch_and_marks_passages_verified():
     sg = Subgraph(slug="q", question="Does X work?")
     report = store.add_batch(sg, batch())

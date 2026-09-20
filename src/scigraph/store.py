@@ -55,11 +55,25 @@ def _norm(text: str) -> str:
     return re.sub(r"\s+", " ", text).strip().casefold()
 
 
-def passage_in_text(passage: str, text: str) -> bool:
+def _find(haystack: str, fragment: str, start: int, whole_words: bool) -> int:
+    """Index of the first occurrence at or after start, optionally only on word boundaries."""
+    while (found := haystack.find(fragment, start)) >= 0:
+        end = found + len(fragment)
+        cut_start = fragment[0].isalnum() and found > 0 and haystack[found - 1].isalnum()
+        cut_end = fragment[-1].isalnum() and end < len(haystack) and haystack[end].isalnum()
+        if not whole_words or not (cut_start or cut_end):
+            return found
+        start = found + 1
+    return -1
+
+
+def passage_in_text(passage: str, text: str, whole_words: bool = True) -> bool:
     """True if the passage is a verbatim quote of the text.
 
     Whitespace, case and quote/dash style are ignored. An ellipsis in the passage
-    may elide text, but the fragments must appear in order.
+    may elide text, but the fragments must appear in order. Each fragment must
+    start and end on a word boundary of the text: a quote cut off mid-word is a
+    sign it was copied from truncated output rather than read.
     """
     haystack = _norm(text)
     pos = 0
@@ -67,11 +81,18 @@ def passage_in_text(passage: str, text: str) -> bool:
     if not fragments:
         return False
     for fragment in fragments:
-        found = haystack.find(fragment, pos)
+        found = _find(haystack, fragment, pos, whole_words)
         if found < 0:
             return False
         pos = found + len(fragment)
     return True
+
+
+def cut_mid_word(paper_id: str, passage: str) -> bool:
+    """True if the passage fails verification only because it starts or ends mid-word."""
+    paper = load_paper(paper_id)
+    sources = [paper.abstract if paper else None, load_text(paper_id)]
+    return any(s and passage_in_text(passage, s, whole_words=False) for s in sources)
 
 
 def verify(paper_id: str, passage: str, location: str) -> bool | None:
@@ -169,10 +190,15 @@ def add_batch(sg: Subgraph, batch: Batch) -> AddReport:
             papers[paper.id] = paper
             prov.verified = verify(prov.paper_id, prov.passage, prov.location)
             if prov.verified is False:
-                report.errors.append(
-                    f"{name}: passage is not a verbatim quote of {prov.paper_id}: "
-                    f"{prov.passage[:80]!r}"
+                problem = (
+                    "passage starts or ends mid-word; quote whole words from"
+                    if cut_mid_word(prov.paper_id, prov.passage)
+                    else "passage is not a verbatim quote of"
                 )
+                shown = prov.passage if len(prov.passage) <= 90 else (
+                    f"{prov.passage[:45]} ... {prov.passage[-40:]}"
+                )
+                report.errors.append(f"{name}: {problem} {prov.paper_id}: {shown!r}")
             elif prov.verified is None:
                 report.warnings.append(f"{name}: no text held for {prov.paper_id}; passage unverified")
 

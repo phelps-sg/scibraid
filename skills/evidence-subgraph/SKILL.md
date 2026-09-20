@@ -104,7 +104,9 @@ at or below 0.85.
 
 **Passages are verbatim.** Copy the quote exactly from the abstract or attached
 text; `...` may elide words within a quote. `scigraph add` rejects a passage that
-is not in the text it holds. When that happens, re-read and fix the quote -
+is not in the text it holds, or that starts or ends mid-word (the mark of a
+quote copied from truncated output rather than read; go back to the source for
+the whole sentence). When that happens, re-read and fix the quote -
 never paraphrase into quotation marks, and never weaken the check by quoting
 two words. Quote enough that a reader sees the relationship in the passage.
 
