@@ -470,11 +470,17 @@ def _write_draft(directory: Path, state: dict) -> dict:
     papers.update({pid: p for pid in state.get("extra", []) if (p := store.load_paper(pid)) is not None})
     state["keys"] = draft.assign_keys(state.get("keys", {}), list(papers.values()))
     embedder = embed.default_embedder() if state.get("focus") else None
-    text = draft.dossier(subgraphs, pool.alignments(), pool.leads(), state["keys"], state.get("focus", ""), embedder)
-    (directory / "dossier.md").write_text(text)
+    files = draft.dossier(subgraphs, pool.alignments(), pool.leads(), state["keys"], state.get("focus", ""), embedder)
+    for stale in directory.glob("evidence-*.md"):
+        stale.unlink()
+    for name, content in files.items():
+        (directory / name).write_text(content)
+    text = "".join(files.values())
     (directory / "refs.bib").write_text(draft.bib(state["keys"], papers))
     (directory / "draft.json").write_text(json.dumps(state, indent=2))
-    return {"dossier": str(directory / "dossier.md"), "dossier_words": len(text.split()), "references": len(state["keys"])}
+    return {"dossier": str(directory / "dossier.md"), "overview_words": len(files["dossier.md"].split()),
+            "evidence_files": {name: len(content.split()) for name, content in files.items() if name != "dossier.md"},
+            "dossier_words": len(text.split()), "references": len(state["keys"])}
 
 
 def cmd_draft_start(args: argparse.Namespace) -> int:

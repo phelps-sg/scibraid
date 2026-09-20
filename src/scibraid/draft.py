@@ -164,11 +164,21 @@ def _cut(text: str, limit: int) -> str:
 
 
 def dossier(subgraphs: list[Subgraph], alignments: list[Alignment], leads: list[Lead], keys: dict[str, str],
-            focus: str = "", embedder: Embedder | None = None) -> str:
+            focus: str = "", embedder: Embedder | None = None) -> dict[str, str]:
+    """The files of a dossier: `dossier.md`, the overview, and `evidence-<slug>.md` for each subgraph.
+
+    A pool's evidence on a topic runs to tens of thousands of words, more than a writer can hold at
+    once, so the overview says what there is and the evidence files are read a hypothesis at a time.
+    """
     slugs = {sg.slug for sg in subgraphs}
+    files: dict[str, str] = {}
     out: list[str] = ["# Dossier", ""]
-    out += ["Everything the write-up may assert is here, stated once, with the citation key of the paper it rests on "
-            "(`[@key]`, to be written `\\citep{key}`). A claim that is not here needs a source added with `scibraid draft cite`.", ""]
+    out += ["Everything the write-up may assert is in these files, stated once, with the citation key of the paper it rests on "
+            "(`[@key]`, to be written `\\citep{key}`). A claim that is not here needs a source added with `scibraid draft cite`.", "",
+            "This file is the overview: how the review was made, every hypothesis with its balance of evidence, how hypotheses in "
+            "different subgraphs bear on each other, the leads, and the citation keys. The evidence itself (each observation with its "
+            "conditions and the passage it rests on) is in `evidence-<slug>.md`, one file per subgraph, under a heading for each "
+            "hypothesis: read the section for a hypothesis before writing about it.", ""]
     if focus:
         out += [f"Focus: {focus}", "", "Hypotheses and leads are ordered by relevance to the focus. Nothing has been left out: "
                 "the focus chooses the topic, not which evidence counts.", ""]
@@ -224,8 +234,19 @@ def dossier(subgraphs: list[Subgraph], alignments: list[Alignment], leads: list[
     # hypotheses and their evidence
     out += ["## Hypotheses and the evidence for and against each", ""]
     ordered = sorted(subgraphs, key=lambda sg: -max([relevance.get(f"{sg.slug}/{nid}", 0) for nid, n in sg.nodes.items() if n.type is NodeType.HYPOTHESIS] or [0]))
+    overview = out
     for sg in ordered:
-        out += [f"### `{sg.slug}`", ""]
+        overview += [f"### `{sg.slug}` (evidence in `evidence-{sg.slug}.md`)", "", "| hypothesis | supports | contradicts | |", "|---|---|---|---|"]
+        for nid in sorted((n for n, node in sg.nodes.items() if node.type is NodeType.HYPOTHESIS), key=lambda h: -relevance.get(f"{sg.slug}/{h}", 0)):
+            counts = []
+            for relation in (Relation.SUPPORTS, Relation.CONTRADICTS):
+                found = [e for e in sg.edges if e.target == nid and e.relation is relation]
+                counts.append(f"{len(found)} from {len({e.provenance[0].paper_id for e in found})} paper(s)")
+            marks = "; ".join(m for m, on in (("framed", sg.nodes[nid].framed), ("derived from a lead", sg.nodes[nid].derived_from)) if on)
+            overview.append(f"| `{nid}`{rel(f'{sg.slug}/{nid}')} {_cut(sg.nodes[nid].label, 170)} | {counts[0]} | {counts[1]} | {marks} |")
+        overview += ["", "Counts describe the review, not the world: they are not votes, and one study extracted twice counts twice.", ""]
+        out = [f"# Evidence: `{sg.slug}`", "", sg.question, ""]
+        files[f"evidence-{sg.slug}.md"] = ""  # filled below
         under: dict[str, list[str]] = defaultdict(list)
         parent: dict[str, str] = {}
         for e in sg.edges:
@@ -274,9 +295,13 @@ def dossier(subgraphs: list[Subgraph], alignments: list[Alignment], leads: list[
             out += ["#### Framed conditions no experiment was recorded under", "",
                     "Either no paper found ran them or the extraction missed them. Say which only if the methods sections were checked.", ""]
             out += [f"- {label}" for label in unused] + [""]
+        files[f"evidence-{sg.slug}.md"] = "\n".join(out) + "\n"
+    out = overview
 
     # links between the subgraphs' hypotheses
-    links = [x for x in inside if x.verdict.value != "different" and "/h:" in x.a + x.b]
+    # A `different` verdict between two hypotheses says what one line of evidence does NOT show about
+    # another, which a paper needs as much as the links; between other nodes it only records a look-alike.
+    links = [x for x in inside if "/h:" in x.a + x.b and (x.verdict.value != "different" or ("/h:" in x.a and "/h:" in x.b))]
     if links:
         out += ["## How hypotheses in different subgraphs bear on each other", ""]
         for x in sorted(links, key=lambda x: -x.confidence):
@@ -315,7 +340,8 @@ def dossier(subgraphs: list[Subgraph], alignments: list[Alignment], leads: list[
         if paper is not None:
             who = surname(paper.authors[0]) + (" et al." if len(paper.authors) > 1 else "") if paper.authors else "?"
             out.append(f"- `{key}`: {who} ({paper.year}) {_cut(paper.title, 110)} [{pid}]")
-    return "\n".join(out) + "\n"
+    files["dossier.md"] = "\n".join(out) + "\n"
+    return files
 
 
 # ---- checking a draft -----------------------------------------------------------

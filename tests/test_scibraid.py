@@ -1190,7 +1190,8 @@ def test_a_draft_starts_with_a_dossier_references_and_a_skeleton(tmp_path, capsy
     assert main(["draft", "start", str(out), "q", "--focus", "does oxygen decide whether compound X works"]) == 0
     report = json.loads(capsys.readouterr().out)
     assert report["references"] == 1 and report["voice"] is None
-    dossier = (out / "dossier.md").read_text()
+    dossier = (out / "dossier.md").read_text() + (out / "evidence-q.md").read_text()
+    assert "| `h:x-reduces-growth`" in (out / "dossier.md").read_text() and "0 from 0 paper(s) | 1 from 1 paper(s)" in (out / "dossier.md").read_text()
     for expected in ("Focus: does oxygen decide", "framed with this brief: Keep hypoxia apart", "#### `h:x-reduces-growth`",
                      "Contradicts: 1 observation(s) from 1 paper(s)", "[@smith2019compound] No reduction in tumour volume",
                      "inferred by the reader, not stated in the paper", "under: Hypoxic conditions",
