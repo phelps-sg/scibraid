@@ -87,6 +87,12 @@ TELLS = {
     "filler connectives": ["moreover,", "furthermore,", "additionally,", "in addition,"],
     "recap": ["in conclusion,", "to sum up", "in summary,", "we have seen that", "to summarise", "to summarize", "overall,"],
     "negative parallelism": ["not just ", "not only ", "it is not about", "isn't about", "rather than merely"],
+    # The pool is scaffolding for the author. A reader should not be able to tell it exists.
+    "the machinery showing": [
+        "subgraph", "the pool", "pooled", "dossier", "a lead ", "the lead ", "leads ", "this lead", "extractor", "extraction",
+        "extracted", "synthesis pass", "synthesiser", "retract", "at a confidence of", "model-asserted", "not recorded",
+        "is recorded", "are recorded", "verified against", "checked mechanically", "quoted passage",
+    ],
 }
 
 
