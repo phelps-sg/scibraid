@@ -205,6 +205,12 @@ Graphs can be filtered by node type, who asserted a relationship and confidence.
 | `agenda` | Show open research questions, the experiment each needs, and whether the literature already poses it |
 | `repair list\|resolve` | List and resolve faults in subgraphs or judgements found while checking leads (recorded on the lead) |
 
+The commands that list things take `--format markdown` and print tables that paste into a README, an issue or a note: `list`, `pool --list`, `show`, `candidates`, `align list`, `lead list`, `followups`, `agenda`, `repair list` and `observe`. Most also take `--format json`.
+
+```bash
+scibraid agenda --format markdown
+```
+
 Data lives in `$SCIBRAID_HOME`, by default `~/.local/share/scibraid`.
 
 ## Data model

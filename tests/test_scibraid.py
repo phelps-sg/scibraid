@@ -6,7 +6,7 @@ import pytest
 import threading
 
 from scibraid import align, main, openalex, store
-from scibraid.cli import make_server
+from scibraid.cli import _md_table, make_server
 from scibraid.lint import lint
 from scibraid.models import Alignment, Batch, Lead, Paper, Subgraph
 from scibraid.pool import HttpPool, LocalPool
@@ -667,3 +667,32 @@ def test_agenda_separates_questions_the_literature_already_poses(capsys):
     assert "not found posed anywhere" in out and "already asked in:  Smith 2020" in out
     # leads recorded before the field existed still load, and show as not checked
     assert lead().posed_in is None
+
+
+def test_markdown_table_escapes_pipes_and_breaks_lists():
+    table = _md_table(["a", "b"], [["x | y", ["one", "two"]], [None, 0.5], ["multi\nline", 3]])
+    assert table.splitlines() == ["| a | b |", "| --- | --- |", "| x \\| y | one<br>two |", "|  | 0.50 |", "| multi line | 3 |"]
+
+
+def test_every_listing_command_has_a_markdown_format(capsys):
+    pool = pooled_pair()
+    held = lead(status="holds", checks=CHECKS, would_confirm="A dose-response under hypoxia.", would_refute="An effect at 1% oxygen.",
+                nodes=["q/o:no-reduction", "y/o:y-no-effect", "q/c:hypoxia"], follow_up="Does hypoxia blunt compounds in general?",
+                repairs=[{"kind": "extraction", "target": "q", "problem": "The oxygen level was never recorded as a condition."}])
+    pool.add_leads([held, lead(id="needs-experiment", status="open", checks=CHECKS, posed_in=[], would_confirm="Run it.", would_refute="It fails.")])
+    commands = [["list"], ["pool", "--list"], ["show", "q"], ["candidates", "--lexical"], ["align", "list"], ["lead", "list"],
+                ["followups"], ["agenda"], ["repair", "list"], ["observe"]]
+    for command in commands:
+        assert main([*command, "--format", "markdown"]) == 0, command
+        out = capsys.readouterr().out
+        assert "| --- |" in out, command
+        # every table row has the same number of cells as its header
+        table = [line for line in out.splitlines() if line.startswith("|")]
+        widths = {line.replace("\\|", "").count("|") for line in table[:3]}
+        assert len(widths) == 1, (command, table[:3])
+    assert main(["agenda", "--format", "markdown"]) == 0
+    out = capsys.readouterr().out
+    assert "not found posed anywhere" in out and "Run it." in out
+    assert main(["observe", "--format", "markdown"]) == 0
+    out = capsys.readouterr().out
+    assert "### Failures sharing a condition (1)" in out and "`hypoxia-blunts-both` (holds)" in out
