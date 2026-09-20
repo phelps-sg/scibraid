@@ -696,3 +696,19 @@ def test_every_listing_command_has_a_markdown_format(capsys):
     assert main(["observe", "--format", "markdown"]) == 0
     out = capsys.readouterr().out
     assert "### Failures sharing a condition (1)" in out and "`hypoxia-blunts-both` (holds)" in out
+
+
+def test_cross_bearing_skips_a_study_already_extracted_into_the_other_subgraph():
+    first = Subgraph(slug="q", question="Does X work?")
+    store.add_batch(first, batch())
+    # a condition only counts as a bridge worth reporting if few experiments share it
+    filler = [{"id": f"e:unrelated-{i}", "type": "experiment", "label": f"Unrelated study {i}"} for i in range(14)]
+    assert store.add_batch(first, Batch.model_validate({"nodes": filler})).ok
+    second = second_subgraph()
+    conditions = Alignment(a="q/c:hypoxia", b="y/c:low-oxygen", verdict="same", confidence=0.9, rationale="Both mean hypoxic culture.")
+    found = align.observe([first, second], [conditions])["cross_bearing"]
+    assert any(c["from"] == "q" and c["may_bear_on"] == "Y slows tumour growth" for c in found)
+    # once the two experiments are judged to be one study, q's copy bearing on y's hypothesis is not news
+    study = Alignment(a="q/e:mouse-hypoxia", b="y/e:y-low-oxygen", verdict="same", confidence=0.9, rationale="Treat as the same study for the test.")
+    found = align.observe([first, second], [conditions, study])["cross_bearing"]
+    assert not any(c["from"] == "q" and c["may_bear_on"] == "Y slows tumour growth" for c in found)

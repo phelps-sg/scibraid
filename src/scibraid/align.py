@@ -349,6 +349,11 @@ def observe(subgraphs: list[Subgraph], alignments: list[Alignment], min_confiden
                 continue
             if any((mine_h, h) in entailed for mine_h in own):
                 continue
+            # The same study extracted into the hypothesis's own subgraph, and already bearing on
+            # it there, is not news: the other subgraph's reader saw it and drew the link.
+            twins = [k for k in members[clusters.find(key)] if index.slug_of[k] == index.slug_of[h]]
+            if any(h in hypotheses_of(k) for k in twins):
+                continue
             results = [t for t, e in index.out[key] if e.relation is Relation.YIELDS]
             cross.append(
                 {
