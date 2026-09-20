@@ -1,4 +1,4 @@
-"""scigraph: deterministic tools for building and pooling evidence subgraphs.
+"""subgraft: deterministic tools for building and pooling evidence subgraphs.
 
 The semantic work (reading, extracting, judging) is done by the agent driving
 these commands; nothing here calls a model.
@@ -42,7 +42,7 @@ def cmd_search(args: argparse.Namespace) -> int:
         authors = (p.authors[0] + " et al.") if len(p.authors) > 1 else "".join(p.authors)
         print(f"{p.id}  {p.year}  cites={p.cited_by_count}  [{p.source_tier}]  {authors}")
         print(f"    {p.title}")
-    print(f"\n{len(papers)} papers cached; read one with `scigraph paper show <id>`")
+    print(f"\n{len(papers)} papers cached; read one with `subgraft paper show <id>`")
     return 0
 
 
@@ -301,7 +301,7 @@ def cmd_observe(args: argparse.Namespace) -> int:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="scigraph", description=__doc__.splitlines()[0])
+    parser = argparse.ArgumentParser(prog="subgraft", description=__doc__.splitlines()[0])
     sub = parser.add_subparsers(dest="command", required=True)
 
     p = sub.add_parser("search", help="search OpenAlex and cache the results")

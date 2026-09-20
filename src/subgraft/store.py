@@ -12,8 +12,8 @@ from .models import ALLOWED_ENDPOINTS, Batch, Paper, Subgraph, _now
 
 
 def home() -> Path:
-    root = os.environ.get("SCIGRAPH_HOME")
-    path = Path(root) if root else Path.home() / ".local" / "share" / "scigraph"
+    root = os.environ.get("SUBGRAFT_HOME")
+    path = Path(root) if root else Path.home() / ".local" / "share" / "subgraft"
     for sub in ("papers", "fulltext", "subgraphs"):
         (path / sub).mkdir(parents=True, exist_ok=True)
     return path
@@ -119,7 +119,7 @@ def subgraph_path(slug: str) -> Path:
 def load_subgraph(slug: str) -> Subgraph:
     path = subgraph_path(slug)
     if not path.exists():
-        raise FileNotFoundError(f"no subgraph {slug!r}; create it with `scigraph new`")
+        raise FileNotFoundError(f"no subgraph {slug!r}; create it with `subgraft new`")
     return Subgraph.model_validate_json(path.read_text())
 
 

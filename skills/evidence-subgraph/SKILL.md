@@ -10,10 +10,10 @@ in answer to one research question. The unit of knowledge is the experimentally
 grounded relationship, not the paper. Papers are sources of evidence about those
 relationships.
 
-You do the reading and the judgement. The `scigraph` CLI does the deterministic
+You do the reading and the judgement. The `subgraft` CLI does the deterministic
 parts: retrieval, schema validation, checking that your quoted passages really
-appear in the source, storage, and pooling. If `scigraph` is not on PATH, run it
-as `uv run --project <repo> scigraph ...`, where `<repo>` is two directories above
+appear in the source, storage, and pooling. If `subgraft` is not on PATH, run it
+as `uv run --project <repo> subgraft ...`, where `<repo>` is two directories above
 this skill's base directory.
 
 The subgraph will later be pooled with subgraphs built by other people asking
@@ -25,24 +25,24 @@ narrative.
 ## Workflow
 
 1. **Frame.** Restate the question as the hypotheses in contention. Pick a slug.
-   `scigraph new <slug> --question "..."`
+   `subgraft new <slug> --question "..."`
 2. **Retrieve.** Run several searches, not one: the claim itself, its rivals,
    and deliberately the failures (`replication`, `null result`, `failed to`,
    `no effect`, `boundary condition`, `registered report`, `meta-analysis`).
-   `scigraph search "<query>" [--limit N] [--from-year Y] [--sort cited_by_count:desc]`
-   Results are cached; read one with `scigraph paper show <id>`. Aim for 8-20
+   `subgraft search "<query>" [--limit N] [--from-year Y] [--sort cited_by_count:desc]`
+   Results are cached; read one with `subgraft paper show <id>`. Aim for 8-20
    papers that bear directly on the question, including grey literature
    (preprints, dissertations) where it turns up.
 3. **Extract, one paper at a time.** Write a JSON batch and apply it:
-   `scigraph add <slug> batch.json`. It is all-or-nothing; fix what it reports
-   and re-run. Before each paper, `scigraph show <slug>` so you reuse existing
+   `subgraft add <slug> batch.json`. It is all-or-nothing; fix what it reports
+   and re-run. Before each paper, `subgraft show <slug>` so you reuse existing
    node ids instead of minting duplicates.
-4. **Check.** `scigraph lint <slug>` and act on what it finds. A finding you
+4. **Check.** `subgraft lint <slug>` and act on what it finds. A finding you
    cannot fix from the sources is fine; say so in your summary.
 5. **Report.** Summarise what the graph shows: where the evidence sits, where
    it conflicts and under which conditions, what is thinly evidenced, and what
-   you could not verify. `scigraph show <slug> --format mermaid` gives a diagram.
-6. **Pool.** `scigraph pool <slug>`. With `SCIGRAPH_POOL_URL` unset the pool is
+   you could not verify. `subgraft show <slug> --format mermaid` gives a diagram.
+6. **Pool.** `subgraft pool <slug>`. With `SUBGRAFT_POOL_URL` unset the pool is
    a local file and you can just do it. If it is set, pooling publishes the
    subgraph to a shared server: ask the user first.
 
@@ -103,7 +103,7 @@ dispute; below 0.4 probably not worth recording. Keep model-asserted edges
 at or below 0.85.
 
 **Passages are verbatim.** Copy the quote exactly from the abstract or attached
-text; `...` may elide words within a quote. `scigraph add` rejects a passage that
+text; `...` may elide words within a quote. `subgraft add` rejects a passage that
 is not in the text it holds, or that starts or ends mid-word (the mark of a
 quote copied from truncated output rather than read; go back to the source for
 the whole sentence). When that happens, re-read and fix the quote -
@@ -129,13 +129,13 @@ human-readable.
 Abstracts omit conditions and nulls. For the papers that matter most, fetch the
 open-access full text (the `url` field, or a preprint server), save it as plain
 text, and attach it so passages from it can be verified:
-`scigraph paper text <id> fulltext.txt`, then cite with `"location": "methods"`
+`subgraft paper text <id> fulltext.txt`, then cite with `"location": "methods"`
 (or `results`, `discussion`). A passage from text that is not attached is
 accepted with a warning and stays `verified: null`; keep those few.
 
 For a source OpenAlex does not have, write a paper JSON (`id`, `title`, and what
 you know of `doi`, `year`, `authors`, `venue`, `url`, `abstract`, `source_tier`:
-`published` | `grey` | `process`) and `scigraph paper add paper.json`.
+`published` | `grey` | `process`) and `subgraft paper add paper.json`.
 
 ## Batch format
 

@@ -61,7 +61,7 @@ def search(
         "sort": sort,
     }
     # Both optional: OpenAlex's polite pool, and a key for higher rate limits.
-    if mailto := os.environ.get("SCIGRAPH_MAILTO"):
+    if mailto := os.environ.get("SUBGRAFT_MAILTO"):
         params["mailto"] = mailto
     if key := os.environ.get("OPENALEX_API_KEY"):
         params["api_key"] = key

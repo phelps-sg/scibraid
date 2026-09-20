@@ -5,11 +5,11 @@ import pytest
 
 import threading
 
-from scigraph import align, main, openalex, store
-from scigraph.cli import make_server
-from scigraph.lint import lint
-from scigraph.models import Alignment, Batch, Paper, Subgraph
-from scigraph.pool import HttpPool, LocalPool
+from subgraft import align, main, openalex, store
+from subgraft.cli import make_server
+from subgraft.lint import lint
+from subgraft.models import Alignment, Batch, Paper, Subgraph
+from subgraft.pool import HttpPool, LocalPool
 
 ABSTRACT = (
     "We tested whether compound X reduces tumour growth in mice. Under hypoxic "
@@ -19,9 +19,9 @@ ABSTRACT = (
 
 
 @pytest.fixture(autouse=True)
-def scigraph_home(tmp_path, monkeypatch):
-    monkeypatch.setenv("SCIGRAPH_HOME", str(tmp_path))
-    monkeypatch.delenv("SCIGRAPH_POOL_URL", raising=False)
+def subgraft_home(tmp_path, monkeypatch):
+    monkeypatch.setenv("SUBGRAFT_HOME", str(tmp_path))
+    monkeypatch.delenv("SUBGRAFT_POOL_URL", raising=False)
     store.save_paper(Paper(id="W1", title="Compound X under hypoxia", abstract=ABSTRACT))
     store.save_paper(Paper(id="W2", title="No abstract held"))
 

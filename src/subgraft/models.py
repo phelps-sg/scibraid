@@ -144,7 +144,7 @@ class Edge(BaseModel):
 
 
 class Batch(BaseModel):
-    """What the extracting agent hands to `scigraph add`: usually one paper's worth."""
+    """What the extracting agent hands to `subgraft add`: usually one paper's worth."""
 
     model_config = ConfigDict(extra="forbid")
 
