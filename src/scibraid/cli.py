@@ -292,7 +292,9 @@ def _print_observations(report: dict) -> None:
         ("Thinly evidenced hypotheses (fewer than 2 papers)", "thinly_evidenced_hypotheses"),
     ]:
         print(f"\n## {title} ({len(report[key])})")
-        for item in report[key]:
+        if len(report[key]) > 25:
+            print("(first 25; use --format json for all)")
+        for item in report[key][:25]:
             print("-", json.dumps(item, ensure_ascii=False))
 
 

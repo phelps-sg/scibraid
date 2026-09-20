@@ -152,7 +152,7 @@ A quote must match the held text on word boundaries. Whitespace, case and quote 
 
 ## Pooling and alignment
 
-The pool is a local SQLite file. Node ids are namespaced by subgraph, and alignment adds links between subgraphs without altering them. A verdict is one of `same`, `broader`, `narrower`, `related` or `different`, with a confidence and a rationale. Only `same` at 0.7 or above joins nodes when `observe` reads the pool. `different` is stored too, so a rejected pair is not proposed again.
+The pool is a local SQLite file. Node ids are namespaced by subgraph, and alignment adds links between subgraphs without altering them. A verdict is one of `same`, `broader`, `narrower`, `related` or `different`, with a confidence and a rationale. When `observe` reads the pool, `same` at 0.7 or above joins two nodes, and `narrower` or `broader` at 0.7 or above lets whatever sits under the narrower condition count as sitting under the broader one. The reverse does not hold. `different` is stored too, so a rejected pair is not proposed again.
 
 Candidate pairs are scored by lexical similarity, shared ids and shared papers, then weighted by how well connected both nodes are. The agent's judgement is the expensive step, and this ordering spends it where a match would join the most structure. Hypothesis pairs are always proposed, because paraphrase defeats lexical matching and they matter most.
 

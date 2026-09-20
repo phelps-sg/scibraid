@@ -32,7 +32,7 @@ The work is split by cost. `scibraid candidates` cheaply proposes pairs, ranked 
 | `related` | Genuinely connected (overlapping, one a special case under conditions, cause and effect) but neither contains the other. The only verdict allowed across node types. |
 | `different` | Not the same thing, including opposites and look-alikes. Record it: it stops the pair being proposed again and documents a trap. |
 
-`confidence` is how sure you are of the verdict, not how similar the labels are. Only `same` at 0.7 or above joins nodes when `observe` reads the pool, so a `same` you would not stake an inference on should be `related`, or `same` at lower confidence. `rationale` must say what decided it, in a sentence a sceptical reader could check.
+`confidence` is how sure you are of the verdict, not how similar the labels are. When `observe` reads the pool, `same` at 0.7 or above joins two nodes, and `narrower` or `broader` at 0.7 or above lets an experiment under the narrower condition count as under the broader one (never the reverse). `related` joins nothing. So a `same` or `narrower` you would not stake an inference on should be `related`, or carry a lower confidence. `rationale` must say what decided it, in a sentence a sceptical reader could check.
 
 ## How to judge
 

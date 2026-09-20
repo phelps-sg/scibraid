@@ -461,3 +461,18 @@ def test_leads_round_trip_and_reach_the_viewer(tmp_path, capsys):
     out = tmp_path / "view.html"
     assert main(["view", "-o", str(out)]) == 0
     assert "hypoxia-blunts-both" in out.read_text()
+
+
+def test_observe_inherits_conditions_from_narrower_to_broader():
+    first = Subgraph(slug="q", question="Does X work?")
+    store.add_batch(first, batch())
+    graphs = [first, second_subgraph()]
+    narrower = Alignment(a="q/c:hypoxia", b="y/c:low-oxygen", verdict="narrower", confidence=0.9, rationale="Hypoxia here is one kind of low oxygen.")
+    report = align.observe(graphs, [narrower])
+    [failure] = report["shared_condition_failures"]
+    assert failure["condition"] == ["Low oxygen (hypoxic) culture conditions"] and failure["subgraphs"] == ["q", "y"]
+    # inheritance runs one way only: the broader condition's experiments are not under the narrower one
+    broader = Alignment(a="q/c:hypoxia", b="y/c:low-oxygen", verdict="broader", confidence=0.9, rationale="Here hypoxia is the wider category.")
+    [failure] = align.observe(graphs, [broader])["shared_condition_failures"]
+    assert failure["condition"] == ["Hypoxic conditions"]
+    assert align.observe(graphs, [narrower.model_copy(update={"confidence": 0.5})])["shared_condition_failures"] == []

@@ -210,10 +210,30 @@ def observe(subgraphs: list[Subgraph], alignments: list[Alignment], min_confiden
         elif x.verdict in (Verdict.BROADER, Verdict.NARROWER, Verdict.RELATED):
             soft.append(x)
 
+    # narrower -> broader: whatever sits under the narrower condition also sits under the broader one.
+    broader_of: dict[str, set[str]] = defaultdict(set)
+    for x in soft:
+        if x.verdict is not Verdict.RELATED and x.confidence >= min_confidence:
+            narrow, broad = (x.a, x.b) if x.verdict is Verdict.NARROWER else (x.b, x.a)
+            broader_of[clusters.find(narrow)].add(clusters.find(broad))
+
+    def with_broader(roots: set[str]) -> set[str]:
+        seen, todo = set(roots), list(roots)
+        while todo:
+            for up in broader_of[todo.pop()] - seen:
+                seen.add(up)
+                todo.append(up)
+        return seen
+
     members: dict[str, list[str]] = defaultdict(list)
     for key in index.nodes:
         members[clusters.find(key)].append(key)
     spanning = {root: keys for root, keys in members.items() if len({index.slug_of[k] for k in keys}) > 1}
+    # A condition also joins subgraphs when a narrower condition from another subgraph feeds it.
+    for narrow, broads in broader_of.items():
+        for broad in broads:
+            if index.slug_of[narrow] != index.slug_of[broad]:
+                spanning.setdefault(broad, members[broad])
 
     def label(key: str) -> str:
         return index.nodes[key].label
@@ -226,7 +246,7 @@ def observe(subgraphs: list[Subgraph], alignments: list[Alignment], min_confiden
             for s, e in index.into[key]:
                 if e.relation is Relation.YIELDS:
                     found |= conditions_of(s)
-        return found
+        return with_broader(found)
 
     def hypotheses_of(key: str) -> set[str]:
         node = index.nodes[key]
@@ -307,7 +327,7 @@ def observe(subgraphs: list[Subgraph], alignments: list[Alignment], min_confiden
         mine, own = conditions_of(key), hypotheses_of(key)
         for h, theirs in tested_under.items():
             overlap = {r for r in mine & theirs if r in spanning}
-            if index.slug_of[h] == index.slug_of[key] or len(overlap) < 2:
+            if index.slug_of[h] == index.slug_of[key] or sum(specificity(r) for r in overlap) < 0.85:
                 continue
             if any((mine_h, h) in entailed for mine_h in own):
                 continue
@@ -413,7 +433,7 @@ def observe(subgraphs: list[Subgraph], alignments: list[Alignment], min_confiden
                  "same_clusters_spanning_subgraphs": len(spanning), "soft_links": len(soft)},
         "bridging_conditions": bridges,
         "shared_condition_failures": shared_failures,
-        "cross_bearing": cross[:25],
+        "cross_bearing": cross,
         "contradictions_by_regime": regimes,
         "absent_experiments": untested,
         "linked_hypotheses": linked,
