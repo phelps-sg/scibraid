@@ -3,7 +3,10 @@ import json
 import httpx
 import pytest
 
+import threading
+
 from scigraph import main, openalex, store
+from scigraph.cli import make_server
 from scigraph.lint import lint
 from scigraph.models import Batch, Paper, Subgraph
 from scigraph.pool import HttpPool, LocalPool
@@ -265,3 +268,30 @@ def test_cli_end_to_end(tmp_path, capsys):
     path.write_text('{"nodes": [{"id": "Bad Id", "type": "gene", "label": ""}]}')
     assert main(["add", "does-x-work", str(path)]) == 1
     assert "nodes.0.type" in capsys.readouterr().out
+
+
+def test_view_embeds_subgraphs_as_inert_json(tmp_path, capsys):
+    sg = Subgraph(slug="q", question="Is </script><script>alert(1)</script> safe?")
+    store.add_batch(sg, batch())
+    store.save_subgraph(sg)
+    out = tmp_path / "view.html"
+    assert main(["view", "-o", str(out)]) == 0
+    html = out.read_text()
+    assert "/*__DATA__*/" not in html and "alert(1)</script>" not in html
+    embedded = html.split('type="application/json">', 1)[1].split("</script>", 1)[0]
+    [shown] = json.loads(embedded)["subgraphs"]
+    assert shown["question"] == sg.question and len(shown["edges"]) == 4
+
+
+def test_view_server_rerenders_on_each_request():
+    server = make_server([], 0)
+    threading.Thread(target=server.serve_forever, daemon=True).start()
+    url = f"http://127.0.0.1:{server.server_address[1]}/"
+    try:
+        assert '"subgraphs": []' in httpx.get(url).text
+        store.save_subgraph(Subgraph(slug="later", question="Added after the server started?"))
+        assert "Added after the server started?" in httpx.get(url).text
+        assert httpx.get(url + "etc/passwd").status_code == 404
+    finally:
+        server.shutdown()
+        server.server_close()

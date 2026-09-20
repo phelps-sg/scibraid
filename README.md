@@ -38,9 +38,24 @@ finds it via `.claude/skills`; elsewhere, load the repo as a plugin
 | `scigraph show <slug> [--format summary\|json\|mermaid]` | |
 | `scigraph lint <slug>` | structural gaps: experiments without conditions, unevidenced hypotheses, no recorded failures, unverified passages |
 | `scigraph pool <slug>` / `scigraph pool --list` | push to the pool |
+| `scigraph view [slug ...]` | browse subgraphs in the browser (all local ones by default) |
 
 Data lives in `$SCIGRAPH_HOME` (default `~/.local/share/scigraph`): `papers/`,
 `fulltext/`, `subgraphs/<slug>.json`, `pool.sqlite`.
+
+## Browsing
+
+`scigraph view` serves a single page on `http://127.0.0.1:8765/` and opens it;
+refresh to pick up new data while a subgraph is being built. (`-o file.html`
+writes the same page as a self-contained file instead.) Click a node or edge for its verbatim
+passages, confidence, who asserted it and any extractor note; the default panel
+lists each hypothesis with its evidence for and against, and results in direct
+conflict. Filter by node type, relation, asserter and minimum confidence; a table
+view lists the same edges. "All subgraphs together" also draws dotted links
+between nodes that were independently given the same id: the cheapest alignment
+candidates. The URL hash records the subgraph and selection, so a view can be
+bookmarked. The graph library (Cytoscape.js) loads from a CDN; offline, the table
+and detail panel still work.
 
 ## Model
 

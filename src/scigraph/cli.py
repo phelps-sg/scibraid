@@ -9,6 +9,8 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+import webbrowser
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from collections import Counter
 from pathlib import Path
 
@@ -166,6 +168,65 @@ def cmd_list(args: argparse.Namespace) -> int:
     return 0
 
 
+def render_view(subgraphs: list[Subgraph]) -> str:
+    """A self-contained HTML page for browsing the given subgraphs."""
+    data = json.dumps({"subgraphs": [sg.model_dump(mode="json") for sg in subgraphs]}, ensure_ascii=False)
+    # Embedded in a <script> block: keep any "</script>" or "<!--" in the data inert.
+    data = data.replace("<", "\\u003c")
+    template = Path(__file__).with_name("viewer.html").read_text()
+    return template.replace("/*__DATA__*/", data)
+
+
+def make_server(slugs: list[str], port: int) -> ThreadingHTTPServer:
+    """Serve the viewer on localhost, re-rendering per request so a refresh shows new data."""
+
+    class Handler(BaseHTTPRequestHandler):
+        def do_GET(self) -> None:
+            if self.path.split("?")[0] != "/":
+                self.send_error(404)
+                return
+            subgraphs = [store.load_subgraph(s) for s in slugs] if slugs else store.list_subgraphs()
+            body = render_view(subgraphs).encode()
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Content-Length", str(len(body)))
+            self.send_header("Cache-Control", "no-store")
+            self.end_headers()
+            self.wfile.write(body)
+
+        def log_message(self, *args: object) -> None:
+            pass
+
+    try:
+        return ThreadingHTTPServer(("127.0.0.1", port), Handler)
+    except OSError:
+        return ThreadingHTTPServer(("127.0.0.1", 0), Handler)
+
+
+def cmd_view(args: argparse.Namespace) -> int:
+    for slug in args.slugs:
+        store.load_subgraph(slug)
+    if args.output:
+        subgraphs = [store.load_subgraph(s) for s in args.slugs] if args.slugs else store.list_subgraphs()
+        Path(args.output).write_text(render_view(subgraphs))
+        print(args.output)
+        return 0
+    # Served rather than opened as a file: sandboxed browsers (snap, flatpak) cannot read
+    # the data directory, and a served page can be refreshed as subgraphs grow.
+    server = make_server(args.slugs, args.port)
+    url = f"http://127.0.0.1:{server.server_address[1]}/"
+    print(f"serving {url}  (Ctrl-C to stop)")
+    if not args.no_open:
+        webbrowser.open(url)
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        server.server_close()
+    return 0
+
+
 def cmd_pool(args: argparse.Namespace) -> int:
     pool = get_pool()
     if args.list:
@@ -229,6 +290,13 @@ def build_parser() -> argparse.ArgumentParser:
 
     p = sub.add_parser("list", help="list local subgraphs")
     p.set_defaults(func=cmd_list)
+
+    p = sub.add_parser("view", help="browse subgraphs in the browser (all local ones by default)")
+    p.add_argument("slugs", nargs="*")
+    p.add_argument("-o", "--output", help="write a self-contained HTML file instead of serving")
+    p.add_argument("--port", type=int, default=8765, help="localhost port (falls back to a free one)")
+    p.add_argument("--no-open", action="store_true", help="serve without opening a browser")
+    p.set_defaults(func=cmd_view)
 
     p = sub.add_parser("pool", help="push a subgraph to the pool, or list the pool")
     p.add_argument("slug", nargs="?")
