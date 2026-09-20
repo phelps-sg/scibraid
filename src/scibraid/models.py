@@ -148,6 +148,9 @@ class Node(BaseModel):
     # Set only on a hypothesis that a lead proposed. It has no standing of its own: it is a
     # claim to be tested, and gains support only from paper evidence linked to it.
     derived_from: Derivation | None = None
+    # Put there when the question was posed, before any paper was read: a hypothesis to be tested or a
+    # distinction the extractors were asked to keep. It says what was looked for, not what was found.
+    framed: bool = False
 
     @model_validator(mode="after")
     def _outcome_only_on_observations(self) -> Node:
@@ -194,6 +197,9 @@ class Subgraph(BaseModel):
 
     slug: str = Field(pattern=r"^[a-z0-9][a-z0-9\-]*$")
     question: str
+    # How the search and extraction were steered: literatures to cover, distinctions to keep. Kept
+    # with the subgraph because what a review was told to look for shapes what it found.
+    brief: str = ""
     prompted_by: str | None = None  # id of the lead whose follow-up this subgraph answers
     builders: list[Builder] = []  # everyone who has added to it, in order of first contribution
     created: str = Field(default_factory=_now)

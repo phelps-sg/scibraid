@@ -244,12 +244,30 @@ def _new(args: argparse.Namespace) -> int:
         if lead:
             seed = align.derived_hypothesis(lead)
             sg.nodes[seed.id] = seed
+        errors = store.frame(sg, args.hypothesis, args.condition, args.brief)
     except ValidationError as exc:
         _emit({"ok": False, "errors": _errors(exc)})
+        return 1
+    if errors:
+        _emit({"ok": False, "errors": errors})
         return 1
     store.save_subgraph(sg)
     print(store.subgraph_path(sg.slug))
     return 0
+
+
+def cmd_frame(args: argparse.Namespace) -> int:
+    with store.subgraph_lock(args.slug):
+        sg = store.load_subgraph(args.slug)
+        try:
+            errors = store.frame(sg, args.hypothesis, args.condition, args.brief)
+        except ValidationError as exc:
+            errors = _errors(exc)
+        if not errors:
+            store.save_subgraph(sg)
+    framed = {nid: node.label for nid, node in sg.nodes.items() if node.framed}
+    _emit({"ok": not errors, "errors": errors, "brief": sg.brief, "framed": framed})
+    return 1 if errors else 0
 
 
 def cmd_add(args: argparse.Namespace) -> int:
@@ -304,17 +322,22 @@ def cmd_show(args: argparse.Namespace) -> int:
         print(_mermaid(sg))
     elif args.format == "markdown":
         print(f"## {sg.slug}\n\n{sg.question}\n")
+        if sg.brief:
+            print(f"Brief: {sg.brief}\n")
         print(_md_table(["id", "type", "outcome", "label"], [[f"`{k}`", n.type.value, n.outcome.value if n.outcome else "", n.label] for k, n in sg.nodes.items()]))
         print()
         rows = [[f"`{e.source}`", e.relation.value, f"`{e.target}`", e.confidence, e.asserted_by.value, e.provenance[0].paper_id] for e in sg.edges]
         print(_md_table(["source", "relation", "target", "confidence", "asserted by", "paper"], rows))
     else:
         print(f"{sg.slug}: {sg.question}")
+        if sg.brief:
+            print(f"  brief: {sg.brief}")
         print(f"  {_totals(sg)}  updated {sg.updated}")
         for kind, count in Counter(n.type for n in sg.nodes.values()).items():
             print(f"  {kind}: {count}")
         for nid, node in sg.nodes.items():
             outcome = f" [{node.outcome}]" if node.outcome else ""
+            outcome += " [framed]" if node.framed else ""
             print(f"  {nid} ({node.type}){outcome}: {node.label}")
         for e in sg.edges:
             paper = e.provenance[0].paper_id
@@ -741,6 +764,14 @@ def cmd_observe(args: argparse.Namespace) -> int:
     return 0
 
 
+def _framing_arguments(p: argparse.ArgumentParser) -> None:
+    p.add_argument("--hypothesis", action="append", default=[], metavar="TEXT",
+                   help='a hypothesis to test, repeatable; "h:my-id=Label" fixes the id')
+    p.add_argument("--condition", action="append", default=[], metavar="TEXT",
+                   help='a distinction every extractor should record, repeatable; "c:my-id=Label" fixes the id')
+    p.add_argument("--brief", help="how to steer the search and extraction: literatures to cover, distinctions to keep")
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="scibraid", description=__doc__.splitlines()[0])
     sub = parser.add_subparsers(dest="command", required=True)
@@ -792,7 +823,13 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--question", help="defaults to the lead's follow-up when --lead is given")
     p.add_argument("--lead", help="id of the lead this subgraph follows up; seeds its claim as a derived hypothesis")
     p.add_argument("--model", help="the language model doing this work (the tool cannot see it)")
+    _framing_arguments(p)
     p.set_defaults(func=cmd_new)
+
+    p = sub.add_parser("frame", help="add to how an existing subgraph's question is framed")
+    p.add_argument("slug")
+    _framing_arguments(p)
+    p.set_defaults(func=cmd_frame)
 
     p = sub.add_parser("add", help="validate a batch of nodes and edges and apply it")
     p.add_argument("slug")

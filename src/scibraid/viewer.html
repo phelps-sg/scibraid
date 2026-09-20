@@ -391,6 +391,8 @@ function renderPanel() {
       el("div", { class: "meta" }, el("span", { class: `swatch ${node.type}` }), node.type, node.outcome ? `outcome: ${OUTCOME[node.outcome]} ${node.outcome}` : "", model.many ? `in ${node.slug}` : ""),
       el("h2", {}, node.label), el("div", { class: "id" }, node.id),
       node.description ? el("p", {}, node.description) : null,
+      node.framed ? el("div", { class: "card" }, el("div", { class: "rel" }, "Part of how the question was framed"),
+        el("div", {}, node.type === "hypothesis" ? "Put there when the question was posed, to be tested. It says what was looked for, not what was found." : "A distinction every extractor was asked to record. If no experiment sits under it, either no paper found ran it or the extraction missed it.")) : null,
       node.derived_from ? el("div", { class: "card" }, el("div", { class: "rel" }, "Derived from the pool, not from a paper"),
         el("div", {}, `Proposed by lead ${node.derived_from.lead} at confidence ${node.derived_from.confidence.toFixed(2)}. It has no standing of its own: only the paper evidence linked to it counts.`)) : null);
     const attrs = Object.entries(node.attrs || {});
@@ -510,7 +512,7 @@ function chips(host, values, set, render) {
 function load(slug) {
   state.slug = slug; state.selected = null;
   model = build(slug);
-  $("question").textContent = model.many ? `${model.graphs.length} subgraphs shown together` : model.graphs[0].question;
+  $("question").textContent = model.many ? `${model.graphs.length} subgraphs shown together` : model.graphs[0].question + (model.graphs[0].brief ? `  Brief: ${model.graphs[0].brief}` : "");
   $("sameKey").hidden = !(model.same.length || model.links.length);
   $("alignKey").hidden = !model.links.length;
   if (cy) cy.elements().remove();

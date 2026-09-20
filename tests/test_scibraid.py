@@ -1095,3 +1095,38 @@ def test_a_hand_added_paper_takes_its_openalex_record_everywhere(monkeypatch, ca
     assert pool.leads()[0].checks[0].sources == ["W99"]
     # Everything recorded still verifies under the new id.
     assert store.add_batch(Subgraph(slug="r", question="?"), Batch.model_validate(json.loads(json.dumps(data).replace("arxiv:2101.00001", "W99")))).ok
+
+
+def test_a_question_can_be_framed_with_hypotheses_conditions_and_a_brief(tmp_path, capsys):
+    assert main(["new", "told", "--question", "Does telling agents they are copies change how they coordinate?",
+                 "--hypothesis", "Identical weights suffice; knowing about it adds nothing",
+                 "--hypothesis", "h:common-knowledge-required=The gain appears only when both agents know they are copies",
+                 "--condition", "c:told-partner-is-same-model=Agents are told their partner is the same model",
+                 "--brief", "Cover superrationality and program equilibrium, not only papers about LLMs."]) == 0
+    capsys.readouterr()
+    sg = store.load_subgraph("told")
+    assert list(sg.nodes) == ["h:identical-weights-suffice-knowing-about-it-adds-nothing", "h:common-knowledge-required", "c:told-partner-is-same-model"]
+    assert all(node.framed for node in sg.nodes.values()) and sg.brief.startswith("Cover superrationality")
+
+    # An extractor that reuses a framed id keeps the wording the question was posed with.
+    data = batch().model_dump()
+    data["nodes"].append({"id": "c:told-partner-is-same-model", "type": "condition", "label": "told same model"})
+    data["edges"][1]["target"] = "c:told-partner-is-same-model"
+    assert store.add_batch(sg, Batch.model_validate(data)).ok
+    assert sg.nodes["c:told-partner-is-same-model"].label == "Agents are told their partner is the same model"
+    store.save_subgraph(sg)
+
+    assert main(["frame", "told", "--condition", "Agents are told nothing about their partner", "--hypothesis", "c:oops=Not a hypothesis"]) == 1
+    assert "says otherwise" in capsys.readouterr().out
+    assert main(["frame", "told", "--condition", "Agents are told nothing about their partner", "--hypothesis", "h:x-reduces-growth=X reduces growth"]) == 0
+    capsys.readouterr()
+    sg = store.load_subgraph("told")
+    assert sg.nodes["h:x-reduces-growth"].framed and sg.nodes["h:x-reduces-growth"].label == "X reduces tumour growth"
+
+    findings = "\n".join(lint(sg))
+    assert "c:agents-are-told-nothing-about-their-partner: framed condition that no experiment is recorded under" in findings
+    assert "h:common-knowledge-required: framed hypothesis with no evidence" in findings
+    assert "c:told-partner-is-same-model" not in findings
+    assert main(["show", "told"]) == 0
+    shown = capsys.readouterr().out
+    assert "brief: Cover superrationality" in shown and "[framed]" in shown

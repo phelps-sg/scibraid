@@ -22,6 +22,18 @@ def lint(sg: Subgraph) -> list[str]:
                 "this subgraph exists to find evidence for or against it"
             )
             continue
+        if node.framed and node.type is NodeType.CONDITION and not into[nid]:
+            findings.append(
+                f"{nid}: framed condition that no experiment is recorded under: no paper found ran it, or the "
+                "extractors did not record it. Check the methods sections before concluding it was never done"
+            )
+            continue
+        if node.framed and node.type is NodeType.HYPOTHESIS and not (into[nid] & {Relation.SUPPORTS, Relation.CONTRADICTS}):
+            findings.append(
+                f"{nid}: framed hypothesis with no evidence for or against: the literature found does not "
+                "address it, or the extraction did not connect it"
+            )
+            continue
         if not out[nid] and not into[nid]:
             findings.append(f"{nid}: orphan {node.type}, no edges")
             continue

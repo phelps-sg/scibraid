@@ -289,6 +289,7 @@ def merge_nodes(sg: Subgraph, keep: str, drop: str) -> list[str]:
     seen = {(p.paper_id, p.passage) for p in kept.provenance}
     kept.provenance += [p for p in dropped.provenance if (p.paper_id, p.passage) not in seen]
     kept.description = kept.description or dropped.description
+    kept.framed = kept.framed or dropped.framed
     kept.attrs = {**dropped.attrs, **kept.attrs}
     kept.attrs["merged_from"] = [*kept.attrs.get("merged_from", []), *dropped.attrs.get("merged_from", []), drop]
     del sg.nodes[drop]
@@ -362,3 +363,50 @@ def reidentify_paper(old: str, paper: Paper) -> tuple[list[str], list[str]]:
     for folder, suffix in (("papers", ".json"), ("fulltext", ".txt")):
         (home() / folder / f"{_safe(old)}{suffix}").unlink(missing_ok=True)
     return [sg.slug for sg in citing], []
+
+
+_FRAME_ID = re.compile(r"^([hc]:[a-z0-9][a-z0-9\-]*)=(.+)$", re.S)
+
+
+def _frame_node(prefix: str, text: str) -> tuple[str, str]:
+    """(id, label) from "Label", or from "h:my-id=Label" when the id matters."""
+    if found := _FRAME_ID.match(text.strip()):
+        return found.group(1), found.group(2).strip()
+    words = re.findall(r"[a-z0-9]+", text.lower())
+    slug = ""
+    for word in words:
+        if len(slug) + len(word) > 60:
+            break
+        slug = f"{slug}-{word}" if slug else word
+    return f"{prefix}:{slug}", text.strip()
+
+
+def frame(sg: Subgraph, hypotheses: list[str] = (), conditions: list[str] = (), brief: str | None = None) -> list[str]:
+    """Record how a question was posed: hypotheses to test, conditions to keep apart, and a brief.
+
+    Returns errors, and changes nothing if there are any. Framing a node that exists marks it.
+    """
+    from .models import Node, NodeType
+
+    wanted = [(*_frame_node("h", t), NodeType.HYPOTHESIS) for t in hypotheses]
+    wanted += [(*_frame_node("c", t), NodeType.CONDITION) for t in conditions]
+    errors = []
+    for nid, label, kind in wanted:
+        if not nid.startswith(f"{kind.value[0]}:"):
+            errors.append(f"{nid!r} is given as a {kind.value} but its id says otherwise")
+        elif len(nid) < 4 or not label:
+            errors.append(f"{label or nid!r}: nothing to make an id or a label from")
+        elif len(label) > 200:
+            errors.append(f"{nid}: a label is at most 200 characters; put the rest in the brief")
+        elif nid in sg.nodes and sg.nodes[nid].type is not kind:
+            errors.append(f"{nid} already exists as a {sg.nodes[nid].type}")
+    if errors:
+        return errors
+    for nid, label, kind in wanted:
+        if nid in sg.nodes:
+            sg.nodes[nid].framed = True
+        else:
+            sg.nodes[nid] = Node(id=nid, type=kind, label=label, framed=True)
+    if brief is not None:
+        sg.brief = brief.strip()
+    return []
