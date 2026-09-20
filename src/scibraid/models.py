@@ -105,6 +105,12 @@ class Paper(BaseModel):
     cited_by_count: int | None = None
     source_tier: SourceTier = SourceTier.PUBLISHED
     abstract: str | None = None
+    # Where a copy can be read. "closed" means no open copy is known, not that the paper is unreadable.
+    oa_status: str | None = None
+    oa_url: str | None = None
+    arxiv_id: str | None = None
+    pmcid: str | None = None
+    text_source: str | None = None  # where the attached full text was fetched from
 
 
 class Builder(BaseModel):

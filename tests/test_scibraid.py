@@ -5,7 +5,7 @@ import pytest
 
 import threading
 
-from scibraid import align, bibtex, identity, main, openalex, store
+from scibraid import align, bibtex, fulltext, identity, main, openalex, store
 from scibraid.cli import _md_table, make_server
 from scibraid.lint import lint
 from scibraid.models import Alignment, AssertedBy, Batch, Builder, Lead, Paper, Subgraph
@@ -206,27 +206,82 @@ def test_lint_flags_gaps():
     assert "only one paper" in findings
 
 
+WORK = {
+    "id": "https://openalex.org/W99",
+    "doi": "https://doi.org/10.1/abc",
+    "title": "A preprint",
+    "publication_year": 2021,
+    "type": "preprint",
+    "cited_by_count": 3,
+    "authorships": [{"author": {"display_name": "A. Author"}}],
+    "primary_location": {"source": {"display_name": "bioRxiv"}},
+    "abstract_inverted_index": {"works": [2], "X": [0, 3], "sometimes": [1]},
+    "open_access": {"is_oa": True, "oa_status": "green", "oa_url": "https://arxiv.org/abs/2101.00001"},
+    "best_oa_location": {"pdf_url": "https://arxiv.org/pdf/2101.00001", "landing_page_url": "https://arxiv.org/abs/2101.00001"},
+    "locations": [{"landing_page_url": "https://arxiv.org/abs/2101.00001v2"}],
+    "ids": {"pmcid": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC123"},
+}
+
+
 def test_openalex_search_rebuilds_abstract_and_classifies_tier():
     def handler(request):
-        assert request.url.params["search"] == "compound x"
+        # Title and abstract only: OpenAlex's own search also matches full text, which favours open papers.
+        assert "search" not in request.url.params
+        assert "title_and_abstract.search:compound x  hypoxia" in request.url.params["filter"]
         assert "from_publication_date:2020-01-01" in request.url.params["filter"]
-        work = {
-            "id": "https://openalex.org/W99",
-            "doi": "https://doi.org/10.1/abc",
-            "title": "A preprint",
-            "publication_year": 2021,
-            "type": "preprint",
-            "cited_by_count": 3,
-            "authorships": [{"author": {"display_name": "A. Author"}}],
-            "primary_location": {"source": {"display_name": "bioRxiv"}},
-            "abstract_inverted_index": {"works": [2], "X": [0, 3], "sometimes": [1]},
-        }
-        return httpx.Response(200, json={"results": [work]})
+        assert "has_abstract" not in request.url.params["filter"]
+        return httpx.Response(200, json={"results": [WORK]})
 
     client = httpx.Client(transport=httpx.MockTransport(handler))
-    [paper] = openalex.search("compound x", from_year=2020, client=client)
+    [paper] = openalex.search("compound x, hypoxia", from_year=2020, client=client)
     assert (paper.id, paper.doi, paper.source_tier) == ("W99", "10.1/abc", "grey")
     assert paper.abstract == "X sometimes works X"
+    assert (paper.oa_status, paper.arxiv_id, paper.pmcid) == ("green", "2101.00001", "PMC123")
+    assert paper.oa_url == "https://arxiv.org/pdf/2101.00001"
+
+
+def test_openalex_searches_a_papers_references_and_the_works_citing_it():
+    seen = []
+
+    def handler(request):
+        seen.append(dict(request.url.params))
+        return httpx.Response(200, json={"results": []})
+
+    client = httpx.Client(transport=httpx.MockTransport(handler))
+    openalex.search(citing="W1", client=client)
+    openalex.search("bandits", references_of="W2", match="anywhere", client=client)
+    assert seen[0]["filter"] == "cites:W1" and seen[0]["sort"] == "cited_by_count:desc"
+    assert seen[1]["filter"] == "cited_by:W2" and seen[1]["search"] == "bandits"
+    with pytest.raises(openalex.OpenAlexError):
+        openalex.search(client=client)
+
+
+def test_a_paper_is_fetched_by_whatever_identifier_is_to_hand():
+    for given, path in {
+        "W4318719086": "W4318719086",
+        "https://openalex.org/W42": "W42",
+        "arxiv:2201.11903": "doi:10.48550/arXiv.2201.11903",
+        "https://arxiv.org/pdf/2410.01748v3": "doi:10.48550/arXiv.2410.01748",
+        "2502.12143": "doi:10.48550/arXiv.2502.12143",
+        "https://doi.org/10.1038/s41586-023-06924-6.": "doi:10.1038/s41586-023-06924-6",
+        "pmid: 12345": "pmid:12345",
+        "PMC123": "pmcid:PMC123",
+    }.items():
+        assert openalex.work_path(given) == path
+    with pytest.raises(openalex.OpenAlexError):
+        openalex.work_path("Wei et al. 2022")
+
+    def handler(request):
+        if request.url.path.endswith("doi:10.1234/abc"):
+            return httpx.Response(200, json=WORK)
+        return httpx.Response(429 if "spent" in request.url.path else 404, json={})
+
+    client = httpx.Client(transport=httpx.MockTransport(handler))
+    assert openalex.get("10.1234/abc", client).id == "W99"
+    with pytest.raises(openalex.OpenAlexError, match="no such work"):
+        openalex.get("10.1234/missing", client)
+    with pytest.raises(openalex.OpenAlexError, match="OPENALEX_API_KEY"):
+        openalex.get("10.1234/spent", client)
 
 
 def test_local_pool_namespaces_nodes_and_repush_replaces():
@@ -901,3 +956,65 @@ def test_an_inference_cannot_be_recorded_as_near_certain():
     assert not report.ok and "author-asserted" in report.errors[0]
     data.edges[1].confidence = 0.85
     assert store.add_batch(Subgraph(slug="q", question="?"), Batch.model_validate(data.model_dump())).ok
+
+
+BODY = "<p>" + "We ran the assay under hypoxia and saw nothing. " * 200 + "</p>"
+
+
+def test_html_keeps_headings_and_mathematics_and_drops_the_page_furniture():
+    html = (
+        "<nav>Skip to main</nav><h2>3 Methods</h2><p>covers <math alttext='40\\%'><mn>40</mn><annotation>x</annotation></math>"
+        " of arms at <math alttext='\\sigma=1.0'><mi>s</mi></math>.</p><script>var a;</script>"
+    )
+    assert fulltext.html_to_text(html) == "## 3 Methods\n\ncovers 40% of arms at \\sigma=1.0 ."
+
+
+def test_article_xml_becomes_headed_text_without_the_reference_list():
+    xml = (
+        "<article><front><abstract><p>Short <italic>summary</italic>.</p></abstract></front><body><sec><title>Results</title>"
+        "<p>Growth was unchanged <xref>[1]</xref>.</p></sec></body><back><ref-list><ref>Smith 2019</ref></ref-list></back></article>"
+    )
+    assert fulltext.jats_to_text(xml) == "Short summary.\n\n## Results\n\nGrowth was unchanged [1]."
+
+
+def test_fetch_prefers_structured_sources_and_refuses_a_landing_page(monkeypatch):
+    monkeypatch.setattr(fulltext, "pdf_to_text", lambda data: "From the PDF. " * 1000)
+    asked = []
+
+    def handler(request):
+        asked.append(str(request.url))
+        if "arxiv.org/html" in str(request.url):
+            return httpx.Response(404)
+        if str(request.url) == "https://publisher.example/paper":
+            return httpx.Response(200, html="<meta content=https://publisher.example/paper.pdf name=citation_pdf_url><p>Abstract only.</p>")
+        if str(request.url) == "https://bare.example/paper":
+            return httpx.Response(200, html="<p>Abstract only.</p>")
+        return httpx.Response(200, content=b"%PDF-1.7 ...")
+
+    client = httpx.Client(transport=httpx.MockTransport(handler))
+    got = fulltext.fetch(Paper(id="arxiv:2201.11903", title="T"), client)
+    assert got.source == "arXiv PDF" and asked == ["https://arxiv.org/html/2201.11903", "https://arxiv.org/pdf/2201.11903"]
+
+    got = fulltext.fetch(Paper(id="W5", title="T", oa_url="https://publisher.example/paper"), client)
+    assert got.text.startswith("From the PDF.") and asked[-1] == "https://publisher.example/paper.pdf"
+
+    with pytest.raises(fulltext.FetchError, match="names no PDF"):
+        fulltext.fetch(Paper(id="W6", title="T", oa_url="https://bare.example/paper"), client)
+    with pytest.raises(fulltext.FetchError, match="no open copy is known"):
+        fulltext.fetch(Paper(id="W7", title="T", oa_status="closed"), client)
+
+
+def test_fetch_attaches_text_records_its_source_and_keeps_text_already_held(monkeypatch, capsys):
+    monkeypatch.setattr(fulltext, "fetch", lambda paper: fulltext.Fetched(fulltext.html_to_text(BODY), "arXiv HTML", "https://arxiv.org/html/1"))
+    monkeypatch.setattr(openalex, "get", lambda identifier: (_ for _ in ()).throw(openalex.OpenAlexError("budget spent")))
+    store.attach_text("W2", "The text the passages were checked against.")
+
+    assert main(["fetch", "W1", "W2", "W404"]) == 1
+    first, second, third = json.loads(capsys.readouterr().out)
+    assert first["source"] == "arXiv HTML" and store.load_paper("W1").text_source == "https://arxiv.org/html/1"
+    assert "under hypoxia" in store.load_text("W1")
+    assert second["source"] == "already attached" and store.load_text("W2").startswith("The text the passages")
+    assert third == {"id": "W404", "ok": False, "why": "not cached"}
+
+    assert main(["fetch", "W2", "--force"]) == 0
+    assert "under hypoxia" in store.load_text("W2")

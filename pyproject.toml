@@ -16,6 +16,7 @@ dependencies = [
 scibraid = "scibraid:main"
 
 [project.optional-dependencies]
+fulltext = ["pypdf"]  # only needed where poppler's pdftotext is not installed
 embeddings = [
     "fastembed>=0.8.0",
 ]

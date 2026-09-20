@@ -110,7 +110,7 @@ The important result is not that every candidate is an insight. Most are not. Th
 
 ## Install
 
-Requires `uv` and Claude Code.
+Requires `uv` and Claude Code. Reading PDFs uses `pdftotext` from poppler if it is installed, and otherwise needs the `fulltext` extra.
 
 ```bash
 git clone <this repo> scibraid && cd scibraid
@@ -190,8 +190,11 @@ Graphs can be filtered by node type, who asserted a relationship and confidence.
 
 | Command | Purpose |
 |---|---|
-| `search "<query>"` | Search OpenAlex and cache papers with their abstracts |
-| `paper show\|add\|text` | Read or add a paper and attach full text |
+| `search "<query>"` | Search OpenAlex by title and abstract, and cache the results with their abstracts and whether an open copy exists |
+| `search --citing <id>` / `--references-of <id>` | Search among the works that cite a paper, or among its references |
+| `paper get <identifier>` | Cache a paper's OpenAlex record by DOI, arXiv id or URL, PubMed id or OpenAlex id |
+| `paper show\|add\|text` | Read a paper, add one OpenAlex lacks, or attach full text by hand |
+| `fetch <id ...> \| --subgraph <slug>` | Find an open copy (arXiv HTML, Europe PMC, PDF) and attach its full text |
 | `new <slug> --question "..."` | Start a subgraph |
 | `add <slug> batch.json` | Validate and apply a batch |
 | `show <slug> [--format summary\|json\|mermaid]` | Inspect a subgraph |
@@ -294,7 +297,9 @@ The current system is a research prototype.
 - No domain expert has audited the example extractions.
 - The example comparison with related work is based on the author's knowledge and a brief search rather than a systematic survey.
 - OpenAlex search can miss relevant papers, and metadata can contain errors. BibTeX is generated from that metadata: author lists are stored cut at eight names (the entry then ends "and others"), and venues and entry types should be checked before use.
-- Full text is currently obtained from open-access sources, and conversion to plain text can lose inline mathematics.
+- Full text comes only from open copies. A closed paper is found by search and can be extracted from its abstract, but its body is unread unless someone attaches the text by hand, so `open` and "not found posed anywhere" describe the literature that could be read. The share that is closed varies widely by field and rises with age; it was about two thirds for one materials-science query.
+- Text taken from a PDF loses section headings and mangles mathematics. Some publishers refuse automated requests even for open papers, and `fetch` then reports the failure.
+- Without a key, OpenAlex requests share one free daily budget per IP address, and a day of heavy use exhausts it. A free key (`OPENALEX_API_KEY`) has its own budget.
 - An observation inherits every condition recorded for its experiment, including ones that do not apply to it, which produces spurious shared-condition patterns.
 - A condition that a paper used but the agent did not record looks the same as a condition that was never tested, which produces spurious "experiments that have not been run".
 - An observation's outcome is relative to what its own experiment was looking for, so two "negative" results can point in opposite directions. `observe` treats them as comparable.

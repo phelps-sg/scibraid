@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+import time
 import webbrowser
 from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -18,7 +19,7 @@ from pathlib import Path
 import httpx
 from pydantic import ValidationError
 
-from . import align, bibtex, embed, identity, openalex, store
+from . import align, bibtex, embed, fulltext, identity, openalex, store
 from .lint import lint
 from .models import Alignment, Batch, Builder, Lead, Paper, Subgraph
 from .pool import get_pool
@@ -60,19 +61,91 @@ def _errors(exc: ValidationError) -> list[str]:
     return [f"{'.'.join(map(str, e['loc']))}: {e['msg']}" for e in exc.errors()]
 
 
+def _access(paper: Paper) -> str:
+    if paper.oa_status is None:
+        return "access unknown"
+    return "closed" if paper.oa_status == "closed" else f"open ({paper.oa_status})"
+
+
 def cmd_search(args: argparse.Namespace) -> int:
-    papers = openalex.search(args.query, args.limit, args.from_year, args.to_year, args.sort)
+    try:
+        papers = openalex.search(
+            args.query, args.limit, args.from_year, args.to_year, args.sort,
+            match=args.match, citing=args.citing, references_of=args.references_of,
+        )
+    except openalex.OpenAlexError as exc:
+        print(exc, file=sys.stderr)
+        return 1
     for paper in papers:
-        store.save_paper(paper)
+        store.save_paper(_keeping_text_source(paper))
     if args.full:
         _emit([p.model_dump(mode="json") for p in papers])
         return 0
     for p in papers:
         authors = (p.authors[0] + " et al.") if len(p.authors) > 1 else "".join(p.authors)
-        print(f"{p.id}  {p.year}  cites={p.cited_by_count}  [{p.source_tier}]  {authors}")
+        flags = f"[{p.source_tier}] [{_access(p)}]" + ("" if p.abstract else " [no abstract]")
+        print(f"{p.id}  {p.year}  cites={p.cited_by_count}  {flags}  {authors}")
         print(f"    {p.title}")
-    print(f"\n{len(papers)} papers cached; read one with `scibraid paper show <id>`")
+    closed = sum(p.oa_status == "closed" for p in papers)
+    print(f"\n{len(papers)} papers cached ({closed} closed); read one with `scibraid paper show <id>`")
     return 0
+
+
+def _keeping_text_source(paper: Paper) -> Paper:
+    """Fresh metadata must not forget where an already attached full text came from."""
+    if (held := store.load_paper(paper.id)) is not None and held.text_source:
+        paper.text_source = held.text_source
+    return paper
+
+
+def cmd_paper_get(args: argparse.Namespace) -> int:
+    failed = 0
+    for identifier in args.identifiers:
+        try:
+            paper = openalex.get(identifier)
+        except openalex.OpenAlexError as exc:
+            print(f"{identifier}: {exc}", file=sys.stderr)
+            failed += 1
+            continue
+        store.save_paper(_keeping_text_source(paper))
+        print(f"{paper.id}  {paper.year}  [{_access(paper)}]  {paper.title}")
+    return 1 if failed else 0
+
+
+def cmd_fetch(args: argparse.Namespace) -> int:
+    ids = list(args.ids)
+    if args.subgraph:
+        ids += [pid for pid in store.load_subgraph(args.subgraph).papers if pid not in ids]
+    if not ids:
+        print("name papers, or a subgraph with --subgraph", file=sys.stderr)
+        return 1
+    results = []
+    for paper_id in ids:
+        if (paper := store.load_paper(paper_id)) is None:
+            results.append({"id": paper_id, "ok": False, "why": "not cached"})
+            continue
+        # Passages already recorded were checked against the text that is held, so it is not replaced unasked.
+        if store.load_text(paper_id) is not None and not args.force:
+            results.append({"id": paper_id, "ok": True, "source": "already attached"})
+            continue
+        if paper.oa_status is None and paper.id.startswith("W"):
+            try:  # cached before open-access locations were recorded
+                paper = _keeping_text_source(openalex.get(paper.id))
+            except openalex.OpenAlexError:
+                pass
+        if results and results[-1].get("url"):
+            time.sleep(3)  # arXiv asks for no more than one request every three seconds
+        try:
+            got = fulltext.fetch(paper)
+        except fulltext.FetchError as exc:
+            results.append({"id": paper_id, "ok": False, "access": _access(paper), "why": str(exc)})
+            continue
+        store.attach_text(paper_id, got.text)
+        paper.text_source = got.url
+        store.save_paper(paper)
+        results.append({"id": paper_id, "ok": True, "source": got.source, "url": got.url, "chars": len(got.text)})
+    _emit(results)
+    return 0 if all(r["ok"] for r in results) else 1
 
 
 def cmd_paper_show(args: argparse.Namespace) -> int:
@@ -635,11 +708,15 @@ def build_parser() -> argparse.ArgumentParser:
     sub = parser.add_subparsers(dest="command", required=True)
 
     p = sub.add_parser("search", help="search OpenAlex and cache the results")
-    p.add_argument("query")
+    p.add_argument("query", nargs="?", help="optional when --citing or --references-of is given")
+    p.add_argument("--match", choices=["title-abstract", "anywhere"], default="title-abstract",
+                   help="'anywhere' also matches full text, which OpenAlex holds only for open papers, so it favours them")
+    p.add_argument("--citing", metavar="ID", help="only works that cite this OpenAlex id")
+    p.add_argument("--references-of", metavar="ID", help="only works this OpenAlex id cites")
     p.add_argument("--limit", type=int, default=20)
     p.add_argument("--from-year", type=int)
     p.add_argument("--to-year", type=int)
-    p.add_argument("--sort", default="relevance_score:desc", help="e.g. cited_by_count:desc")
+    p.add_argument("--sort", help="e.g. cited_by_count:desc (default: relevance, or citations when there is no query)")
     p.add_argument("--full", action="store_true", help="emit JSON including abstracts")
     p.set_defaults(func=cmd_search)
 
@@ -648,6 +725,10 @@ def build_parser() -> argparse.ArgumentParser:
     p = paper_sub.add_parser("show", help="print a cached paper, abstract included")
     p.add_argument("id")
     p.set_defaults(func=cmd_paper_show)
+    p = paper_sub.add_parser("get", help="cache a paper from OpenAlex by DOI, arXiv id or URL, PubMed id or OpenAlex id")
+    p.add_argument("identifiers", nargs="+")
+    p.set_defaults(func=cmd_paper_get)
+
     p = paper_sub.add_parser("add", help="cache a paper from a JSON file (non-OpenAlex sources)")
     p.add_argument("file")
     p.set_defaults(func=cmd_paper_add)
@@ -655,6 +736,12 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("id")
     p.add_argument("file")
     p.set_defaults(func=cmd_paper_text)
+
+    p = sub.add_parser("fetch", help="find an open copy of each paper and attach its full text")
+    p.add_argument("ids", nargs="*")
+    p.add_argument("--subgraph", help="every paper this subgraph cites")
+    p.add_argument("--force", action="store_true", help="replace full text that is already attached")
+    p.set_defaults(func=cmd_fetch)
 
     p = sub.add_parser("new", help="start a subgraph for a research question")
     p.add_argument("slug")
