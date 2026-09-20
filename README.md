@@ -1,6 +1,6 @@
 # scibraid
 
-scibraid records what the literature says about a research question as a graph of hypotheses, experiments, conditions, observations and interpretations. A coding agent reads the papers and builds the graph. Every link carries a verbatim quote from the source, which a tool checks against the paper's text, so the graph cannot cite evidence that does not exist. Graphs built for different questions are pooled without being merged, and the agent then judges which of their nodes are the same. That can show what no single review was looking for, such as a condition shared by failures in two unrelated lines of work. There is no corpus to process first and no server to join, and the first graph is already a literature review whose claims can be checked.
+scibraid is an agentic approach to literature review: agents build traceable evidence graphs from the scientific literature. Given a research question, they identify hypotheses, experiments, conditions and results, grounding each relationship in evidence from the original papers. Independent reviews can then be braided together to discover connections and contradictions that emerge only when different questions bring different parts of the literature into contact.
 
 ![A subgraph in the viewer, with the evidence for and against each hypothesis listed beside it](docs/viewer-overview.png)
 
