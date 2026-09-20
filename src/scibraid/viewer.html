@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>scibraid browser</title>
+<style>
+:root {
+  color-scheme: light;
+  --surface: #fcfcfb; --surface-2: #f3f2ee; --border: #dddbd3;
+  --text: #1a1a19; --text-2: #5a594f; --text-3: #85847a;
+  --hypothesis: #2a78d6; --experiment: #eda100; --observation: #008300; --interpretation: #e87ba4;
+  --condition: #8d8c82;
+  --supports: #2a78d6; --contradicts: #e34948; --edge: #a9a79d; --same: #85847a;
+  --focus: #1a1a19;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --surface: #1a1a19; --surface-2: #262624; --border: #3d3d39;
+    --text: #ffffff; --text-2: #c3c2b7; --text-3: #8f8e84;
+    --hypothesis: #3987e5; --experiment: #c98500; --observation: #008300; --interpretation: #d55181;
+    --condition: #7d7c73;
+    --supports: #3987e5; --contradicts: #e66767; --edge: #5f5e57; --same: #8f8e84;
+    --focus: #ffffff;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --surface: #1a1a19; --surface-2: #262624; --border: #3d3d39;
+  --text: #ffffff; --text-2: #c3c2b7; --text-3: #8f8e84;
+  --hypothesis: #3987e5; --experiment: #c98500; --observation: #008300; --interpretation: #d55181;
+  --condition: #7d7c73;
+  --supports: #3987e5; --contradicts: #e66767; --edge: #5f5e57; --same: #8f8e84;
+  --focus: #ffffff;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { height: 100%; margin: 0; }
+body { background: var(--surface); color: var(--text); font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
+  display: grid; grid-template-rows: auto auto 1fr; }
+header { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--border); }
+header h1 { font-size: 15px; margin: 0 6px 0 0; font-weight: 650; }
+select, input[type=search], button { font: inherit; color: var(--text); background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: 6px; padding: 5px 8px; }
+button { cursor: pointer; } button:hover { border-color: var(--text-3); }
+button[aria-pressed="true"] { border-color: var(--text); }
+input[type=search] { width: 200px; }
+#question { flex-basis: 100%; color: var(--text-2); font-size: 13px; }
+#filters { display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: center; padding: 8px 16px; border-bottom: 1px solid var(--border); font-size: 13px; }
+.group { display: flex; flex-wrap: wrap; gap: 4px 6px; align-items: center; }
+.group > span.title { color: var(--text-3); margin-right: 2px; }
+.chip { display: inline-flex; align-items: center; gap: 6px; padding: 3px 9px; border: 1px solid var(--border); border-radius: 999px;
+  background: var(--surface-2); cursor: pointer; user-select: none; color: var(--text); font: inherit; font-size: 13px; }
+.chip[aria-pressed="false"] { opacity: .45; text-decoration: line-through; }
+.swatch { width: 12px; height: 12px; display: inline-block; flex: none; }
+.swatch.hypothesis { background: var(--hypothesis); border-radius: 4px; width: 16px; }
+.swatch.experiment { background: var(--experiment); }
+.swatch.condition { background: var(--condition); clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%); width: 14px; }
+.swatch.observation { background: var(--observation); border-radius: 50%; }
+.swatch.interpretation { background: var(--interpretation); clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); width: 14px; height: 14px; }
+.line { width: 22px; height: 0; border-top: 3px solid var(--edge); display: inline-block; }
+.line.supports { border-color: var(--supports); } .line.contradicts { border-color: var(--contradicts); }
+.line.aligned { border-color: var(--focus); border-top-width: 2px; }
+.line.model { border-top-style: dashed; } .line.same { border-top: 2px dotted var(--same); }
+label.range { display: inline-flex; gap: 6px; align-items: center; }
+main { display: grid; grid-template-columns: minmax(0, 1fr) 400px; min-height: 0; }
+#stage { position: relative; min-height: 0; }
+#cy, #table { position: absolute; inset: 0; }
+#table { overflow: auto; padding: 0 16px 16px; display: none; }
+body.table #table { display: block; } body.table #cy { visibility: hidden; }
+#notice { position: absolute; left: 16px; top: 12px; color: var(--text-2); max-width: 520px; }
+table { border-collapse: collapse; width: 100%; font-size: 13px; }
+th { position: sticky; top: 0; background: var(--surface); text-align: left; color: var(--text-2); font-weight: 600; cursor: pointer; white-space: nowrap; }
+th, td { padding: 6px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+tbody tr { cursor: pointer; } tbody tr:hover { background: var(--surface-2); }
+aside { border-left: 1px solid var(--border); overflow: auto; padding: 14px 16px 24px; min-height: 0; }
+aside h2 { font-size: 15px; margin: 0 0 4px; line-height: 1.3; }
+aside h3 { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--text-3); margin: 18px 0 6px; font-weight: 600; }
+.meta { color: var(--text-2); font-size: 13px; display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; }
+.id { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; color: var(--text-3); word-break: break-all; }
+.card { border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; margin: 6px 0; background: var(--surface-2); }
+.card.link { cursor: pointer; } .card.link:hover { border-color: var(--text-3); }
+.rel { font-weight: 600; } .rel.supports { color: var(--text); } .rel.contradicts { color: var(--text); }
+.pill { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text-2); }
+blockquote { margin: 6px 0 2px; padding: 2px 0 2px 10px; border-left: 3px solid var(--border); color: var(--text-2); font-size: 13px; }
+.note { font-size: 13px; color: var(--text-2); font-style: italic; margin-top: 4px; }
+.src { font-size: 12px; color: var(--text-3); } .src a { color: inherit; }
+.bar { display: flex; height: 8px; gap: 2px; margin: 6px 0 2px; }
+.bar i { display: block; border-radius: 2px; min-width: 3px; }
+.bar .s { background: var(--supports); } .bar .c { background: var(--contradicts); }
+dl { display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; margin: 4px 0; font-size: 13px; }
+dt { color: var(--text-3); } dd { margin: 0; word-break: break-word; }
+@media (max-width: 860px) {
+  main { grid-template-columns: 1fr; grid-template-rows: 55vh auto; }
+  aside { border-left: 0; border-top: 1px solid var(--border); }
+  body { grid-template-rows: auto auto auto; height: auto; }
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>scibraid</h1>
+  <select id="pick" aria-label="Subgraph"></select>
+  <input id="search" type="search" placeholder="Search nodes…" aria-label="Search nodes">
+  <button id="viewGraph" aria-pressed="true">Graph</button>
+  <button id="viewTable" aria-pressed="false">Table</button>
+  <button id="relayout">Re-layout</button>
+  <button id="fit">Fit</button>
+  <button id="theme" title="Toggle light / dark">Theme</button>
+  <div id="question"></div>
+</header>
+<div id="filters">
+  <div class="group" id="typeChips"><span class="title">Nodes</span></div>
+  <div class="group" id="relChips"><span class="title">Edges</span></div>
+  <div class="group"><span class="title">Asserted by</span>
+    <select id="by" aria-label="Asserted by"><option value="">anyone</option><option value="author">paper's authors</option><option value="model">extracting model</option></select></div>
+  <label class="range">Min confidence <input id="conf" type="range" min="0" max="1" step="0.05" value="0"><span id="confOut">0.00</span></label>
+  <div class="group"><span class="title">Key</span>
+    <span class="pill"><span class="line supports"></span>supports</span>
+    <span class="pill"><span class="line contradicts"></span>contradicts</span>
+    <span class="pill"><span class="line model"></span>model-asserted</span>
+    <span class="pill" id="alignKey" hidden><span class="line aligned"></span>judged same / narrower</span>
+    <span class="pill" id="sameKey" hidden><span class="line same"></span>related, or same id not yet judged</span></div>
+</div>
+<main>
+  <div id="stage"><div id="cy"></div><div id="notice"></div><div id="table"></div></div>
+  <aside id="panel"></aside>
+</main>
+
+<script id="data" type="application/json">/*__DATA__*/</script>
+<script src="https://cdn.jsdelivr.net/npm/cytoscape@3.30.2/dist/cytoscape.min.js"></script>
+<script>
+"use strict";
+const DATA = JSON.parse(document.getElementById("data").textContent);
+const TYPES = ["hypothesis", "experiment", "condition", "observation", "interpretation"];
+const SHAPES = { hypothesis: "round-rectangle", experiment: "rectangle", condition: "hexagon", observation: "ellipse", interpretation: "diamond" };
+const OUTCOME = { positive: "+", negative: "−", null: "∅", inconclusive: "?", mixed: "±" };
+const $ = (id) => document.getElementById(id);
+const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+
+// el("div", {class: "x", onclick: f}, child, "text", ...) - text always goes in as text nodes.
+function el(tag, attrs, ...children) {
+  const node = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs || {})) {
+    if (k.startsWith("on")) node.addEventListener(k.slice(2), v);
+    else if (v !== false && v != null) node.setAttribute(k, v === true ? "" : v);
+  }
+  const spans = attrs && attrs.class === "meta";
+  for (const child of children.flat(Infinity)) {
+    if (child == null || child === false || child === "") continue;
+    node.append(spans && typeof child !== "object" ? el("span", {}, String(child)) : child);
+  }
+  return node;
+}
+
+function add(parent, ...children) {
+  for (const child of children.flat(Infinity)) if (child != null && child !== false) parent.append(child);
+  return parent;
+}
+
+const state = { slug: null, types: new Set(TYPES), rels: null, by: "", conf: 0, query: "", selected: null, sort: ["relation", 1] };
+let cy = null, model = null;
+
+// ---- model: the union of the chosen subgraphs, ids namespaced by slug -------
+function build(slug) {
+  const graphs = slug === "*" ? DATA.subgraphs : DATA.subgraphs.filter((g) => g.slug === slug);
+  const many = graphs.length > 1;
+  const nodes = new Map(), edges = [], papers = {};
+  for (const g of graphs) {
+    Object.assign(papers, g.papers);
+    for (const n of Object.values(g.nodes)) nodes.set(`${g.slug}/${n.id}`, { ...n, key: `${g.slug}/${n.id}`, slug: g.slug });
+    g.edges.forEach((e, i) => edges.push({ ...e, key: `${g.slug}#${i}`, slug: g.slug, s: `${g.slug}/${e.source}`, t: `${g.slug}/${e.target}` }));
+  }
+  // Identical ids in different subgraphs: the cheapest possible alignment candidates.
+  const same = [];
+  if (many) {
+    const byId = new Map();
+    for (const n of nodes.values()) byId.set(n.id, [...(byId.get(n.id) || []), n.key]);
+    for (const [id, keys] of byId) for (let i = 1; i < keys.length; i++) same.push({ key: `same:${id}:${i}`, s: keys[0], t: keys[i], id });
+  }
+  const links = [];
+  (DATA.alignments || []).forEach((x, i) => {
+    if (x.verdict !== "different" && nodes.has(x.a) && nodes.has(x.b)) links.push({ ...x, key: `align#${i}`, s: x.a, t: x.b });
+  });
+  const judged = new Set((DATA.alignments || []).map((x) => `${x.a}|${x.b}`));
+  const unjudged = same.filter((p) => !judged.has(`${p.s}|${p.t}`) && !judged.has(`${p.t}|${p.s}`));
+  // A lead is shown wherever at least two of the nodes it rests on are on screen.
+  const leads = (DATA.leads || []).map((l) => ({ ...l, key: `lead:${l.id}`, present: l.nodes.filter((k) => nodes.has(k)) })).filter((l) => l.present.length >= 2);
+  return { graphs, many, nodes, edges, papers, same: unjudged, links, leads };
+}
+
+function visible() {
+  const edges = model.edges.filter((e) => state.rels.has(e.relation) && e.confidence >= state.conf && (!state.by || e.asserted_by === state.by)
+    && state.types.has(model.nodes.get(e.s).type) && state.types.has(model.nodes.get(e.t).type));
+  const nodes = [...model.nodes.values()].filter((n) => state.types.has(n.type));
+  return { nodes, edges };
+}
+
+const short = (text, n = 64) => (text.length > n ? text.slice(0, n - 1).trimEnd() + "…" : text);
+const canvasLabel = (n) => (n.outcome ? OUTCOME[n.outcome] + " " : "") + short(n.label);
+
+// ---- graph ------------------------------------------------------------------
+function cyStyle() {
+  const text = css("--text"), surface = css("--surface");
+  const style = [
+    { selector: "node", style: { label: "data(label)", "font-size": 10, color: text, "text-wrap": "wrap", "text-max-width": 130,
+        "text-valign": "bottom", "text-margin-y": 4, "text-background-color": surface, "text-background-opacity": 0.85, "text-background-padding": 2,
+        width: 26, height: 26, "border-width": 2, "border-color": surface, "min-zoomed-font-size": 6 } },
+    { selector: "node[type='hypothesis']", style: { width: 58, height: 34, "font-size": 17, "font-weight": 600, "text-max-width": 230, "min-zoomed-font-size": 0 } },
+    { selector: "node[derived='yes']", style: { "border-style": "dashed", "border-color": css("--focus"), "border-width": 3, "background-opacity": 0.55 } },
+    { selector: "edge", style: { width: "mapData(confidence, 0, 1, 1, 4.5)", "line-color": css("--edge"), "target-arrow-color": css("--edge"),
+        "target-arrow-shape": "triangle", "arrow-scale": 0.9, "curve-style": "bezier", opacity: 0.85,
+        "font-size": 9, color: css("--text-2"), "text-background-color": surface, "text-background-opacity": 0.9, "text-background-padding": 2, "text-rotation": "autorotate" } },
+    { selector: "edge[relation='supports']", style: { "line-color": css("--supports"), "target-arrow-color": css("--supports"), label: "supports" } },
+    { selector: "edge[relation='contradicts']", style: { "line-color": css("--contradicts"), "target-arrow-color": css("--contradicts"), label: "contradicts" } },
+    { selector: "edge[by='model']", style: { "line-style": "dashed" } },
+    { selector: "edge[relation='same']", style: { "line-style": "dotted", width: 2, "line-color": css("--same"), "target-arrow-shape": "none", label: "same id" } },
+    { selector: "edge[relation='aligned']", style: { width: 2.5, "line-color": css("--focus"), "target-arrow-color": css("--focus"), "target-arrow-shape": "none", opacity: 0.7, label: "data(verdict)" } },
+    { selector: "edge[verdict='narrower'], edge[verdict='broader']", style: { "target-arrow-shape": "triangle" } },
+    { selector: "edge[verdict='related']", style: { "line-style": "dotted", width: 2, "line-color": css("--same") } },
+    { selector: "edge.lit[relation!='aligned']", style: { label: "data(relation)", "font-size": 11, "min-zoomed-font-size": 0 } },
+    { selector: "node.near", style: { "font-size": 13, "min-zoomed-font-size": 0, "z-index": 10 } },
+    { selector: ".faded", style: { opacity: 0.12, "text-opacity": 0 } },
+    { selector: "node.hit", style: { "border-color": css("--focus"), "border-width": 3 } },
+    { selector: ":selected", style: { "border-color": css("--focus"), "border-width": 4, "overlay-opacity": 0 } },
+    { selector: "edge:selected", style: { "overlay-color": css("--focus"), "overlay-opacity": 0.15, label: "data(relation)" } },
+  ];
+  for (const t of TYPES) style.push({ selector: `node[type='${t}']`, style: { "background-color": css(`--${t}`), shape: SHAPES[t] } });
+  return style;
+}
+
+function draw(relayout) {
+  renderTable();
+  if (!cy) return;
+  const { nodes, edges } = visible();
+  const keep = new Set(nodes.map((n) => n.key));
+  const positions = {};
+  cy.nodes().forEach((n) => { positions[n.id()] = { ...n.position() }; });
+  const fresh = relayout || nodes.some((n) => !positions[n.key]);
+  cy.elements().remove();
+  cy.add(nodes.map((n) => ({ group: "nodes", data: { id: n.key, label: canvasLabel(n), type: n.type, derived: n.derived_from ? "yes" : "no" }, position: positions[n.key] })));
+  cy.add(edges.map((e) => ({ group: "edges", data: { id: e.key, source: e.s, target: e.t, relation: e.relation, confidence: e.confidence, by: e.asserted_by } })));
+  cy.add(model.same.filter((s) => keep.has(s.s) && keep.has(s.t))
+    .map((s) => ({ group: "edges", data: { id: s.key, source: s.s, target: s.t, relation: "same", confidence: 0.3 } })));
+  cy.add(model.links.filter((x) => keep.has(x.s) && keep.has(x.t)).map((x) => {
+    // draw narrower-than from the narrower node to the broader one
+    const flip = x.verdict === "broader";
+    return { group: "edges", data: { id: x.key, source: flip ? x.t : x.s, target: flip ? x.s : x.t, relation: "aligned", verdict: flip ? "narrower" : x.verdict, confidence: x.confidence } };
+  }));
+  if (fresh) {
+    const box = $("cy").getBoundingClientRect(), scale = Math.max(1, Math.sqrt(nodes.length / 28));
+    cy.layout({ name: "cose", animate: false, randomize: true, boundingBox: { x1: 0, y1: 0, w: box.width * scale, h: box.height * scale },
+      nodeRepulsion: () => 9000, idealEdgeLength: () => 70, edgeElasticity: () => 100, gravity: 0.6, numIter: 3000,
+      nodeDimensionsIncludeLabels: false, nodeOverlap: 24, componentSpacing: 60, padding: 30 }).run();
+  }
+  highlight();
+}
+
+function highlight() {
+  if (!cy) return;
+  cy.elements().removeClass("faded lit hit near").unselect();
+  const q = state.query.toLowerCase();
+  if (q) cy.nodes().forEach((n) => { const m = model.nodes.get(n.id()); if ((m.label + " " + m.id + " " + (m.description || "")).toLowerCase().includes(q)) n.addClass("hit"); });
+  const lead = model.leads.find((l) => l.key === state.selected);
+  if (lead) {
+    let hood = cy.collection();
+    lead.present.forEach((k) => { hood = hood.union(cy.getElementById(k)); });
+    hood = hood.union(hood.edgesWith(hood));
+    lead.alignments.forEach(([a, b]) => { hood = hood.union(cy.edges().filter((e) => e.data("relation") === "aligned" && [a, b].includes(e.data("source")) && [a, b].includes(e.data("target")))); });
+    cy.elements().not(hood).addClass("faded");
+    hood.edges().addClass("lit");
+    hood.nodes().addClass("near hit");
+    return;
+  }
+  const sel = state.selected && cy.getElementById(state.selected);
+  if (sel && sel.nonempty()) {
+    const hood = sel.isNode() ? sel.closedNeighborhood() : sel.union(sel.connectedNodes());
+    cy.elements().not(hood).addClass("faded");
+    hood.edges().addClass("lit");
+    hood.nodes().addClass("near");
+    sel.select();
+  } else if (q) {
+    cy.elements().not(cy.nodes(".hit")).addClass("faded");
+  }
+}
+
+function writeHash() {
+  const params = new URLSearchParams({ g: state.slug });
+  if (state.selected) params.set("sel", state.selected);
+  history.replaceState(null, "", "#" + params);
+}
+
+function select(key, centre) {
+  state.selected = key;
+  writeHash();
+  highlight();
+  renderPanel();
+  const chosen = model.leads.find((l) => l.key === key);
+  if (chosen && cy) {
+    let eles = cy.collection();
+    chosen.present.forEach((k) => { eles = eles.union(cy.getElementById(k)); });
+    if (eles.nonempty()) cy.fit(eles, 120);
+  } else if (centre && cy && key) {
+    const e = cy.getElementById(key);
+    if (e.nonempty()) {
+      cy.fit(e.isNode() ? e.closedNeighborhood() : e.union(e.connectedNodes()), 90);
+      if (cy.zoom() > 1.3) cy.zoom({ level: 1.3, renderedPosition: { x: cy.width() / 2, y: cy.height() / 2 } });
+    }
+  }
+}
+
+// ---- side panel ---------------------------------------------------------------
+function provenance(list) {
+  return (list || []).map((p) => {
+    const paper = model.papers[p.paper_id] || {};
+    const cite = [paper.authors && paper.authors.length ? paper.authors[0].split(" ").pop() + (paper.authors.length > 1 ? " et al." : "") : null, paper.year].filter(Boolean).join(" ");
+    const mark = p.verified === true ? "✓ verified" : p.verified === false ? "✗ not in source" : "unverified";
+    return el("div", {}, el("blockquote", {}, "“" + p.passage + "”"),
+      el("div", { class: "src" }, paper.url ? el("a", { href: paper.url, target: "_blank", rel: "noopener" }, cite || p.paper_id) : (cite || p.paper_id),
+        paper.title ? ` · ${short(paper.title, 70)}` : "", ` · ${p.location} · ${mark}`));
+  });
+}
+
+function edgeCard(e, from) {
+  const other = model.nodes.get(from === e.s ? e.t : e.s);
+  const arrow = from === e.s ? "→" : "←";
+  return el("div", { class: "card link", onclick: () => select(e.key, true) },
+    el("div", {}, el("span", { class: `rel ${e.relation}` }, `${arrow} ${e.relation.replace(/_/g, " ")} `), short(other.label, 90)),
+    el("div", { class: "meta" }, `confidence ${e.confidence.toFixed(2)}`, `by ${e.asserted_by}`, (model.papers[e.provenance[0].paper_id] || {}).year || ""));
+}
+
+function nodeLink(n) {
+  return el("div", { class: "card link", onclick: () => select(n.key, true) },
+    el("div", { class: "meta" }, el("span", { class: `swatch ${n.type}` }), n.type, n.outcome ? `${OUTCOME[n.outcome]} ${n.outcome}` : ""), el("div", {}, n.label));
+}
+
+function renderPanel() {
+  const panel = $("panel");
+  panel.replaceChildren();
+  const node = model.nodes.get(state.selected), edge = model.edges.find((e) => e.key === state.selected);
+  const same = model.same.find((s) => s.key === state.selected);
+  const link = model.links.find((x) => x.key === state.selected);
+  if (node) {
+    const touching = model.edges.filter((e) => e.s === node.key || e.t === node.key).sort((a, b) => a.relation.localeCompare(b.relation) || b.confidence - a.confidence);
+    add(panel, 
+      el("div", { class: "meta" }, el("span", { class: `swatch ${node.type}` }), node.type, node.outcome ? `outcome: ${OUTCOME[node.outcome]} ${node.outcome}` : "", model.many ? `in ${node.slug}` : ""),
+      el("h2", {}, node.label), el("div", { class: "id" }, node.id),
+      node.description ? el("p", {}, node.description) : null,
+      node.derived_from ? el("div", { class: "card" }, el("div", { class: "rel" }, "Derived from the pool, not from a paper"),
+        el("div", {}, `Proposed by lead ${node.derived_from.lead} at confidence ${node.derived_from.confidence.toFixed(2)}. It has no standing of its own: only the paper evidence linked to it counts.`)) : null);
+    const attrs = Object.entries(node.attrs || {});
+    if (attrs.length) add(panel, el("h3", {}, "Attributes"), el("dl", {}, attrs.map(([k, v]) => [el("dt", {}, k), el("dd", {}, Array.isArray(v) ? v.join(", ") : String(v))])));
+    if (node.provenance && node.provenance.length) add(panel, el("h3", {}, "Source passages"), provenance(node.provenance));
+    add(panel, el("h3", {}, `Relationships (${touching.length})`), touching.map((e) => edgeCard(e, node.key)));
+    const aligned = model.links.filter((x) => x.s === node.key || x.t === node.key);
+    if (aligned.length) add(panel, el("h3", {}, "Aligned with other subgraphs"), aligned.map((x) => { const other = model.nodes.get(x.s === node.key ? x.t : x.s);
+      return el("div", { class: "card link", onclick: () => select(x.key, true) }, el("div", {}, el("span", { class: "rel" }, x.verdict + " "), short(other.label, 90)), el("div", { class: "meta" }, `confidence ${x.confidence.toFixed(2)}`, `in ${other.slug}`)); }));
+    const twins = model.same.filter((s) => s.s === node.key || s.t === node.key).map((s) => model.nodes.get(s.s === node.key ? s.t : s.s));
+    if (twins.length) add(panel, el("h3", {}, "Same id in another subgraph"), twins.map((n) => el("div", { class: "card link", onclick: () => select(n.key, true) }, n.slug)));
+  } else if (edge) {
+    add(panel, 
+      el("div", { class: "meta" }, "relationship", model.many ? `in ${edge.slug}` : ""),
+      el("h2", {}, edge.relation.replace(/_/g, " ")),
+      el("dl", {}, el("dt", {}, "confidence"), el("dd", {}, edge.confidence.toFixed(2)),
+        el("dt", {}, "asserted by"), el("dd", {}, edge.asserted_by === "model" ? "the extracting model (an inference, not stated in the paper)" : "the paper's authors")),
+      edge.note ? el("div", { class: "note" }, edge.note) : null,
+      el("h3", {}, "From"), nodeLink(model.nodes.get(edge.s)), el("h3", {}, "To"), nodeLink(model.nodes.get(edge.t)),
+      el("h3", {}, "Source passage"), provenance(edge.provenance));
+  } else if (model.leads.some((l) => l.key === state.selected)) {
+    const lead = model.leads.find((l) => l.key === state.selected);
+    const STATUS = { candidate: "not yet checked", holds: "holds up so far, literature review pending", open: "open research question: needs new empirical work", known: "already in the literature", refuted: "refuted" };
+    add(panel, el("div", { class: "meta" }, "lead", lead.kind.replace(/_/g, " "), `${lead.status}: ${STATUS[lead.status]}`), el("h2", {}, lead.claim),
+      el("dl", {}, el("dt", {}, "confidence"), el("dd", {}, lead.confidence.toFixed(2)), el("dt", {}, "updated"), el("dd", {}, lead.updated)),
+      lead.follow_up ? [el("h3", {}, "Next question"), el("div", { class: "card" }, lead.follow_up)] : null,
+      lead.checks.length ? [el("h3", {}, "Checks"), lead.checks.map((c) => el("div", { class: "card" }, el("div", { class: "rel" }, c.question), el("div", {}, c.finding),
+        c.sources.length ? el("div", { class: "src" }, c.sources.join(" · ")) : null))] : null,
+      lead.would_confirm ? [el("h3", {}, "Would confirm"), el("div", {}, lead.would_confirm)] : null,
+      lead.would_refute ? [el("h3", {}, "Would refute"), el("div", {}, lead.would_refute)] : null,
+      lead.known_in.length ? [el("h3", {}, "Already said in"), lead.known_in.map((k) => el("div", { class: "src" }, k))] : null,
+      el("h3", {}, "Rests on"), lead.present.map((k) => nodeLink(model.nodes.get(k))),
+      lead.present.length < lead.nodes.length ? el("p", { class: "src" }, `${lead.nodes.length - lead.present.length} more node(s) are in a subgraph not shown. Choose "All subgraphs together".`) : null);
+  } else if (link) {
+    add(panel, el("div", { class: "meta" }, "alignment verdict"), el("h2", {}, link.verdict === "same" ? "Judged to be the same thing" : `First is ${link.verdict} ${link.verdict === "related" ? "to" : "than"} second`),
+      el("dl", {}, el("dt", {}, "confidence"), el("dd", {}, link.confidence.toFixed(2)), el("dt", {}, "judged"), el("dd", {}, link.judged || "")),
+      el("div", { class: "note" }, link.rationale), el("h3", {}, "First"), nodeLink(model.nodes.get(link.s)), el("h3", {}, "Second"), nodeLink(model.nodes.get(link.t)));
+  } else if (same) {
+    add(panel, el("div", { class: "meta" }, "alignment candidate"), el("h2", {}, "Same id in two subgraphs"), el("div", { class: "id" }, same.id),
+      el("p", {}, "These nodes were minted independently with an identical id. Not yet judged to be the same thing."), nodeLink(model.nodes.get(same.s)), nodeLink(model.nodes.get(same.t)));
+  } else {
+    overview(panel);
+  }
+}
+
+function overview(panel) {
+  const count = (pred) => model.edges.filter(pred).length;
+  add(panel, el("h2", {}, model.many ? "All subgraphs" : model.graphs[0].slug),
+    el("div", { class: "meta" }, `${Object.keys(model.papers).length} papers`, `${model.nodes.size} nodes`, `${model.edges.length} relationships`,
+      `${count((e) => e.asserted_by === "model")} model-asserted`),
+    el("p", { class: "src" }, "Click a node or an edge for its passages. Click empty space to come back here."),
+    el("h3", {}, "Hypotheses: evidence for and against"));
+  for (const h of [...model.nodes.values()].filter((n) => n.type === "hypothesis")) {
+    const s = model.edges.filter((e) => e.t === h.key && e.relation === "supports"), c = model.edges.filter((e) => e.t === h.key && e.relation === "contradicts");
+    const papers = (list) => new Set(list.map((e) => e.provenance[0].paper_id)).size;
+    add(panel, el("div", { class: "card link", onclick: () => select(h.key, true) }, el("div", {}, h.label),
+      s.length + c.length ? el("div", { class: "bar" }, s.map(() => el("i", { class: "s", style: "flex:1" })), c.map(() => el("i", { class: "c", style: "flex:1" }))) : null,
+      el("div", { class: "meta" }, `${s.length} supporting (${papers(s)} papers)`, `${c.length} contradicting (${papers(c)} papers)`)));
+  }
+  const clashes = model.edges.filter((e) => e.relation === "contradicts" && model.nodes.get(e.t).type === "observation");
+  if (clashes.length) add(panel, el("h3", {}, "Results in conflict"), clashes.map((e) => el("div", { class: "card link", onclick: () => select(e.key, true) },
+    short(model.nodes.get(e.s).label, 80), el("div", { class: "meta" }, "contradicts"), short(model.nodes.get(e.t).label, 80))));
+  if (model.leads.length) add(panel, el("h3", {}, `Leads (${model.leads.length})`), model.leads.map((l) => el("div", { class: "card link", onclick: () => select(l.key, true) },
+    el("div", { class: "meta" }, l.status, l.kind.replace(/_/g, " "), l.confidence.toFixed(2)), short(l.claim, 170))));
+  const joins = model.links.filter((x) => x.verdict !== "related");
+  if (joins.length) add(panel, el("h3", {}, `Judged same, narrower or broader (${joins.length})`), joins.map((x) => el("div", { class: "card link", onclick: () => select(x.key, true) },
+    el("div", { class: "meta" }, x.verdict, x.confidence.toFixed(2)), short(model.nodes.get(x.s).label, 70), el("div", { class: "src" }, short(model.nodes.get(x.t).label, 70)))));
+  const related = model.links.filter((x) => x.verdict === "related" && model.nodes.get(x.s).type === "hypothesis");
+  if (related.length) add(panel, el("h3", {}, `Hypotheses judged related (${related.length})`), related.map((x) => el("div", { class: "card link", onclick: () => select(x.key, true) },
+    short(model.nodes.get(x.s).label, 70), el("div", { class: "src" }, short(model.nodes.get(x.t).label, 70)), el("div", { class: "note" }, short(x.rationale, 160)))));
+  if (model.same.length) add(panel, el("h3", {}, `Identical ids not yet judged (${model.same.length})`), model.same.map((s) =>
+    el("div", { class: "card link", onclick: () => select(s.key, true) }, el("span", { class: "id" }, s.id))));
+  add(panel, el("h3", {}, "Papers"), Object.values(model.papers).sort((a, b) => (a.year || 0) - (b.year || 0)).map((p) =>
+    el("div", { class: "src", style: "margin:4px 0" }, p.url ? el("a", { href: p.url, target: "_blank", rel: "noopener" }, p.title) : p.title, ` (${p.year || "n.d."}, ${p.source_tier})`)));
+}
+
+// ---- table view -----------------------------------------------------------------
+function renderTable() {
+  const cols = [["source", (e) => model.nodes.get(e.s).label], ["relation", (e) => e.relation], ["target", (e) => model.nodes.get(e.t).label],
+    ["confidence", (e) => e.confidence], ["by", (e) => e.asserted_by], ["paper", (e) => { const p = model.papers[e.provenance[0].paper_id] || {}; return `${(p.authors || [""])[0].split(" ").pop()} ${p.year || ""}`; }]];
+  const [key, dir] = state.sort, get = cols.find((c) => c[0] === key)[1];
+  const rows = visible().edges.sort((a, b) => (get(a) > get(b) ? 1 : get(a) < get(b) ? -1 : 0) * dir);
+  $("table").replaceChildren(el("table", {},
+    el("thead", {}, el("tr", {}, cols.map(([name]) => el("th", { onclick: () => { state.sort = [name, key === name ? -dir : 1]; renderTable(); } }, name + (key === name ? (dir > 0 ? " ▲" : " ▼") : ""))))),
+    el("tbody", {}, rows.map((e) => el("tr", { onclick: () => select(e.key) }, cols.map(([name, f]) => el("td", {}, name === "confidence" ? f(e).toFixed(2) : String(f(e)))))))));
+}
+
+// ---- controls ---------------------------------------------------------------------
+function chips(host, values, set, render) {
+  for (const v of values) host.append(el("button", { class: "chip", "aria-pressed": "true", onclick: (ev) => {
+    const on = !set.has(v); on ? set.add(v) : set.delete(v);
+    ev.currentTarget.setAttribute("aria-pressed", String(on)); draw();
+  } }, render(v)));
+}
+
+function load(slug) {
+  state.slug = slug; state.selected = null;
+  model = build(slug);
+  $("question").textContent = model.many ? `${model.graphs.length} subgraphs shown together` : model.graphs[0].question;
+  $("sameKey").hidden = !(model.same.length || model.links.length);
+  $("alignKey").hidden = !model.links.length;
+  if (cy) cy.elements().remove();
+  draw(true); renderPanel();
+  if (cy) cy.fit(undefined, 30);
+  writeHash();
+}
+
+function init() {
+  const pick = $("pick");
+  for (const g of DATA.subgraphs) pick.append(el("option", { value: g.slug }, `${g.slug} (${Object.keys(g.nodes).length} nodes)`));
+  if (DATA.subgraphs.length > 1) pick.append(el("option", { value: "*" }, "All subgraphs together"));
+  pick.addEventListener("change", () => load(pick.value));
+
+  state.rels = new Set(DATA.subgraphs.flatMap((g) => g.edges.map((e) => e.relation)));
+  chips($("typeChips"), TYPES, state.types, (t) => [el("span", { class: `swatch ${t}` }), t]);
+  chips($("relChips"), [...state.rels].sort(), state.rels, (r) => r.replace(/_/g, " "));
+  $("by").addEventListener("change", (e) => { state.by = e.target.value; draw(); });
+  $("conf").addEventListener("input", (e) => { state.conf = +e.target.value; $("confOut").textContent = state.conf.toFixed(2); draw(); });
+  $("search").addEventListener("input", (e) => { state.query = e.target.value.trim(); highlight(); });
+  const view = (table) => { document.body.classList.toggle("table", table); $("viewTable").setAttribute("aria-pressed", String(table)); $("viewGraph").setAttribute("aria-pressed", String(!table)); if (!table && cy) cy.resize(); };
+  $("viewGraph").addEventListener("click", () => view(false));
+  $("viewTable").addEventListener("click", () => view(true));
+  $("relayout").addEventListener("click", () => { draw(true); cy && cy.fit(undefined, 30); });
+  $("fit").addEventListener("click", () => cy && cy.fit(undefined, 30));
+  $("theme").addEventListener("click", () => {
+    const dark = getComputedStyle(document.documentElement).colorScheme.includes("dark");
+    document.documentElement.dataset.theme = dark ? "light" : "dark";
+    if (cy) cy.style(cyStyle());
+  });
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => cy && cy.style(cyStyle()));
+
+  if (!DATA.subgraphs.length) { $("notice").textContent = "No subgraphs to show. Build one with the evidence-subgraph skill."; return; }
+  if (window.cytoscape) {
+    cy = cytoscape({ container: $("cy"), style: cyStyle(), wheelSensitivity: 0.3, minZoom: 0.15, maxZoom: 3 });
+    cy.on("tap", (ev) => select(ev.target === cy ? null : ev.target.id()));
+  } else {
+    $("notice").textContent = "The graph library could not be loaded (it comes from a CDN, so this needs a network connection). The table view and the detail panel still work.";
+    view(true);
+  }
+  const wanted = new URLSearchParams(location.hash.slice(1));
+  const slug = [...pick.options].some((o) => o.value === wanted.get("g")) ? wanted.get("g") : DATA.subgraphs[0].slug;
+  pick.value = slug;
+  load(slug);
+  if (wanted.get("sel")) select(wanted.get("sel"), true);
+}
+init();
+</script>
+</body>
+</html>
