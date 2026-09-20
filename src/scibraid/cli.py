@@ -81,8 +81,24 @@ def cmd_new(args: argparse.Namespace) -> int:
     if store.subgraph_path(args.slug).exists():
         print(f"subgraph {args.slug!r} already exists", file=sys.stderr)
         return 1
+    lead = None
+    if args.lead:
+        lead = next((x for x in get_pool().leads() if x.id == args.lead), None)
+        if lead is None:
+            print(f"no lead {args.lead!r} in the pool", file=sys.stderr)
+            return 1
+        if lead.status.value == "refuted":
+            print(f"lead {lead.id!r} was refuted; there is nothing to follow up", file=sys.stderr)
+            return 1
+    question = args.question or (lead.follow_up if lead else None)
+    if not question:
+        print("give --question, or --lead for a lead that has a follow-up", file=sys.stderr)
+        return 2
     try:
-        sg = Subgraph(slug=args.slug, question=args.question)
+        sg = Subgraph(slug=args.slug, question=question, prompted_by=lead.id if lead else None)
+        if lead:
+            seed = align.derived_hypothesis(lead)
+            sg.nodes[seed.id] = seed
     except ValidationError as exc:
         _emit({"ok": False, "errors": _errors(exc)})
         return 1
@@ -247,6 +263,9 @@ def cmd_pool(args: argparse.Namespace) -> int:
         print(f"subgraph {sg.slug!r} has no edges; nothing worth pooling", file=sys.stderr)
         return 1
     print(f"pooled {sg.slug} ({_totals(sg)}) -> {pool.push(sg)}")
+    if links := align.derivation_links(sg, pool.subgraphs()):
+        pool.add_alignments(links)
+        print(f"linked {len(links)} derived hypothesis link(s) back to the hypotheses the lead rested on")
     return 0
 
 
@@ -304,7 +323,8 @@ def _print_observations(report: dict) -> None:
         if len(report[key]) > 25:
             print("(first 25; use --format json for all)")
         for item in report[key][:25]:
-            print("-", json.dumps(item, ensure_ascii=False))
+            shown = {k: v for k, v in item.items() if k not in ("keys", "parts")}
+            print("-", json.dumps(shown, ensure_ascii=False))
 
 
 def cmd_lead_add(args: argparse.Namespace) -> int:
@@ -336,9 +356,66 @@ def cmd_lead_list(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_followups(args: argparse.Namespace) -> int:
+    pool = get_pool()
+    found = align.follow_ups(pool.leads(), pool.subgraphs(), store.list_subgraphs())
+    if args.status:
+        found = [f for f in found if f["status"] == args.status]
+    if args.format == "json":
+        _emit(found)
+        return 0
+    for f in found:
+        built = f" -> {', '.join(f['subgraphs'])}" if f["subgraphs"] else ""
+        print(f"{f['status']:11} [{f['lead_status']} {f['lead_confidence']:.2f}] {f['lead']}{built}")
+        print(f"            {f['question']}")
+    return 0
+
+
+def cmd_agenda(args: argparse.Namespace) -> int:
+    pool = get_pool()
+    found = align.agenda(pool.leads(), pool.subgraphs())
+    if args.format == "json":
+        _emit(found)
+        return 0
+    for q in found:
+        print(f"{q['confidence']:.2f}  {q['question']}")
+        print(f"      experiment needed: {q['experiment_needed']}")
+        print(f"      would refute:      {q['would_refute']}")
+        reviewed = ", ".join(q["literature_reviewed_in"]) or "no literature question applied"
+        print(f"      literature:        {reviewed}   (lead {q['lead']})")
+    print(f"{len(found)} open research question(s)")
+    return 0
+
+
+def cmd_repair_list(args: argparse.Namespace) -> int:
+    found = align.open_repairs(get_pool().leads())
+    if args.format == "json":
+        _emit(found)
+        return 0
+    for r in found:
+        print(f"{r['kind']:10} {r['target']}   (lead {r['lead']}, #{r['index']})")
+        print(f"           {r['problem']}")
+    print(f"{len(found)} open repair(s)")
+    return 0
+
+
+def cmd_repair_resolve(args: argparse.Namespace) -> int:
+    pool = get_pool()
+    lead = next((x for x in pool.leads() if x.id == args.lead), None)
+    if lead is None or not 0 <= args.index < len(lead.repairs):
+        print(f"no repair #{args.index} on lead {args.lead!r}", file=sys.stderr)
+        return 1
+    lead.repairs[args.index].resolved = True
+    lead.repairs[args.index].resolution = args.note
+    pool.add_leads([lead])
+    print(f"resolved repair #{args.index} on {lead.id}")
+    return 0
+
+
 def cmd_observe(args: argparse.Namespace) -> int:
     pool = get_pool()
     report = align.observe(pool.subgraphs(), pool.alignments(), args.min_confidence)
+    report = align.mark_covered(report, pool.leads(), only_new=args.new)
     _emit(report) if args.format == "json" else _print_observations(report)
     return 0
 
@@ -371,7 +448,8 @@ def build_parser() -> argparse.ArgumentParser:
 
     p = sub.add_parser("new", help="start a subgraph for a research question")
     p.add_argument("slug")
-    p.add_argument("--question", required=True)
+    p.add_argument("--question", help="defaults to the lead's follow-up when --lead is given")
+    p.add_argument("--lead", help="id of the lead this subgraph follows up; seeds its claim as a derived hypothesis")
     p.set_defaults(func=cmd_new)
 
     p = sub.add_parser("add", help="validate a batch of nodes and edges and apply it")
@@ -427,12 +505,33 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("file", help="JSON file, or - for stdin")
     p.set_defaults(func=cmd_lead_add)
     p = ld_sub.add_parser("list", help="print the pool's leads")
-    p.add_argument("--status", choices=["candidate", "holds", "known", "refuted"])
+    p.add_argument("--status", choices=["candidate", "holds", "open", "known", "refuted"])
     p.add_argument("--format", choices=["text", "json"], default="text")
     p.set_defaults(func=cmd_lead_list)
 
+    p = sub.add_parser("followups", help="leads' follow-up questions and whether a subgraph answers each")
+    p.add_argument("--status", choices=["pending", "in_progress", "reviewed"])
+    p.add_argument("--format", choices=["text", "json"], default="text")
+    p.set_defaults(func=cmd_followups)
+
+    p = sub.add_parser("agenda", help="open research questions: claims the literature cannot settle, and the experiment each needs")
+    p.add_argument("--format", choices=["text", "json"], default="text")
+    p.set_defaults(func=cmd_agenda)
+
+    rp = sub.add_parser("repair", help="faults in subgraphs or verdicts that checking a lead turned up")
+    rp_sub = rp.add_subparsers(dest="repair_command", required=True)
+    p = rp_sub.add_parser("list", help="open repairs")
+    p.add_argument("--format", choices=["text", "json"], default="text")
+    p.set_defaults(func=cmd_repair_list)
+    p = rp_sub.add_parser("resolve", help="mark a repair done")
+    p.add_argument("lead")
+    p.add_argument("index", type=int)
+    p.add_argument("--note", required=True, help="what was changed")
+    p.set_defaults(func=cmd_repair_resolve)
+
     p = sub.add_parser("observe", help="read candidate observations off the aligned pool")
     p.add_argument("--min-confidence", type=float, default=0.7, help="'same' verdicts below this are ignored")
+    p.add_argument("--new", action="store_true", help="hide candidates that a recorded lead already covers")
     p.add_argument("--format", choices=["text", "json"], default="text")
     p.set_defaults(func=cmd_observe)
     return parser

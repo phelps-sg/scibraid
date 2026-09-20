@@ -536,3 +536,118 @@ def test_embedding_vectors_are_cached_and_normalised(monkeypatch):
     embedder.vectors(["a", "b"])
     assert calls == [["a"], ["b"]]  # "a" came from the cache the second time
     assert embed.calibrated(0.65) == 0.0 and embed.calibrated(0.95) == 1.0
+
+
+CHECKS = [{"question": "Is the oxygen level comparable?", "finding": "Yes, both report 1% oxygen.", "sources": ["W1", "W5"]}]
+
+
+def pooled_pair():
+    first = Subgraph(slug="q", question="Does X work?")
+    store.add_batch(first, batch())
+    second = second_subgraph()
+    pool = LocalPool()
+    for sg in (first, second):
+        pool.push(sg)
+        store.save_subgraph(sg)
+    pool.add_alignments([
+        Alignment(a="q/c:hypoxia", b="y/c:low-oxygen", verdict="same", confidence=0.9, rationale="Both mean hypoxic culture."),
+        Alignment(a="q/h:x-reduces-growth", b="y/h:y-slows-growth", verdict="related", confidence=0.6, rationale="Same pathway, different compound."),
+    ])
+    return pool
+
+
+def test_follow_up_runs_from_lead_to_pooled_subgraph_with_a_derived_hypothesis(capsys):
+    pool = pooled_pair()
+    held = lead(status="holds", checks=CHECKS, would_confirm="A dose-response under hypoxia.", would_refute="An effect at 1% oxygen.",
+                nodes=["q/o:no-reduction", "y/o:y-no-effect", "q/h:x-reduces-growth", "y/h:y-slows-growth"],
+                follow_up="Does hypoxia blunt anti-tumour compounds in general?")
+    pool.add_leads([held, lead(id="no-question")])
+    status = lambda: {f["lead"]: f["status"] for f in align.follow_ups(pool.leads(), pool.subgraphs(), store.list_subgraphs())}
+    assert status() == {"hypoxia-blunts-both": "pending"}  # a lead without a follow-up is not listed
+
+    assert main(["new", "hypoxia-general", "--lead", "hypoxia-blunts-both"]) == 0
+    sg = store.load_subgraph("hypoxia-general")
+    assert sg.prompted_by == "hypoxia-blunts-both" and sg.question == held.follow_up
+    [seed] = sg.nodes.values()
+    assert seed.type == "hypothesis" and seed.derived_from.lead == held.id and seed.provenance == []
+    assert "not yet tested" in "\n".join(lint(sg))
+    assert status() == {"hypoxia-blunts-both": "in_progress"}
+
+    # give it one paper-backed link so it is worth pooling
+    store.add_batch(sg, Batch.model_validate({
+        "nodes": [{"id": "o:review", "type": "observation", "outcome": "positive", "label": "Hypoxia blunts Y"}],
+        "edges": [{"source": "o:review", "target": seed.id, "relation": "supports", "confidence": 0.6, "asserted_by": "model",
+                   "provenance": prov("Under low oxygen, drug Y failed to slow growth.", "W5")}]}))
+    store.save_subgraph(sg)
+    assert "not yet tested" not in "\n".join(lint(sg))
+    assert main(["pool", "hypoxia-general"]) == 0
+    assert "linked 2 derived" in capsys.readouterr().out
+    assert status() == {"hypoxia-blunts-both": "reviewed"}
+    # Only now can the question be called open: the literature was reviewed and did not settle it.
+    opened = Lead.model_validate({**held.model_dump(), "status": "open"})
+    assert align.check_leads(pool.subgraphs(), pool.alignments(), [opened]) == []
+    pool.add_leads([opened])
+    [question] = align.agenda(pool.leads(), pool.subgraphs())
+    assert question["experiment_needed"] == "A dose-response under hypoxia." and question["literature_reviewed_in"] == ["hypoxia-general"]
+    assert main(["agenda"]) == 0 and "1 open research question" in capsys.readouterr().out
+    derived = [x for x in pool.alignments() if x.a.startswith("hypoxia-general/")]
+    assert {x.b for x in derived} == {"q/h:x-reduces-growth", "y/h:y-slows-growth"}
+    assert all(x.verdict == "related" and x.confidence == held.confidence for x in derived)
+
+
+def test_new_from_lead_refuses_unknown_and_refuted_leads():
+    pool = pooled_pair()
+    pool.add_leads([lead(id="dead", status="refuted", checks=CHECKS, follow_up="Anything?")])
+    assert main(["new", "a", "--lead", "missing"]) == 1
+    assert main(["new", "a", "--lead", "dead"]) == 1
+    assert main(["new", "a"]) == 2
+
+
+def test_only_a_hypothesis_can_be_derived():
+    with pytest.raises(ValueError, match="only a hypothesis"):
+        Batch.model_validate({"nodes": [{"id": "c:x", "type": "condition", "label": "x", "derived_from": {"lead": "l", "confidence": 0.5}}]})
+
+
+def test_observe_marks_and_hides_what_a_lead_already_covers(capsys):
+    pool = pooled_pair()
+    report = align.observe(pool.subgraphs(), pool.alignments())
+    assert report["shared_condition_failures"] and "leads" not in report["shared_condition_failures"][0]
+    # a lead that names the failed results but not the condition does not cover the candidate
+    pool.add_leads([lead(id="partial")])
+    assert "leads" not in align.mark_covered(align.observe(pool.subgraphs(), pool.alignments()), pool.leads())["shared_condition_failures"][0]
+    pool.add_leads([lead(status="refuted", checks=CHECKS, nodes=["q/o:no-reduction", "y/o:y-no-effect", "q/c:hypoxia"])])
+    marked = align.mark_covered(align.observe(pool.subgraphs(), pool.alignments()), pool.leads())
+    assert marked["shared_condition_failures"][0]["leads"] == [{"id": "hypoxia-blunts-both", "status": "refuted"}]
+    fresh = align.mark_covered(align.observe(pool.subgraphs(), pool.alignments()), pool.leads(), only_new=True)
+    assert fresh["shared_condition_failures"] == []
+    assert main(["observe", "--new"]) == 0 and "hypoxia-blunts-both" not in capsys.readouterr().out
+
+
+def test_repairs_are_listed_until_resolved(capsys):
+    pool = pooled_pair()
+    pool.add_leads([lead(repairs=[{"kind": "extraction", "target": "q", "problem": "The oxygen level was never recorded as a condition."}])])
+    stray = lead(id="stray", repairs=[{"kind": "alignment", "target": "q/c:hypoxia ~ y/c:nowhere", "problem": "Points at a verdict that was never made."}])
+    assert "is not a pooled subgraph, node or verdict" in align.check_leads(pool.subgraphs(), pool.alignments(), [stray])[0]
+    fine = lead(id="fine", repairs=[{"kind": "alignment", "target": "y/c:low-oxygen ~ q/c:hypoxia", "problem": "Oxygen levels differ tenfold."}])
+    assert align.check_leads(pool.subgraphs(), pool.alignments(), [fine]) == []
+    [repair] = align.open_repairs(pool.leads())
+    assert (repair["lead"], repair["index"], repair["target"]) == ("hypoxia-blunts-both", 0, "q")
+    assert main(["repair", "resolve", "hypoxia-blunts-both", "3", "--note", "n/a"]) == 1
+    assert main(["repair", "resolve", "hypoxia-blunts-both", "0", "--note", "Added c:one-percent-oxygen to both experiments."]) == 0
+    assert align.open_repairs(pool.leads()) == []
+    assert pool.leads()[0].repairs[0].resolution.startswith("Added")
+    with pytest.raises(ValueError):
+        lead(repairs=[{"kind": "typo", "target": "q", "problem": "Not a kind of repair we know."}])
+
+
+def test_a_question_is_not_open_until_the_literature_has_been_reviewed():
+    pool = pooled_pair()
+    settle = {"would_confirm": "A dose-response under hypoxia.", "would_refute": "An effect at 1% oxygen."}
+    unreviewed = lead(status="open", checks=CHECKS, follow_up="Does hypoxia blunt anti-tumour compounds in general?", **settle)
+    assert "has not been reviewed" in align.check_leads(pool.subgraphs(), pool.alignments(), [unreviewed])[0]
+    # with no literature question to ask, a checked lead can go straight to open
+    experiment_only = lead(status="open", checks=CHECKS, **settle)
+    assert align.check_leads(pool.subgraphs(), pool.alignments(), [experiment_only]) == []
+    with pytest.raises(ValueError, match="what would confirm"):
+        lead(status="open", checks=CHECKS)
+    assert align.agenda([lead()], pool.subgraphs()) == []  # a candidate is not an open question

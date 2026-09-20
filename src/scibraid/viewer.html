@@ -208,6 +208,7 @@ function cyStyle() {
         "text-valign": "bottom", "text-margin-y": 4, "text-background-color": surface, "text-background-opacity": 0.85, "text-background-padding": 2,
         width: 26, height: 26, "border-width": 2, "border-color": surface, "min-zoomed-font-size": 6 } },
     { selector: "node[type='hypothesis']", style: { width: 58, height: 34, "font-size": 17, "font-weight": 600, "text-max-width": 230, "min-zoomed-font-size": 0 } },
+    { selector: "node[derived='yes']", style: { "border-style": "dashed", "border-color": css("--focus"), "border-width": 3, "background-opacity": 0.55 } },
     { selector: "edge", style: { width: "mapData(confidence, 0, 1, 1, 4.5)", "line-color": css("--edge"), "target-arrow-color": css("--edge"),
         "target-arrow-shape": "triangle", "arrow-scale": 0.9, "curve-style": "bezier", opacity: 0.85,
         "font-size": 9, color: css("--text-2"), "text-background-color": surface, "text-background-opacity": 0.9, "text-background-padding": 2, "text-rotation": "autorotate" } },
@@ -238,7 +239,7 @@ function draw(relayout) {
   cy.nodes().forEach((n) => { positions[n.id()] = { ...n.position() }; });
   const fresh = relayout || nodes.some((n) => !positions[n.key]);
   cy.elements().remove();
-  cy.add(nodes.map((n) => ({ group: "nodes", data: { id: n.key, label: canvasLabel(n), type: n.type }, position: positions[n.key] })));
+  cy.add(nodes.map((n) => ({ group: "nodes", data: { id: n.key, label: canvasLabel(n), type: n.type, derived: n.derived_from ? "yes" : "no" }, position: positions[n.key] })));
   cy.add(edges.map((e) => ({ group: "edges", data: { id: e.key, source: e.s, target: e.t, relation: e.relation, confidence: e.confidence, by: e.asserted_by } })));
   cy.add(model.same.filter((s) => keep.has(s.s) && keep.has(s.t))
     .map((s) => ({ group: "edges", data: { id: s.key, source: s.s, target: s.t, relation: "same", confidence: 0.3 } })));
@@ -345,7 +346,9 @@ function renderPanel() {
     add(panel, 
       el("div", { class: "meta" }, el("span", { class: `swatch ${node.type}` }), node.type, node.outcome ? `outcome: ${OUTCOME[node.outcome]} ${node.outcome}` : "", model.many ? `in ${node.slug}` : ""),
       el("h2", {}, node.label), el("div", { class: "id" }, node.id),
-      node.description ? el("p", {}, node.description) : null);
+      node.description ? el("p", {}, node.description) : null,
+      node.derived_from ? el("div", { class: "card" }, el("div", { class: "rel" }, "Derived from the pool, not from a paper"),
+        el("div", {}, `Proposed by lead ${node.derived_from.lead} at confidence ${node.derived_from.confidence.toFixed(2)}. It has no standing of its own: only the paper evidence linked to it counts.`)) : null);
     const attrs = Object.entries(node.attrs || {});
     if (attrs.length) add(panel, el("h3", {}, "Attributes"), el("dl", {}, attrs.map(([k, v]) => [el("dt", {}, k), el("dd", {}, Array.isArray(v) ? v.join(", ") : String(v))])));
     if (node.provenance && node.provenance.length) add(panel, el("h3", {}, "Source passages"), provenance(node.provenance));
@@ -366,7 +369,7 @@ function renderPanel() {
       el("h3", {}, "Source passage"), provenance(edge.provenance));
   } else if (model.leads.some((l) => l.key === state.selected)) {
     const lead = model.leads.find((l) => l.key === state.selected);
-    const STATUS = { candidate: "not yet checked", holds: "holds up so far", known: "already in the literature", refuted: "refuted" };
+    const STATUS = { candidate: "not yet checked", holds: "holds up so far, literature review pending", open: "open research question: needs new empirical work", known: "already in the literature", refuted: "refuted" };
     add(panel, el("div", { class: "meta" }, "lead", lead.kind.replace(/_/g, " "), `${lead.status}: ${STATUS[lead.status]}`), el("h2", {}, lead.claim),
       el("dl", {}, el("dt", {}, "confidence"), el("dd", {}, lead.confidence.toFixed(2)), el("dt", {}, "updated"), el("dd", {}, lead.updated)),
       lead.follow_up ? [el("h3", {}, "Next question"), el("div", { class: "card" }, lead.follow_up)] : null,

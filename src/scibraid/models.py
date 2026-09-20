@@ -107,6 +107,17 @@ class Paper(BaseModel):
     abstract: str | None = None
 
 
+class Derivation(BaseModel):
+    """Where a hypothesis came from when it came from the pool rather than from a paper."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    lead: str
+    confidence: float = Field(ge=0.0, le=1.0)
+    nodes: list[str] = []  # <slug>/<node id> keys the lead rested on
+    alignments: list[tuple[str, str]] = []
+
+
 class Node(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -117,9 +128,14 @@ class Node(BaseModel):
     outcome: Outcome | None = None
     attrs: dict[str, Any] = {}
     provenance: list[Provenance] = []
+    # Set only on a hypothesis that a lead proposed. It has no standing of its own: it is a
+    # claim to be tested, and gains support only from paper evidence linked to it.
+    derived_from: Derivation | None = None
 
     @model_validator(mode="after")
     def _outcome_only_on_observations(self) -> Node:
+        if self.derived_from is not None and self.type is not NodeType.HYPOTHESIS:
+            raise ValueError(f"{self.id!r}: only a hypothesis can be derived from a lead")
         if self.type is NodeType.OBSERVATION and self.outcome is None:
             raise ValueError(f"observation {self.id!r} needs an outcome")
         if self.type is not NodeType.OBSERVATION and self.outcome is not None:
@@ -161,6 +177,7 @@ class Subgraph(BaseModel):
 
     slug: str = Field(pattern=r"^[a-z0-9][a-z0-9\-]*$")
     question: str
+    prompted_by: str | None = None  # id of the lead whose follow-up this subgraph answers
     created: str = Field(default_factory=_now)
     updated: str = Field(default_factory=_now)
     papers: dict[str, Paper] = {}
@@ -215,7 +232,10 @@ class LeadKind(StrEnum):
 
 class LeadStatus(StrEnum):
     CANDIDATE = "candidate"  # read off the pool, not yet checked
-    HOLDS = "holds"  # premise verified, no confound found, not found in the literature
+    HOLDS = "holds"  # premise verified, no confound found, not found in a brief search: provisional
+    # An open research question: the literature has been reviewed and does not settle it, so
+    # only new empirical work can. This is where the loop stops and hands over to a person.
+    OPEN = "open"
     KNOWN = "known"  # holds, but the literature already makes the connection
     REFUTED = "refuted"  # the premise fails or a confound explains it
 
@@ -228,6 +248,18 @@ class Check(BaseModel):
     question: str = Field(min_length=10)
     finding: str = Field(min_length=10)
     sources: list[str] = []  # paper ids or URLs consulted
+
+
+class Repair(BaseModel):
+    """A fault in a subgraph or a verdict, found while checking a lead, for its owner to fix."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    kind: str = Field(pattern=r"^(extraction|alignment)$")
+    target: str = Field(min_length=1, description="a subgraph slug, a <slug>/<node id> key, or 'a ~ b' for a verdict")
+    problem: str = Field(min_length=10)
+    resolved: bool = False
+    resolution: str = ""
 
 
 class Lead(BaseModel):
@@ -251,6 +283,7 @@ class Lead(BaseModel):
     would_refute: str = ""
     known_in: list[str] = []  # where the literature already says it
     follow_up: str | None = None  # a question to hand back to evidence-subgraph
+    repairs: list[Repair] = []
     updated: str = Field(default_factory=_now)
 
     @model_validator(mode="after")
@@ -259,6 +292,8 @@ class Lead(BaseModel):
             raise ValueError(f"lead {self.id!r} is {self.status.value} but records no checks")
         if self.status is LeadStatus.KNOWN and not self.known_in:
             raise ValueError(f"lead {self.id!r} is known: say where, in known_in")
-        if self.status is LeadStatus.HOLDS and not (self.would_confirm and self.would_refute):
-            raise ValueError(f"lead {self.id!r} holds: say what would confirm and what would refute it")
+        if self.status in (LeadStatus.HOLDS, LeadStatus.OPEN) and not (self.would_confirm and self.would_refute):
+            raise ValueError(
+                f"lead {self.id!r} is {self.status.value}: say what would confirm and what would refute it"
+            )
         return self

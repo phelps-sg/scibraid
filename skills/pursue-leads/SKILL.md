@@ -11,11 +11,11 @@ A lead is recorded as carefully as a link. It names the nodes and alignment verd
 
 ## Workflow
 
-1. `scibraid observe --format json` for the candidates, and `scibraid lead list` for what has already been pursued. Do not repeat a recorded lead unless new subgraphs or verdicts bear on it.
+1. `scibraid observe --new --format json` for candidates that no recorded lead covers yet, and `scibraid lead list` for what has been pursued. Without `--new` each candidate carries the `leads` that cover it, with their status. Return to a covered candidate only if new subgraphs or verdicts bear on it.
 2. Triage. Pick the few worth the effort (see below). Five well-checked leads beat twenty unchecked ones.
 3. For each, make the checks below, going back to the sources.
 4. Write the leads as a JSON list and `scibraid lead add leads.json`. Re-adding an id replaces it, which is how a lead's status changes.
-5. Report: what holds, what was already known, what fell over and why. Offer the follow-up questions; each is a ready prompt for the `evidence-subgraph` skill, and running it is how the pool grows where it matters.
+5. Report: what holds, what was already known, what fell over and why. `scibraid followups` lists every lead's follow-up question and how far the work on it has got (`pending`, `in_progress`, `reviewed`). A pending one is taken up with `scibraid new <slug> --lead <lead-id>` and the `evidence-subgraph` skill, which is how the pool grows where it matters. `scibraid agenda` lists the open research questions, which are the point of the whole exercise.
 
 ## Triage
 
@@ -52,7 +52,11 @@ Make each check that applies, and record it as a `question` and a `finding`, wit
   "follow_up": "A research question, phrased so it can be handed to evidence-subgraph as it stands."}]
 ```
 
-`kind` is the `observe` section the lead came from: `bridge`, `shared_failure`, `cross_bearing`, `regime`, `untested`, or `other` for something you noticed yourself. `status` is `candidate` (not checked), `holds` (premise verified, no better explanation found, not found in the literature), `known`, or `refuted`. The tool rejects a lead that is judged without checks, `known` without saying where, or `holds` without saying what would confirm and refute it.
+If a check shows that a subgraph or a verdict is wrong, add a repair to the lead instead of fixing it from here: `"repairs": [{"kind": "extraction", "target": "<slug>" or "<slug>/<node id>", "problem": "..."}]`, or `"kind": "alignment"` with `"target": "<a> ~ <b>"`. The target must exist in the pool. `scibraid repair list` shows open repairs to whoever owns the subgraph or the verdicts.
+
+`kind` is the `observe` section the lead came from: `bridge`, `shared_failure`, `cross_bearing`, `regime`, `untested`, or `other` for something you noticed yourself. `status` is `candidate` (not checked), `holds`, `open`, `known`, or `refuted`. The tool rejects a lead that is judged without checks, `known` without saying where, or `holds` or `open` without saying what would confirm and refute it.
+
+`holds` and `open` differ in how much looking stands behind them. `holds` is provisional: the premise is verified, no duller explanation was found, and a brief search did not turn the connection up. `open` means an open research question: the literature has been reviewed and does not settle the claim, so only new empirical work can. Reserve it for that. A lead with a follow-up question can become `open` only after that follow-up has been reviewed, which means a subgraph started from the lead has been built and pooled, and you have read what it found. If that review settles the claim, the lead becomes `known` or `refuted` instead. If no question the literature could answer applies, leave `follow_up` empty and the lead can go straight to `open`. For an `open` lead, `would_confirm` is the experiment someone should run: write it so a researcher in the field could act on it. `open` is where this pipeline stops. Another review will not help, and the question goes to a person.
 
 `confidence` is how likely the claim is to be true of the world, given everything you checked. It cannot exceed the confidence of the weakest alignment verdict the lead rests on, and the tool enforces that. It should usually be well below it: an alignment being right is necessary, not sufficient. Two papers and one shared condition is thin evidence, so most leads that hold belong between 0.3 and 0.6.
 
@@ -60,4 +64,4 @@ Write the `claim` about the world ("instruction tuning, not parameter count, gat
 
 ## What not to do
 
-Do not promote a coincidence because it is interesting. Do not raise a lead's confidence because several candidates point the same way when they rest on the same two papers. Do not delete a lead that failed: set it to `refuted` and keep the check that sank it. Do not edit subgraphs or verdicts from here to make a lead work; if a check shows an extraction or an alignment was wrong, say so, and fix it with the skill that owns it.
+Do not promote a coincidence because it is interesting. Do not raise a lead's confidence because several candidates point the same way when they rest on the same two papers. Do not delete a lead that failed: set it to `refuted` and keep the check that sank it. Do not edit subgraphs or verdicts from here to make a lead work; if a check shows an extraction or an alignment was wrong, record a repair.

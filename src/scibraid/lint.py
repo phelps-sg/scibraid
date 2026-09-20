@@ -16,6 +16,12 @@ def lint(sg: Subgraph) -> list[str]:
         into[edge.target].add(edge.relation)
 
     for nid, node in sg.nodes.items():
+        if node.derived_from is not None and not (into[nid] & {Relation.SUPPORTS, Relation.CONTRADICTS}):
+            findings.append(
+                f"{nid}: derived from lead {node.derived_from.lead} and not yet tested: "
+                "this subgraph exists to find evidence for or against it"
+            )
+            continue
         if not out[nid] and not into[nid]:
             findings.append(f"{nid}: orphan {node.type}, no edges")
             continue

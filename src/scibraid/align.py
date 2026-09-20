@@ -297,6 +297,8 @@ def observe(subgraphs: list[Subgraph], alignments: list[Alignment], min_confiden
             continue
         bridges.append(
             {
+                "keys": sorted(keys),
+                "parts": [[k for k in keys if index.slug_of[k] == slug] for slug in sorted({index.slug_of[k] for k in keys})],
                 "condition": sorted(label(k) for k in keys),
                 "specificity": specificity(root),
                 "alignment_confidence": clusters.confidence.get(root, 1.0),
@@ -316,6 +318,8 @@ def observe(subgraphs: list[Subgraph], alignments: list[Alignment], min_confiden
         if len(failed) >= 2 and len(papers) >= 2:
             shared_failures.append(
                 {
+                    "keys": sorted(set(members[root]) | set(failed)),
+                    "parts": [sorted(members[root]), sorted(failed)],
                     "condition": sorted({label(k) for k in members[root]}),
                     "specificity": specificity(root),
                     "observations": sorted(f"[{index.nodes[k].outcome.value}] {label(k)}" for k in failed),
@@ -348,6 +352,8 @@ def observe(subgraphs: list[Subgraph], alignments: list[Alignment], min_confiden
             results = [t for t, e in index.out[key] if e.relation is Relation.YIELDS]
             cross.append(
                 {
+                    "keys": sorted([key, h, *results]),
+                    "parts": [sorted([key, *results]), [h]],
                     "experiment": node.label,
                     "from": index.slug_of[key],
                     "results": sorted(f"[{index.nodes[t].outcome.value}] {label(t)}" for t in results),
@@ -367,6 +373,8 @@ def observe(subgraphs: list[Subgraph], alignments: list[Alignment], min_confiden
             cs, ct = conditions_of(s), conditions_of(t)
             regimes.append(
                 {
+                    "keys": sorted([s, t]),
+                    "parts": [[s], [t]],
                     "a": label(s),
                     "b": label(t),
                     "confidence": edge.confidence,
@@ -390,6 +398,8 @@ def observe(subgraphs: list[Subgraph], alignments: list[Alignment], min_confiden
         if x.a in index.nodes and index.nodes[x.a].type is NodeType.HYPOTHESIS and x.verdict is not Verdict.DIFFERENT:
             linked.append(
                 {
+                    "keys": sorted([x.a, x.b]),
+                    "parts": [[x.a], [x.b]],
                     "verdict": x.verdict.value,
                     "confidence": x.confidence,
                     "a": {"hypothesis": label(x.a), "in": index.slug_of[x.a], **evidence(x.a)},
@@ -423,6 +433,8 @@ def observe(subgraphs: list[Subgraph], alignments: list[Alignment], min_confiden
             if missing:
                 untested.append(
                     {
+                        "keys": sorted([source, target, *(k for c in missing for k in members[c])]),
+                        "parts": [[source], [target]],
                         "hypothesis": label(target),
                         "in": index.slug_of[target],
                         "never_tested_under": sorted(label(c) for c in missing),
@@ -474,6 +486,22 @@ def check_leads(subgraphs: list[Subgraph], alignments: list[Alignment], leads: l
                 weakest = min(weakest, verdict.confidence)
         if len({index.slug_of[k] for k in lead.nodes if k in index.nodes}) > 1 and not lead.alignments:
             errors.append(f"lead {lead.id}: spans subgraphs but names no alignment verdict it rests on")
+        slugs = set(index.slug_of.values())
+        for repair in lead.repairs:
+            pair = tuple(part.strip() for part in repair.target.split("~"))
+            known = (
+                repair.target in slugs
+                or repair.target in index.nodes
+                or (len(pair) == 2 and ((pair[0], pair[1]) in verdicts or (pair[1], pair[0]) in verdicts))
+            )
+            if not known:
+                errors.append(f"lead {lead.id}: repair target {repair.target!r} is not a pooled subgraph, node or verdict")
+        if lead.status.value == "open" and lead.follow_up:
+            if not any(sg.prompted_by == lead.id for sg in subgraphs):
+                errors.append(
+                    f"lead {lead.id}: marked open, but its follow-up has not been reviewed. Review the literature "
+                    "first (scibraid new <slug> --lead ...), or drop the follow-up if no literature question applies"
+                )
         if lead.confidence > weakest:
             errors.append(
                 f"lead {lead.id}: confidence {lead.confidence:.2f} exceeds its weakest alignment ({weakest:.2f})"
@@ -534,3 +562,139 @@ def hypothesis_lists(subgraphs: list[Subgraph], alignments: list[Alignment]) -> 
         )
     out.sort(key=lambda item: (len(item["already_judged"]) > 0, -item["condition_bridges"]))
     return out
+
+
+SECTIONS = ("bridging_conditions", "shared_condition_failures", "cross_bearing", "contradictions_by_regime",
+            "absent_experiments", "linked_hypotheses")
+
+
+def mark_covered(report: dict, leads: list[Lead], only_new: bool = False) -> dict:
+    """Note on each candidate the recorded leads that already cover it.
+
+    A lead covers a candidate when it rests on every essential part of it: the condition and
+    a failed result for a shared failure, both results for a contradiction, both hypotheses for
+    an absent experiment. Without this the same coincidence, refuted or not, is reported on
+    every run.
+    """
+    for section in SECTIONS:
+        kept = []
+        for item in report[section]:
+            parts = item.get("parts", ())
+            covering = [
+                {"id": x.id, "status": x.status.value}
+                for x in leads
+                if parts and all(set(part) & set(x.nodes) for part in parts)
+            ]
+            if covering:
+                item["leads"] = covering
+            if not (only_new and covering):
+                kept.append(item)
+        report[section] = kept
+    return report
+
+
+def follow_ups(leads: list[Lead], pooled: list[Subgraph], local: list[Subgraph]) -> list[dict]:
+    """Each lead's follow-up question and whether a subgraph has been built to answer it.
+
+    Status is derived from what exists, never stored: `pending` (nothing built), `in_progress`
+    (a local subgraph names the lead but is not pooled), `reviewed` (a pooled one does). These
+    are states of the work. Whether the question itself is settled is the lead's status.
+    """
+    pooled_by, local_by = defaultdict(list), defaultdict(list)
+    for sg in pooled:
+        if sg.prompted_by:
+            pooled_by[sg.prompted_by].append(sg.slug)
+    for sg in local:
+        if sg.prompted_by and sg.slug not in pooled_by[sg.prompted_by]:
+            local_by[sg.prompted_by].append(sg.slug)
+    rank = {"holds": 0, "known": 1, "candidate": 2, "open": 3, "refuted": 4}
+    out = []
+    for lead in leads:
+        if not lead.follow_up:
+            continue
+        status = "reviewed" if pooled_by[lead.id] else "in_progress" if local_by[lead.id] else "pending"
+        out.append(
+            {
+                "lead": lead.id,
+                "question": lead.follow_up,
+                "status": status,
+                "subgraphs": pooled_by[lead.id] + local_by[lead.id],
+                "lead_status": lead.status.value,
+                "lead_confidence": lead.confidence,
+            }
+        )
+    out.sort(key=lambda f: (f["status"] != "pending", rank[f["lead_status"]], -f["lead_confidence"]))
+    return out
+
+
+def open_repairs(leads: list[Lead]) -> list[dict]:
+    return [
+        {"lead": lead.id, "index": i, "kind": r.kind, "target": r.target, "problem": r.problem}
+        for lead in leads
+        for i, r in enumerate(lead.repairs)
+        if not r.resolved
+    ]
+
+
+def derived_hypothesis(lead: Lead) -> Node:
+    """The lead's claim as a hypothesis for its follow-up subgraph to test."""
+    from .models import Derivation
+
+    label = lead.claim if len(lead.claim) <= 200 else lead.claim[:197].rsplit(" ", 1)[0] + "..."
+    return Node(
+        id=f"h:lead-{lead.id}"[:120],
+        type=NodeType.HYPOTHESIS,
+        label=label,
+        description=lead.claim if label != lead.claim else "",
+        derived_from=Derivation(lead=lead.id, confidence=lead.confidence, nodes=lead.nodes, alignments=lead.alignments),
+    )
+
+
+def derivation_links(sg: Subgraph, pooled: list[Subgraph]) -> list[Alignment]:
+    """Link each derived hypothesis back to the pooled hypotheses its lead rested on.
+
+    These are `related`, at the lead's confidence: the derived claim was drawn from them, and
+    says something none of them says alone.
+    """
+    index = PoolIndex.build(pooled)
+    links = []
+    for node in sg.nodes.values():
+        if node.derived_from is None:
+            continue
+        for key in node.derived_from.nodes:
+            source = index.nodes.get(key)
+            if source is None or source.type is not NodeType.HYPOTHESIS or index.slug_of[key] == sg.slug:
+                continue
+            links.append(
+                Alignment(
+                    a=f"{sg.slug}/{node.id}",
+                    b=key,
+                    verdict=Verdict.RELATED,
+                    confidence=node.derived_from.confidence,
+                    rationale=f"Derived: lead {node.derived_from.lead} drew this hypothesis from the pooled structure around the other.",
+                )
+            )
+    return links
+
+
+def agenda(leads: list[Lead], pooled: list[Subgraph]) -> list[dict]:
+    """The open research questions the pool has produced, each with the experiment it needs."""
+    reviews = defaultdict(list)
+    for sg in pooled:
+        if sg.prompted_by:
+            reviews[sg.prompted_by].append(sg.slug)
+    found = [
+        {
+            "lead": x.id,
+            "question": x.claim,
+            "confidence": x.confidence,
+            "experiment_needed": x.would_confirm,
+            "would_refute": x.would_refute,
+            "literature_reviewed_in": reviews[x.id],
+            "rests_on": x.nodes,
+        }
+        for x in leads
+        if x.status.value == "open"
+    ]
+    found.sort(key=lambda q: -q["confidence"])
+    return found

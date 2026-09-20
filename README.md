@@ -90,8 +90,20 @@ Once two or more graphs are pooled, align them, then check what the pool suggest
 ```
 
 ```sh
-scibraid observe        # what the aligned pool suggests, unchecked
+scibraid observe --new  # what the aligned pool suggests that no lead has covered yet
 scibraid lead list      # what has been checked, and what came of it
+scibraid followups      # the questions those leads raise, and how far each review has got
+scibraid agenda         # open research questions, with the experiment each needs
+```
+
+A lead's follow-up question starts the next round:
+
+```sh
+scibraid new graded-cot-metrics --lead cot-threshold-never-scored-with-graded-metric
+```
+
+```
+/evidence-subgraph
 ```
 
 The tools can also be driven by hand. A batch is a JSON file of nodes and links (the format is in `skills/evidence-subgraph/SKILL.md`):
@@ -140,8 +152,12 @@ The graph library, Cytoscape.js, loads from a CDN. Without a network connection 
 | `candidates [--budget N] [--type T] [--lexical]` | rank unjudged cross-graph pairs by plausibility and consequence |
 | `hypotheses` | both hypothesis lists for each pair of pooled subgraphs, to be read in full |
 | `align add verdicts.json`, `align list` | record and list alignment verdicts |
-| `observe [--format json]` | candidate observations from the aligned pool |
+| `observe [--new] [--format json]` | candidate observations from the aligned pool; `--new` hides those a lead covers |
 | `lead add leads.json`, `lead list [--status S]` | record and list checked leads |
+| `followups [--status pending]` | each lead's follow-up question and whether it is pending, in progress or reviewed |
+| `agenda` | open research questions: claims the literature cannot settle, and the experiment each needs |
+| `new <slug> --lead <id>` | start a subgraph that answers a lead's follow-up, seeded with its claim |
+| `repair list`, `repair resolve <lead> <n> --note "..."` | faults in subgraphs or verdicts found while checking leads |
 
 Data lives in `$SCIBRAID_HOME`, by default `~/.local/share/scibraid`.
 
@@ -165,7 +181,13 @@ Hypotheses are not ranked. Whether one hypothesis bears on another is not a matt
 
 `observe` reads six things off the aligned pool: conditions reached from different questions, failures that share a condition, experiments that may bear on another question's hypothesis, contradictions with the conditions unique to each side, hypotheses linked across questions, and experiments nobody ran. The last lists the conditions that scope results on one hypothesis and under which a linked hypothesis was never tested.
 
-These are coincidences of structure, and most are not insights. A lead is one that has been checked. It records the claim, the nodes and alignment verdicts it rests on, each check and its finding, what would confirm and refute it, and a follow-up question. Its status is `candidate`, `holds`, `known` or `refuted`. The tool rejects a lead that is judged without checks, and one whose confidence exceeds the weakest alignment verdict it rests on.
+These are coincidences of structure, and most are not insights. A lead is one that has been checked. It records the claim, the nodes and alignment verdicts it rests on, each check and its finding, what would confirm and refute it, and a follow-up question. Its status is `candidate`, `holds`, `open`, `known` or `refuted`. The tool rejects a lead that is judged without checks, and one whose confidence exceeds the weakest alignment verdict it rests on.
+
+The loop closes through the lead. A subgraph started with `new --lead` records which lead prompted it, so the chain of questions is kept along with the answers, and a follow-up is `pending`, `in_progress` or `reviewed` according to what has been built and pooled. That state of the work is worked out from the subgraphs and never stored. The new subgraph is seeded with the lead's claim as a hypothesis, marked as derived from the pool. A derived hypothesis has no provenance from a paper and no standing of its own. It counts for whatever paper evidence the follow-up links to it, and `lint` reports it as untested until there is some. When the subgraph is pooled, the derived hypothesis is linked as `related` to the hypotheses its lead rested on, at the lead's confidence. What the pipeline produces is then the same kind of thing it consumes.
+
+The loop stops at an open research question. A lead that `holds` is provisional: a brief search did not find the connection. Once its follow-up has been reviewed, the literature either settles the claim, and the lead becomes `known` or `refuted`, or it does not, and the lead becomes `open`: a claim that only new empirical work can decide, recorded with the experiment that would decide it. The tool will not accept `open` for a lead whose follow-up has not been reviewed. Another literature review cannot help an open question, so it leaves the pipeline. `scibraid agenda` lists them, and that list is what the pool is for.
+
+Leads also feed back. `observe` marks each candidate that a recorded lead already covers, so a refuted coincidence is not chased twice. A check that finds a fault in a subgraph or a verdict records a repair against it, which the skill that owns it picks up.
 
 Setting `SCIBRAID_POOL_URL` switches to a remote pool over HTTP (`/subgraphs`, `/alignments`, `/leads`). No server exists yet. The skills will not need to change when one does.
 

@@ -13,7 +13,7 @@ With the `embeddings` extra installed, plausibility is the mean of word overlap 
 
 ## Workflow
 
-1. `scibraid pool --list` to see what is pooled. Fewer than two subgraphs: nothing to do.
+1. `scibraid pool --list` to see what is pooled. Fewer than two subgraphs: nothing to do. `scibraid repair list` shows any verdicts that a later check found wrong (`kind: alignment`, target `a ~ b`): re-judge those first, replace them with `align add`, and `scibraid repair resolve <lead-id> <n> --note "..."`.
 2. `scibraid candidates [--budget 40] [--type condition]` returns JSON pairs. Each has both nodes' labels, descriptions, attrs and `context` (how each node is used in its own subgraph), and the signals behind the score. Pairs already judged are not proposed again.
 3. Judge each pair, write a JSON list, and `scibraid align add verdicts.json`. Run `candidates` again until it proposes nothing you have not judged.
 4. Hypotheses are handled differently. `scibraid hypotheses` prints, for each pair of subgraphs, both hypothesis lists in full, with the verdicts already recorded between them. Pairs of subgraphs that aligned conditions already bridge come first. Read both lists and nominate the pairs yourself: whether one hypothesis bears on another is not a matter of similarity, and no cheap signal finds it. Record `same`, `broader`, `narrower` and `related` pairs, and `different` only for tempting look-alikes. Do this after the conditions, since knowing what the two subgraphs share tells you where their hypotheses might meet.
@@ -48,6 +48,8 @@ With the `embeddings` extra installed, plausibility is the mean of word overlap 
 **Same paper, same study is usually `same`** for experiments, even when each subgraph emphasised a different result from it. Observations from the same experiment are `same` only if they report the same finding.
 
 **Hypotheses rarely match exactly.** Ask: would evidence for one count as evidence for the other? If yes both ways, `same`. If one way, `broader`/`narrower` (a claim about all abilities is broader than the same claim about one ability). If they bear on each other without entailment, `related`, and say how in the rationale, since that sentence is often the most valuable thing alignment produces.
+
+**Derived hypotheses are already linked.** A subgraph started from a lead carries that lead's claim as a hypothesis, and pooling links it as `related` to the hypotheses the lead rested on, at the lead's confidence. Leave those links alone unless the follow-up's evidence changes the picture, and judge the derived hypothesis against everything else as you would any other.
 
 **Do not align to make the pool more interesting.** A false `same` fabricates structure that every later observation inherits.
 
