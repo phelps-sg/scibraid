@@ -5,31 +5,17 @@ description: Align pooled evidence subgraphs and read off what the pooled struct
 
 # Align subgraphs
 
-Subgraphs in the pool were built by different people asking different questions.
-They name the same things differently and different things the same. Alignment
-decides which is which, without merging anything: a verdict is a link between two
-nodes, with its own confidence and rationale, that anyone can inspect and revise.
+Subgraphs in the pool were built by different people asking different questions. They name the same things differently and different things the same. Alignment decides which is which, without merging anything: a verdict is a link between two nodes, with its own confidence and rationale, that anyone can inspect and revise.
 
-The work is split by cost. `scibraid candidates` cheaply proposes pairs, ranked by
-how plausible the match is and by how much pooled structure it would join if true.
-You are the expensive stage: judge the pairs it ranks highest, and stop when the
-budget is spent. A pair it does not propose is simply not yet judged.
+The work is split by cost. `scibraid candidates` cheaply proposes pairs, ranked by how plausible the match is and by how much pooled structure it would join if true. You are the expensive stage: judge the pairs it ranks highest, and stop when the budget is spent. A pair it does not propose is simply not yet judged.
 
 ## Workflow
 
 1. `scibraid pool --list` to see what is pooled. Fewer than two subgraphs: nothing to do.
-2. `scibraid candidates [--budget 40] [--type condition]` returns JSON pairs. Each
-   has both nodes' labels, descriptions, attrs and `context` (how each node is
-   used in its own subgraph), and the signals behind the score. Pairs already
-   judged are not proposed again.
-3. Judge each pair, write a JSON list, and `scibraid align add verdicts.json`.
-   Hypothesis pairs are always proposed, however unalike they read, because they
-   matter most; most will be `different` or `related`, and saying so is the job.
+2. `scibraid candidates [--budget 40] [--type condition]` returns JSON pairs. Each has both nodes' labels, descriptions, attrs and `context` (how each node is used in its own subgraph), and the signals behind the score. Pairs already judged are not proposed again.
+3. Judge each pair, write a JSON list, and `scibraid align add verdicts.json`. Hypothesis pairs are always proposed, however unalike they read, because they matter most; most will be `different` or `related`, and saying so is the job.
 4. `scibraid observe` and report what it shows (below).
-5. If an observation looks important and rests on a link you were unsure of,
-   go back to the sources (`scibraid paper show <id>`, the subgraph's passages
-   via `scibraid show <slug> --format json`) and revise the verdict: `align add`
-   with the same pair replaces it.
+5. If an observation looks important and rests on a link you were unsure of, go back to the sources (`scibraid paper show <id>`, the subgraph's passages via `scibraid show <slug> --format json`) and revise the verdict: `align add` with the same pair replaces it.
 
 ## Verdicts
 
@@ -46,58 +32,30 @@ budget is spent. A pair it does not propose is simply not yet judged.
 | `related` | Genuinely connected (overlapping, one a special case under conditions, cause and effect) but neither contains the other. The only verdict allowed across node types. |
 | `different` | Not the same thing, including opposites and look-alikes. Record it: it stops the pair being proposed again and documents a trap. |
 
-`confidence` is how sure you are of the verdict, not how similar the labels are.
-Only `same` at 0.7 or above joins nodes when `observe` reads the pool, so a `same`
-you would not stake an inference on should be `related`, or `same` at lower
-confidence. `rationale` must say what decided it, in a sentence a sceptical
-reader could check.
+`confidence` is how sure you are of the verdict, not how similar the labels are. Only `same` at 0.7 or above joins nodes when `observe` reads the pool, so a `same` you would not stake an inference on should be `related`, or `same` at lower confidence. `rationale` must say what decided it, in a sentence a sceptical reader could check.
 
 ## How to judge
 
-**Judge by use, not by name.** Read the `context`. Two conditions called "few-shot
-prompting" are different if one subgraph means "with chain-of-thought exemplars"
-and the other means "with answer-only exemplars": the contrast between those is
-exactly what one of the questions is about. Two conditions with different names
-are the same if experiments could be swapped between them without loss.
+**Judge by use, not by name.** Read the `context`. Two conditions called "few-shot prompting" are different if one subgraph means "with chain-of-thought exemplars" and the other means "with answer-only exemplars": the contrast between those is exactly what one of the questions is about. Two conditions with different names are the same if experiments could be swapped between them without loss.
 
-**Watch for opposites.** Lexical matching ranks "instruction-tuned" next to
-"without instruction tuning". Shared vocabulary is evidence of a shared topic, not
-a shared referent.
+**Watch for opposites.** Lexical matching ranks "instruction-tuned" next to "without instruction tuning". Shared vocabulary is evidence of a shared topic, not a shared referent.
 
-**Prefer the asymmetric verdict when there is one.** "BIG-Bench Hard" is narrower
-than "BIG-Bench", not the same: a claim about BBH tasks does not transfer to all
-of BIG-Bench, though the reverse may.
+**Prefer the asymmetric verdict when there is one.** "BIG-Bench Hard" is narrower than "BIG-Bench", not the same: a claim about BBH tasks does not transfer to all of BIG-Bench, though the reverse may.
 
-**Same paper, same study is usually `same`** for experiments, even when each
-subgraph emphasised a different result from it. Observations from the same
-experiment are `same` only if they report the same finding.
+**Same paper, same study is usually `same`** for experiments, even when each subgraph emphasised a different result from it. Observations from the same experiment are `same` only if they report the same finding.
 
-**Hypotheses rarely match exactly.** Ask: would evidence for one count as evidence
-for the other? If yes both ways, `same`. If one way, `broader`/`narrower` (a
-claim about all abilities is broader than the same claim about one ability). If
-they bear on each other without entailment, `related`, and say how in the
-rationale, since that sentence is often the most valuable thing alignment
-produces.
+**Hypotheses rarely match exactly.** Ask: would evidence for one count as evidence for the other? If yes both ways, `same`. If one way, `broader`/`narrower` (a claim about all abilities is broader than the same claim about one ability). If they bear on each other without entailment, `related`, and say how in the rationale, since that sentence is often the most valuable thing alignment produces.
 
-**Do not align to make the pool more interesting.** A false `same` fabricates
-structure that every later observation inherits.
+**Do not align to make the pool more interesting.** A false `same` fabricates structure that every later observation inherits.
 
 ## Reporting what the pool shows
 
 `scibraid observe` reads the aligned pool and returns candidate observations:
 
-- **bridging conditions**: one condition reached independently from different
-  questions, with the experiments and hypotheses on each side;
-- **shared-condition failures**: negative, null or inconclusive results from
-  different papers under one condition;
-- **cross-bearing**: a result from one question that sits under the conditions
-  another question's hypothesis is tested under, scored so that rare conditions
-  count for more than ubiquitous ones;
-- **contradictions by regime**: conflicting results with the conditions unique to
-  each side;
+- **bridging conditions**: one condition reached independently from different questions, with the experiments and hypotheses on each side;
+- **shared-condition failures**: negative, null or inconclusive results from different papers under one condition;
+- **cross-bearing**: a result from one question that sits under the conditions another question's hypothesis is tested under, scored so that rare conditions count for more than ubiquitous ones;
+- **contradictions by regime**: conflicting results with the conditions unique to each side;
 - **linked hypotheses** and their pooled evidence; **thinly evidenced** ones.
 
-These are leads, not findings. For each one you report, say what it rests on
-(which alignment links, at what confidence) and what would confirm or refute it.
-The useful ones suggest a new question: hand it back to the `evidence-subgraph`
-skill.
+These are leads, not findings. For each one you report, say what it rests on (which alignment links, at what confidence) and what would confirm or refute it. The useful ones suggest a new question: hand it back to the `evidence-subgraph` skill.

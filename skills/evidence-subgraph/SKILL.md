@@ -5,46 +5,20 @@ description: Build a provenance-rich evidence subgraph from the scientific liter
 
 # Evidence subgraph
 
-You are building a small, inspectable graph of *what was done and what was seen*
-in answer to one research question. The unit of knowledge is the experimentally
-grounded relationship, not the paper. Papers are sources of evidence about those
-relationships.
+You are building a small, inspectable graph of *what was done and what was seen* in answer to one research question. The unit of knowledge is the experimentally grounded relationship, not the paper. Papers are sources of evidence about those relationships.
 
-You do the reading and the judgement. The `scibraid` CLI does the deterministic
-parts: retrieval, schema validation, checking that your quoted passages really
-appear in the source, storage, and pooling. If `scibraid` is not on PATH, run it
-as `uv run --project <repo> scibraid ...`, where `<repo>` is two directories above
-this skill's base directory.
+You do the reading and the judgement. The `scibraid` CLI does the deterministic parts: retrieval, schema validation, checking that your quoted passages really appear in the source, storage, and pooling. If `scibraid` is not on PATH, run it as `uv run --project <repo> scibraid ...`, where `<repo>` is two directories above this skill's base directory.
 
-The subgraph will later be pooled with subgraphs built by other people asking
-other questions, and aligned against them. That is where the value is: a condition
-you record carefully may be the link to an investigation you know nothing about.
-So record what is there, specifically, rather than what serves the question's
-narrative.
+The subgraph will later be pooled with subgraphs built by other people asking other questions, and aligned against them. That is where the value is: a condition you record carefully may be the link to an investigation you know nothing about. So record what is there, specifically, rather than what serves the question's narrative.
 
 ## Workflow
 
-1. **Frame.** Restate the question as the hypotheses in contention. Pick a slug.
-   `scibraid new <slug> --question "..."`
-2. **Retrieve.** Run several searches, not one: the claim itself, its rivals,
-   and deliberately the failures (`replication`, `null result`, `failed to`,
-   `no effect`, `boundary condition`, `registered report`, `meta-analysis`).
-   `scibraid search "<query>" [--limit N] [--from-year Y] [--sort cited_by_count:desc]`
-   Results are cached; read one with `scibraid paper show <id>`. Aim for 8-20
-   papers that bear directly on the question, including grey literature
-   (preprints, dissertations) where it turns up.
-3. **Extract, one paper at a time.** Write a JSON batch and apply it:
-   `scibraid add <slug> batch.json`. It is all-or-nothing; fix what it reports
-   and re-run. Before each paper, `scibraid show <slug>` so you reuse existing
-   node ids instead of minting duplicates.
-4. **Check.** `scibraid lint <slug>` and act on what it finds. A finding you
-   cannot fix from the sources is fine; say so in your summary.
-5. **Report.** Summarise what the graph shows: where the evidence sits, where
-   it conflicts and under which conditions, what is thinly evidenced, and what
-   you could not verify. `scibraid show <slug> --format mermaid` gives a diagram.
-6. **Pool.** `scibraid pool <slug>`. With `SCIBRAID_POOL_URL` unset the pool is
-   a local file and you can just do it. If it is set, pooling publishes the
-   subgraph to a shared server: ask the user first.
+1. **Frame.** Restate the question as the hypotheses in contention. Pick a slug. `scibraid new <slug> --question "..."`
+2. **Retrieve.** Run several searches, not one: the claim itself, its rivals, and deliberately the failures (`replication`, `null result`, `failed to`, `no effect`, `boundary condition`, `registered report`, `meta-analysis`). `scibraid search "<query>" [--limit N] [--from-year Y] [--sort cited_by_count:desc]` Results are cached; read one with `scibraid paper show <id>`. Aim for 8-20 papers that bear directly on the question, including grey literature (preprints, dissertations) where it turns up.
+3. **Extract, one paper at a time.** Write a JSON batch and apply it: `scibraid add <slug> batch.json`. It is all-or-nothing; fix what it reports and re-run. Before each paper, `scibraid show <slug>` so you reuse existing node ids instead of minting duplicates.
+4. **Check.** `scibraid lint <slug>` and act on what it finds. A finding you cannot fix from the sources is fine; say so in your summary.
+5. **Report.** Summarise what the graph shows: where the evidence sits, where it conflicts and under which conditions, what is thinly evidenced, and what you could not verify. `scibraid show <slug> --format mermaid` gives a diagram.
+6. **Pool.** `scibraid pool <slug>`. With `SCIBRAID_POOL_URL` unset the pool is a local file and you can just do it. If it is set, pooling publishes the subgraph to a shared server: ask the user first.
 
 ## Node types
 
@@ -56,11 +30,7 @@ narrative.
 | `observation` | What was seen, stated without explanation. Needs an `outcome`: `positive`, `negative`, `null`, `inconclusive`, `mixed` (relative to what the experiment was looking for). | `o:` |
 | `interpretation` | An explanation someone offered for an observation. | `i:` |
 
-Ids are lowercase kebab slugs, e.g. `c:sequential-task-paradigm`. Make condition
-and hypothesis ids generic and reusable ("hypoxia", not "hypoxia in Smith 2019"),
-since they are what different papers, and later different subgraphs, share.
-Experiments and observations are particular, so name them after the study
-(`e:hagger-2016-multilab`).
+Ids are lowercase kebab slugs, e.g. `c:sequential-task-paradigm`. Make condition and hypothesis ids generic and reusable ("hypoxia", not "hypoxia in Smith 2019"), since they are what different papers, and later different subgraphs, share. Experiments and observations are particular, so name them after the study (`e:hagger-2016-multilab`).
 
 ## Relations
 
@@ -77,65 +47,29 @@ Experiments and observations are particular, so name them after the study
 | `competes_with` | hypothesis -> hypothesis | rival accounts of the same observations |
 | `fails_to_replicate` | experiment -> experiment | |
 
-Every edge needs `confidence` (0-1), `asserted_by`, and provenance from exactly
-one paper. The same relation evidenced by a second paper is a second edge: that
-is how evidence accumulates, and how a later source weakens an earlier one.
+Every edge needs `confidence` (0-1), `asserted_by`, and provenance from exactly one paper. The same relation evidenced by a second paper is a second edge: that is how evidence accumulates, and how a later source weakens an earlier one.
 
 ## Rules that matter
 
-**Separate what was seen from what was said about it.** Authors slide between
-result and explanation within a sentence. "Depletion reduced persistence,
-consistent with a limited resource" is an observation (reduced persistence) plus
-an interpretation (limited resource). Split them. The observation `supports` the
-hypothesis; the interpretation `explains` the observation.
+**Separate what was seen from what was said about it.** Authors slide between result and explanation within a sentence. "Depletion reduced persistence, consistent with a limited resource" is an observation (reduced persistence) plus an interpretation (limited resource). Split them. The observation `supports` the hypothesis; the interpretation `explains` the observation.
 
-**`asserted_by` is about who drew the link.** `author` if the paper itself states
-the relationship; `model` if you inferred it. A null result whose authors never
-mention the hypothesis it undermines is `contradicts`, `asserted_by: model`.
-Model-asserted edges are welcome, they are often the interesting ones, but they
-must be labelled.
+**`asserted_by` is about who drew the link.** `author` if the paper itself states the relationship; `model` if you inferred it. A null result whose authors never mention the hypothesis it undermines is `contradicts`, `asserted_by: model`. Model-asserted edges are welcome, they are often the interesting ones, but they must be labelled.
 
-**Confidence is how sure you are the relationship holds as stated, given this
-passage** - not how good the paper is, and not how strong the effect was. Rough
-guide: 0.9+ the paper says it in so many words; 0.7-0.85 clear from the passage
-with little inference; 0.4-0.65 a reasonable reading that another reader might
-dispute; below 0.4 probably not worth recording. Keep model-asserted edges
-at or below 0.85.
+**Confidence is how sure you are the relationship holds as stated, given this passage** - not how good the paper is, and not how strong the effect was. Rough guide: 0.9+ the paper says it in so many words; 0.7-0.85 clear from the passage with little inference; 0.4-0.65 a reasonable reading that another reader might dispute; below 0.4 probably not worth recording. Keep model-asserted edges at or below 0.85.
 
-**Passages are verbatim.** Copy the quote exactly from the abstract or attached
-text; `...` may elide words within a quote. `scibraid add` rejects a passage that
-is not in the text it holds, or that starts or ends mid-word (the mark of a
-quote copied from truncated output rather than read; go back to the source for
-the whole sentence). When that happens, re-read and fix the quote -
-never paraphrase into quotation marks, and never weaken the check by quoting
-two words. Quote enough that a reader sees the relationship in the passage.
+**Passages are verbatim.** Copy the quote exactly from the abstract or attached text; `...` may elide words within a quote. `scibraid add` rejects a passage that is not in the text it holds, or that starts or ends mid-word (the mark of a quote copied from truncated output rather than read; go back to the source for the whole sentence). When that happens, re-read and fix the quote - never paraphrase into quotation marks, and never weaken the check by quoting two words. Quote enough that a reader sees the relationship in the passage.
 
-**Failures are first-class.** Null results, failed replications, abandoned
-approaches and "did not reach significance" are constraints on hypothesis space,
-and the literature under-reports them. Record them with the same care as
-positive results, with their conditions: a failure is only informative alongside
-the circumstances it failed under.
+**Failures are first-class.** Null results, failed replications, abandoned approaches and "did not reach significance" are constraints on hypothesis space, and the literature under-reports them. Record them with the same care as positive results, with their conditions: a failure is only informative alongside the circumstances it failed under.
 
-**Conditions are the alignment surface.** Record every condition the source
-gives you, even ones that seem irrelevant to this question. Put quantities in
-`attrs` (`{"n": 2141, "labs": 23, "dose_mg_kg": 5}`) and keep the label
-human-readable.
+**Conditions are the alignment surface.** Record every condition the source gives you, even ones that seem irrelevant to this question. Put quantities in `attrs` (`{"n": 2141, "labs": 23, "dose_mg_kg": 5}`) and keep the label human-readable.
 
-**Do not smooth over disagreement.** If two papers conflict, record both and a
-`contradicts` edge between the observations. Do not pick a winner.
+**Do not smooth over disagreement.** If two papers conflict, record both and a `contradicts` edge between the observations. Do not pick a winner.
 
 ## Beyond the abstract
 
-Abstracts omit conditions and nulls. For the papers that matter most, fetch the
-open-access full text (the `url` field, or a preprint server), save it as plain
-text, and attach it so passages from it can be verified:
-`scibraid paper text <id> fulltext.txt`, then cite with `"location": "methods"`
-(or `results`, `discussion`). A passage from text that is not attached is
-accepted with a warning and stays `verified: null`; keep those few.
+Abstracts omit conditions and nulls. For the papers that matter most, fetch the open-access full text (the `url` field, or a preprint server), save it as plain text, and attach it so passages from it can be verified: `scibraid paper text <id> fulltext.txt`, then cite with `"location": "methods"` (or `results`, `discussion`). A passage from text that is not attached is accepted with a warning and stays `verified: null`; keep those few.
 
-For a source OpenAlex does not have, write a paper JSON (`id`, `title`, and what
-you know of `doi`, `year`, `authors`, `venue`, `url`, `abstract`, `source_tier`:
-`published` | `grey` | `process`) and `scibraid paper add paper.json`.
+For a source OpenAlex does not have, write a paper JSON (`id`, `title`, and what you know of `doi`, `year`, `authors`, `venue`, `url`, `abstract`, `source_tier`: `published` | `grey` | `process`) and `scibraid paper add paper.json`.
 
 ## Batch format
 
@@ -167,6 +101,4 @@ you know of `doi`, `year`, `authors`, `venue`, `url`, `abstract`, `source_tier`:
 }
 ```
 
-Nodes may carry provenance too (useful for experiments and observations); edges
-must. Re-adding an existing node id merges provenance; re-adding an edge from the
-same paper replaces it, so correcting an extraction is just another `add`.
+Nodes may carry provenance too (useful for experiments and observations); edges must. Re-adding an existing node id merges provenance; re-adding an edge from the same paper replaces it, so correcting an extraction is just another `add`.
