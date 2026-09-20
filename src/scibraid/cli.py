@@ -10,6 +10,7 @@ import argparse
 import json
 import sys
 import webbrowser
+from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from collections import Counter
 from pathlib import Path
@@ -95,6 +96,11 @@ def cmd_paper_text(args: argparse.Namespace) -> int:
 
 
 def cmd_new(args: argparse.Namespace) -> int:
+    with store.subgraph_lock(args.slug):
+        return _new(args)
+
+
+def _new(args: argparse.Namespace) -> int:
     if store.subgraph_path(args.slug).exists():
         print(f"subgraph {args.slug!r} already exists", file=sys.stderr)
         return 1
@@ -125,16 +131,17 @@ def cmd_new(args: argparse.Namespace) -> int:
 
 
 def cmd_add(args: argparse.Namespace) -> int:
-    sg = store.load_subgraph(args.slug)
     raw = sys.stdin.read() if args.batch == "-" else Path(args.batch).read_text()
     try:
         batch = Batch.model_validate_json(raw)
     except ValidationError as exc:
         _emit({"ok": False, "errors": _errors(exc)})
         return 1
-    report = store.add_batch(sg, batch)
-    if report.ok:
-        store.save_subgraph(sg)
+    with store.subgraph_lock(args.slug):
+        sg = store.load_subgraph(args.slug)
+        report = store.add_batch(sg, batch)
+        if report.ok:
+            store.save_subgraph(sg)
     _emit({"ok": report.ok, **vars(report), "totals": _totals(sg)})
     return 0 if report.ok else 1
 
@@ -377,6 +384,22 @@ def cmd_lead_add(args: argparse.Namespace) -> int:
     if errors := align.check_leads(pool.subgraphs(), pool.alignments(), leads):
         _emit({"ok": False, "errors": errors})
         return 1
+    # A lead is edited by reading it, changing it and adding it back. If someone else changed
+    # it in between, adding this copy would silently discard their checks.
+    current = {x.id: x for x in pool.leads()}
+    stale = [
+        f"lead {x.id}: changed by someone else since you read it (pool has {current[x.id].updated}, "
+        f"yours says {x.updated if 'updated' in x.model_fields_set else 'nothing'}). "
+        "Re-read it with `scibraid lead list --format json`, reapply your change, and keep its `updated` field"
+        for x in leads
+        if x.id in current and not ("updated" in x.model_fields_set and x.updated == current[x.id].updated)
+    ]
+    if stale:
+        _emit({"ok": False, "errors": stale})
+        return 1
+    stamp = datetime.now(timezone.utc).isoformat(timespec="microseconds")
+    for x in leads:
+        x.updated = stamp
     pool.add_leads(leads)
     _emit({"ok": True, "added": len(leads), "status": Counter(x.status.value for x in leads)})
     return 0
@@ -474,6 +497,7 @@ def cmd_repair_resolve(args: argparse.Namespace) -> int:
         return 1
     lead.repairs[args.index].resolved = True
     lead.repairs[args.index].resolution = args.note
+    lead.updated = datetime.now(timezone.utc).isoformat(timespec="microseconds")
     pool.add_leads([lead])
     print(f"resolved repair #{args.index} on {lead.id}")
     return 0

@@ -712,3 +712,41 @@ def test_cross_bearing_skips_a_study_already_extracted_into_the_other_subgraph()
     study = Alignment(a="q/e:mouse-hypoxia", b="y/e:y-low-oxygen", verdict="same", confidence=0.9, rationale="Treat as the same study for the test.")
     found = align.observe([first, second], [conditions, study])["cross_bearing"]
     assert not any(c["from"] == "q" and c["may_bear_on"] == "Y slows tumour growth" for c in found)
+
+
+def test_concurrent_adds_to_one_subgraph_all_land(tmp_path):
+    assert main(["new", "shared", "--question", "Shared?"]) == 0
+    paths = []
+    for i in range(12):
+        path = tmp_path / f"b{i}.json"
+        path.write_text(json.dumps({"nodes": [{"id": f"c:n{i}", "type": "condition", "label": f"Condition {i}"}]}))
+        paths.append(path)
+    threads = [threading.Thread(target=main, args=(["add", "shared", str(p)],)) for p in paths]
+    for thread in threads:
+        thread.start()
+    for thread in threads:
+        thread.join()
+    assert len(store.load_subgraph("shared").nodes) == 12  # no lost updates, and the file is still valid JSON
+    assert not list((store.home() / "subgraphs").glob("*.tmp"))
+
+
+def test_a_stale_copy_of_a_lead_is_refused(tmp_path, capsys):
+    pool = pooled_pair()
+    path = tmp_path / "lead.json"
+    path.write_text(json.dumps([lead().model_dump(mode="json", exclude={"updated"})]))
+    assert main(["lead", "add", str(path)]) == 0  # new lead: nothing to be stale against
+    first = pool.leads()[0].model_dump(mode="json")
+    second = dict(first)
+    first["confidence"] = 0.5
+    path.write_text(json.dumps([first]))
+    assert main(["lead", "add", str(path)]) == 0
+    second["confidence"] = 0.2  # a second session, still holding the copy it read earlier
+    path.write_text(json.dumps([second]))
+    capsys.readouterr()
+    assert main(["lead", "add", str(path)]) == 1
+    assert "changed by someone else since you read it" in capsys.readouterr().out
+    assert pool.leads()[0].confidence == 0.5
+    # a copy with no `updated` at all is refused too, rather than treated as new
+    second.pop("updated")
+    path.write_text(json.dumps([second]))
+    assert main(["lead", "add", str(path)]) == 1

@@ -2,9 +2,12 @@
 
 from __future__ import annotations
 
+import fcntl
 import os
 import re
+import tempfile
 import unicodedata
+from contextlib import contextmanager
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -19,6 +22,32 @@ def home() -> Path:
     return path
 
 
+def _write_atomic(path: Path, text: str) -> None:
+    """Write via a temporary file and rename, so a reader never sees a half-written file
+    and two writers cannot interleave into invalid JSON."""
+    handle, temp = tempfile.mkstemp(dir=path.parent, prefix=f".{path.name}.", suffix=".tmp")
+    try:
+        with os.fdopen(handle, "w") as out:
+            out.write(text)
+        os.replace(temp, path)
+    except BaseException:
+        Path(temp).unlink(missing_ok=True)
+        raise
+
+
+@contextmanager
+def subgraph_lock(slug: str):
+    """Hold while reading, changing and saving one subgraph. Several sessions may build
+    different subgraphs freely; two adding to the same one would otherwise lose updates."""
+    lock = home() / "subgraphs" / f".{slug}.lock"
+    with open(lock, "w") as handle:
+        fcntl.flock(handle, fcntl.LOCK_EX)
+        try:
+            yield
+        finally:
+            fcntl.flock(handle, fcntl.LOCK_UN)
+
+
 def _safe(paper_id: str) -> str:
     return re.sub(r"[^A-Za-z0-9._\-]", "_", paper_id)
 
@@ -27,7 +56,7 @@ def _safe(paper_id: str) -> str:
 
 
 def save_paper(paper: Paper) -> None:
-    (home() / "papers" / f"{_safe(paper.id)}.json").write_text(paper.model_dump_json(indent=2))
+    _write_atomic(home() / "papers" / f"{_safe(paper.id)}.json", paper.model_dump_json(indent=2))
 
 
 def load_paper(paper_id: str) -> Paper | None:
@@ -36,7 +65,7 @@ def load_paper(paper_id: str) -> Paper | None:
 
 
 def attach_text(paper_id: str, text: str) -> None:
-    (home() / "fulltext" / f"{_safe(paper_id)}.txt").write_text(text)
+    _write_atomic(home() / "fulltext" / f"{_safe(paper_id)}.txt", text)
 
 
 def load_text(paper_id: str) -> str | None:
@@ -125,7 +154,7 @@ def load_subgraph(slug: str) -> Subgraph:
 
 def save_subgraph(sg: Subgraph) -> None:
     sg.updated = _now()
-    subgraph_path(sg.slug).write_text(sg.model_dump_json(indent=2))
+    _write_atomic(subgraph_path(sg.slug), sg.model_dump_json(indent=2))
 
 
 def list_subgraphs() -> list[Subgraph]:

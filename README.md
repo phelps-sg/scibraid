@@ -211,7 +211,7 @@ The commands that list things take `--format markdown` and print tables that pas
 scibraid agenda --format markdown
 ```
 
-Data lives in `$SCIBRAID_HOME`, by default `~/.local/share/scibraid`.
+Data lives in `$SCIBRAID_HOME`, by default `~/.local/share/scibraid`. Several sessions can work against it at once. Each should build its own subgraph; the pool is SQLite and locks itself, files are written atomically, additions to one subgraph are serialised by a file lock, and a lead edited from a stale copy is refused. The file lock is advisory and local, so it does not protect a data directory shared over a network file system.
 
 ## Data model
 

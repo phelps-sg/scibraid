@@ -14,7 +14,7 @@ A lead is recorded as carefully as a link. It names the nodes and alignment verd
 1. `scibraid observe --new --format json` for candidates that no recorded lead covers yet, and `scibraid lead list` for what has been pursued. Without `--new` each candidate carries the `leads` that cover it, with their status. Return to a covered candidate only if new subgraphs or verdicts bear on it.
 2. Triage. Pick the few worth the effort (see below). Five well-checked leads beat twenty unchecked ones.
 3. For each, make the checks below, going back to the sources.
-4. Write the leads as a JSON list and `scibraid lead add leads.json`. Re-adding an id replaces it, which is how a lead's status changes.
+4. Write the leads as a JSON list (in your own scratch directory) and `scibraid lead add leads.json`. Re-adding an id replaces it, which is how a lead's status changes. To change an existing lead, start from `scibraid lead list --format json` and keep its `updated` field as you found it: the tool uses it to tell whether someone else changed the lead after you read it, and refuses a stale copy.
 5. Report: what holds, what was already known, what fell over and why. `scibraid followups` lists every lead's follow-up question and how far the work on it has got (`pending`, `in_progress`, `reviewed`). A pending one is taken up with `scibraid new <slug> --lead <lead-id>` and the `evidence-subgraph` skill, which is how the pool grows where it matters. `scibraid agenda` lists the open research questions, which are the point of the whole exercise.
 
 ## Triage
