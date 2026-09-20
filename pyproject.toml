@@ -1,0 +1,25 @@
+[project]
+name = "scigraph"
+version = "0.1.0"
+description = "Deterministic tools for building and pooling evidence subgraphs of the scientific literature"
+readme = "README.md"
+authors = [
+    { name = "Steve Phelps", email = "phelps.sg@gmail.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "httpx>=0.28.1",
+    "pydantic>=2.13.5",
+]
+
+[project.scripts]
+scigraph = "scigraph:main"
+
+[build-system]
+requires = ["uv_build>=0.12.6,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]
