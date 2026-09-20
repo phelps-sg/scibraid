@@ -35,6 +35,8 @@ Make each check that applies, and record it as a `question` and a `finding`, wit
 
 **Does the field already know?** Search for the connection stated outright. Check whether either source paper cites the other or makes the link itself in its discussion. If it does, the lead is `known`: record where in `known_in`. That is a useful result. It shows the method recovering real structure, and it tells a newcomer something that took the field years to say.
 
+**Has anyone asked the question?** This is a different check from whether anyone has answered it. A claim the literature does not settle may still be one the field already names as unresolved: look for it stated as a hypothesis, a conjecture, "unverified", "remains unclear" or listed under future work, in the source papers' discussions and in a search. Record where in `posed_in`. If you looked and found nowhere, record an empty list. Leaving `posed_in` unset means nobody looked, and the tool will not accept `open` that way. An open question that is already posed is still worth having, since the pool adds the evidence around it and the experiment that would settle it. But it is not a question the pool discovered, and the agenda keeps the two apart.
+
 ## Recording
 
 ```json
@@ -49,6 +51,7 @@ Make each check that applies, and record it as a `question` and a `finding`, wit
   "would_confirm": "The experiment or observation that would settle it in favour.",
   "would_refute": "The result that would sink it.",
   "known_in": [],
+  "posed_in": [],
   "follow_up": "A research question, phrased so it can be handed to evidence-subgraph as it stands."}]
 ```
 
@@ -56,7 +59,7 @@ If a check shows that a subgraph or a verdict is wrong, add a repair to the lead
 
 `kind` is the `observe` section the lead came from: `bridge`, `shared_failure`, `cross_bearing`, `regime`, `untested`, or `other` for something you noticed yourself. `status` is `candidate` (not checked), `holds`, `open`, `known`, or `refuted`. The tool rejects a lead that is judged without checks, `known` without saying where, or `holds` or `open` without saying what would confirm and refute it.
 
-`holds` and `open` differ in how much looking stands behind them. `holds` is provisional: the premise is verified, no duller explanation was found, and a brief search did not turn the connection up. `open` means an open research question: the literature has been reviewed and does not settle the claim, so only new empirical work can. Reserve it for that. A lead with a follow-up question can become `open` only after that follow-up has been reviewed, which means a subgraph started from the lead has been built and pooled, and you have read what it found. If that review settles the claim, the lead becomes `known` or `refuted` instead. If no question the literature could answer applies, leave `follow_up` empty and the lead can go straight to `open`. For an `open` lead, `would_confirm` is the experiment someone should run: write it so a researcher in the field could act on it. `open` is where this pipeline stops. Another review will not help, and the question goes to a person.
+`holds` and `open` differ in how much looking stands behind them. `holds` is provisional: the premise is verified, no duller explanation was found, and a brief search did not turn the connection up. `open` means an open research question: the literature has been reviewed and does not settle the claim, so only new empirical work can. Reserve it for that. A lead with a follow-up question can become `open` only after that follow-up has been reviewed, which means a subgraph started from the lead has been built and pooled, and you have read what it found. If that review settles the claim, the lead becomes `known` or `refuted` instead. If no question the literature could answer applies, leave `follow_up` empty and the lead can go straight to `open`. For an `open` lead, `would_confirm` is the experiment someone should run: write it so a researcher in the field could act on it, and `posed_in` must say whether the literature already asks the question. `open` is where this pipeline stops. Another review will not help, and the question goes to a person.
 
 `confidence` is how likely the claim is to be true of the world, given everything you checked. It cannot exceed the confidence of the weakest alignment verdict the lead rests on, and the tool enforces that. It should usually be well below it: an alignment being right is necessary, not sufficient. Two papers and one shared condition is thin evidence, so most leads that hold belong between 0.3 and 0.6.
 

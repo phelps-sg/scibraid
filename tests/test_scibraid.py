@@ -584,7 +584,9 @@ def test_follow_up_runs_from_lead_to_pooled_subgraph_with_a_derived_hypothesis(c
     assert "linked 2 derived" in capsys.readouterr().out
     assert status() == {"hypoxia-blunts-both": "reviewed"}
     # Only now can the question be called open: the literature was reviewed and did not settle it.
-    opened = Lead.model_validate({**held.model_dump(), "status": "open"})
+    unasked = Lead.model_validate({**held.model_dump(), "status": "open"})
+    assert "whether the literature already poses the question" in align.check_leads(pool.subgraphs(), pool.alignments(), [unasked])[0]
+    opened = Lead.model_validate({**held.model_dump(), "status": "open", "posed_in": []})
     assert align.check_leads(pool.subgraphs(), pool.alignments(), [opened]) == []
     pool.add_leads([opened])
     [question] = align.agenda(pool.leads(), pool.subgraphs())
@@ -643,11 +645,25 @@ def test_repairs_are_listed_until_resolved(capsys):
 def test_a_question_is_not_open_until_the_literature_has_been_reviewed():
     pool = pooled_pair()
     settle = {"would_confirm": "A dose-response under hypoxia.", "would_refute": "An effect at 1% oxygen."}
-    unreviewed = lead(status="open", checks=CHECKS, follow_up="Does hypoxia blunt anti-tumour compounds in general?", **settle)
+    unreviewed = lead(status="open", checks=CHECKS, posed_in=[], follow_up="Does hypoxia blunt anti-tumour compounds in general?", **settle)
     assert "has not been reviewed" in align.check_leads(pool.subgraphs(), pool.alignments(), [unreviewed])[0]
     # with no literature question to ask, a checked lead can go straight to open
-    experiment_only = lead(status="open", checks=CHECKS, **settle)
+    experiment_only = lead(status="open", checks=CHECKS, posed_in=[], **settle)
     assert align.check_leads(pool.subgraphs(), pool.alignments(), [experiment_only]) == []
     with pytest.raises(ValueError, match="what would confirm"):
         lead(status="open", checks=CHECKS)
     assert align.agenda([lead()], pool.subgraphs()) == []  # a candidate is not an open question
+
+
+def test_agenda_separates_questions_the_literature_already_poses(capsys):
+    pool = pooled_pair()
+    settle = {"status": "open", "checks": CHECKS, "would_confirm": "A dose-response under hypoxia.", "would_refute": "An effect at 1% oxygen."}
+    pool.add_leads([lead(id="asked", confidence=0.6, posed_in=["Smith 2020 calls this an unverified hypothesis"], **settle),
+                    lead(id="unasked", confidence=0.3, posed_in=[], **settle)])
+    agenda = align.agenda(pool.leads(), pool.subgraphs())
+    assert [q["lead"] for q in agenda] == ["unasked", "asked"]  # not-yet-asked first, despite lower confidence
+    assert main(["agenda"]) == 0
+    out = capsys.readouterr().out
+    assert "not found posed anywhere" in out and "already asked in:  Smith 2020" in out
+    # leads recorded before the field existed still load, and show as not checked
+    assert lead().posed_in is None

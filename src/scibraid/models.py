@@ -282,6 +282,9 @@ class Lead(BaseModel):
     would_confirm: str = ""
     would_refute: str = ""
     known_in: list[str] = []  # where the literature already says it
+    # Where the literature poses the question without answering it. None means nobody looked;
+    # an empty list means a search found it posed nowhere. Open is not the same as new.
+    posed_in: list[str] | None = None
     follow_up: str | None = None  # a question to hand back to evidence-subgraph
     repairs: list[Repair] = []
     updated: str = Field(default_factory=_now)

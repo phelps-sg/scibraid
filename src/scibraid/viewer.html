@@ -378,6 +378,7 @@ function renderPanel() {
       lead.would_confirm ? [el("h3", {}, "Would confirm"), el("div", {}, lead.would_confirm)] : null,
       lead.would_refute ? [el("h3", {}, "Would refute"), el("div", {}, lead.would_refute)] : null,
       lead.known_in.length ? [el("h3", {}, "Already said in"), lead.known_in.map((k) => el("div", { class: "src" }, k))] : null,
+      lead.posed_in ? [el("h3", {}, "Question already posed in"), lead.posed_in.length ? lead.posed_in.map((k) => el("div", { class: "src" }, k)) : el("div", { class: "src" }, "A search did not find this question posed anywhere.")] : null,
       el("h3", {}, "Rests on"), lead.present.map((k) => nodeLink(model.nodes.get(k))),
       lead.present.length < lead.nodes.length ? el("p", { class: "src" }, `${lead.nodes.length - lead.present.length} more node(s) are in a subgraph not shown. Choose "All subgraphs together".`) : null);
   } else if (link) {

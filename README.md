@@ -202,7 +202,7 @@ Graphs can be filtered by node type, who asserted a relationship and confidence.
 | `observe [--new]` | Find candidate observations in the aligned pool |
 | `lead add\|list` | Record or inspect checked leads |
 | `followups` | Show follow-up questions raised by leads |
-| `agenda` | Show open research questions and the experiments needed to answer them |
+| `agenda` | Show open research questions, the experiment each needs, and whether the literature already poses it |
 | `repair list\|resolve` | List and resolve faults in subgraphs or judgements found while checking leads (recorded on the lead) |
 
 Data lives in `$SCIBRAID_HOME`, by default `~/.local/share/scibraid`.
@@ -248,7 +248,7 @@ The system does not rely on similarity to relate hypotheses. Similarity finds re
 - hypotheses linked across questions
 - experiments that have not yet been run
 
-Most such patterns are not discoveries. A **lead** is a pattern that has been written down to be checked. Its status is `candidate` until it has been: the tool will not accept any other status without recorded checks. After checking it is `holds` (the premise is verified, no duller explanation was found, and a brief search did not find the connection stated), `known` (the literature already says it), `refuted`, or `open`. `open` is reserved for an open research question: the literature has been reviewed and does not settle the claim, so only new empirical work can. A lead cannot be more confident than the weakest alignment judgement it rests on.
+Most such patterns are not discoveries. A **lead** is a pattern that has been written down to be checked. Its status is `candidate` until it has been: the tool will not accept any other status without recorded checks. After checking it is `holds` (the premise is verified, no duller explanation was found, and a brief search did not find the connection stated), `known` (the literature already says it), `refuted`, or `open`. `open` is reserved for an open research question: the literature has been reviewed and does not settle the claim, so only new empirical work can. Open is a judgement made by this process, not a statement that the field regards the question as open, and it is not the same as new. Each open lead therefore records where the literature already poses the question (`posed_in`), or that a search found it posed nowhere, and `scibraid agenda` lists first the questions that nobody was found to have asked. A lead cannot be more confident than the weakest alignment judgement it rests on.
 
 Each lead records the claim, the graph elements and alignment judgements it depends on, the checks performed, what would confirm or refute it, and a follow-up question.
 
@@ -258,7 +258,7 @@ The loop therefore preserves not only what the literature says, but also what th
 
 The current system is a research prototype.
 
-- A check that a lead is already known is a brief agent search, not a systematic literature review. `holds` therefore means that nothing was found, not that nothing exists.
+- A check that a lead is already known, or that a question has already been asked, is a brief agent search, not a systematic literature review. `holds`, `open` and "not found posed anywhere" therefore mean that nothing was found, not that nothing exists.
 - Quote verification establishes that a passage exists in the source. It does not establish that the passage actually supports the relationship the agent attached to it.
 - The example graphs were built and aligned by the same agent in one session, so they are not independent in the way reviews produced by different researchers would be.
 - No domain expert has audited the example extractions.

@@ -368,6 +368,10 @@ def cmd_followups(args: argparse.Namespace) -> int:
         built = f" -> {', '.join(f['subgraphs'])}" if f["subgraphs"] else ""
         print(f"{f['status']:11} [{f['lead_status']} {f['lead_confidence']:.2f}] {f['lead']}{built}")
         print(f"            {f['question']}")
+    # Follow-ups are literature questions still to be read for. Open research questions need
+    # an experiment, not more reading, so most have no follow-up and are not listed here.
+    opened = sum(1 for x in pool.leads() if x.status.value == "open")
+    print(f"\n{len(found)} follow-up question(s). {opened} open research question(s): see `scibraid agenda`.")
     return 0
 
 
@@ -383,7 +387,14 @@ def cmd_agenda(args: argparse.Namespace) -> int:
         print(f"      would refute:      {q['would_refute']}")
         reviewed = ", ".join(q["literature_reviewed_in"]) or "no literature question applied"
         print(f"      literature:        {reviewed}   (lead {q['lead']})")
-    print(f"{len(found)} open research question(s)")
+        if q["posed_in"] is None:
+            print("      already asked?     not checked")
+        elif q["posed_in"]:
+            print(f"      already asked in:  {'; '.join(q['posed_in'])}")
+        else:
+            print("      already asked?     not found posed anywhere")
+    pending = sum(1 for f in align.follow_ups(pool.leads(), pool.subgraphs(), store.list_subgraphs()) if f["status"] == "pending")
+    print(f"{len(found)} open research question(s). {pending} literature question(s) still to review: see `scibraid followups`.")
     return 0
 
 

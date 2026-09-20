@@ -496,6 +496,11 @@ def check_leads(subgraphs: list[Subgraph], alignments: list[Alignment], leads: l
             )
             if not known:
                 errors.append(f"lead {lead.id}: repair target {repair.target!r} is not a pooled subgraph, node or verdict")
+        if lead.status.value == "open" and lead.posed_in is None:
+            errors.append(
+                f"lead {lead.id}: marked open without saying whether the literature already poses the question. "
+                "Set posed_in to where it does, or to [] if a search found it posed nowhere"
+            )
         if lead.status.value == "open" and lead.follow_up:
             if not any(sg.prompted_by == lead.id for sg in subgraphs):
                 errors.append(
@@ -691,10 +696,12 @@ def agenda(leads: list[Lead], pooled: list[Subgraph]) -> list[dict]:
             "experiment_needed": x.would_confirm,
             "would_refute": x.would_refute,
             "literature_reviewed_in": reviews[x.id],
+            "posed_in": x.posed_in,
             "rests_on": x.nodes,
         }
         for x in leads
         if x.status.value == "open"
     ]
-    found.sort(key=lambda q: -q["confidence"])
+    # Questions nobody was found to have asked come first: they are what only the pool produced.
+    found.sort(key=lambda q: (bool(q["posed_in"]), -q["confidence"]))
     return found
