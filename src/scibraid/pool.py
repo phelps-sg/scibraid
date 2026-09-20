@@ -1,6 +1,6 @@
 """Pooling: where independently built subgraphs accumulate.
 
-The pool is local SQLite for now. Setting SUBGRAFT_POOL_URL switches to a remote
+The pool is local SQLite for now. Setting SCIBRAID_POOL_URL switches to a remote
 pool over HTTP; the contract is `POST {url}/subgraphs` with the subgraph JSON and
 `GET {url}/subgraphs` for the listing (`?full=1` for whole subgraphs), and
 `POST`/`GET {url}/alignments`, so the skills do not change when a server arrives.
@@ -150,5 +150,5 @@ class HttpPool:
 
 
 def get_pool() -> Pool:
-    url = os.environ.get("SUBGRAFT_POOL_URL")
+    url = os.environ.get("SCIBRAID_POOL_URL")
     return HttpPool(url) if url else LocalPool()

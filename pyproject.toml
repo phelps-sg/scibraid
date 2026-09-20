@@ -1,5 +1,5 @@
 [project]
-name = "subgraft"
+name = "scibraid"
 version = "0.1.0"
 description = "Deterministic tools for building and pooling evidence subgraphs of the scientific literature"
 readme = "README.md"
@@ -13,7 +13,7 @@ dependencies = [
 ]
 
 [project.scripts]
-subgraft = "subgraft:main"
+scibraid = "scibraid:main"
 
 [build-system]
 requires = ["uv_build>=0.12.6,<0.13.0"]

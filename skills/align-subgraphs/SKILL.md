@@ -10,25 +10,25 @@ They name the same things differently and different things the same. Alignment
 decides which is which, without merging anything: a verdict is a link between two
 nodes, with its own confidence and rationale, that anyone can inspect and revise.
 
-The work is split by cost. `subgraft candidates` cheaply proposes pairs, ranked by
+The work is split by cost. `scibraid candidates` cheaply proposes pairs, ranked by
 how plausible the match is and by how much pooled structure it would join if true.
 You are the expensive stage: judge the pairs it ranks highest, and stop when the
 budget is spent. A pair it does not propose is simply not yet judged.
 
 ## Workflow
 
-1. `subgraft pool --list` to see what is pooled. Fewer than two subgraphs: nothing to do.
-2. `subgraft candidates [--budget 40] [--type condition]` returns JSON pairs. Each
+1. `scibraid pool --list` to see what is pooled. Fewer than two subgraphs: nothing to do.
+2. `scibraid candidates [--budget 40] [--type condition]` returns JSON pairs. Each
    has both nodes' labels, descriptions, attrs and `context` (how each node is
    used in its own subgraph), and the signals behind the score. Pairs already
    judged are not proposed again.
-3. Judge each pair, write a JSON list, and `subgraft align add verdicts.json`.
+3. Judge each pair, write a JSON list, and `scibraid align add verdicts.json`.
    Hypothesis pairs are always proposed, however unalike they read, because they
    matter most; most will be `different` or `related`, and saying so is the job.
-4. `subgraft observe` and report what it shows (below).
+4. `scibraid observe` and report what it shows (below).
 5. If an observation looks important and rests on a link you were unsure of,
-   go back to the sources (`subgraft paper show <id>`, the subgraph's passages
-   via `subgraft show <slug> --format json`) and revise the verdict: `align add`
+   go back to the sources (`scibraid paper show <id>`, the subgraph's passages
+   via `scibraid show <slug> --format json`) and revise the verdict: `align add`
    with the same pair replaces it.
 
 ## Verdicts
@@ -84,7 +84,7 @@ structure that every later observation inherits.
 
 ## Reporting what the pool shows
 
-`subgraft observe` reads the aligned pool and returns candidate observations:
+`scibraid observe` reads the aligned pool and returns candidate observations:
 
 - **bridging conditions**: one condition reached independently from different
   questions, with the experiments and hypotheses on each side;

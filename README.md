@@ -1,4 +1,4 @@
-# subgraft
+# scibraid
 
 A researcher reviewing a literature builds a mental model of it: which
 experiments tested which hypotheses, under what conditions, with what results,
@@ -6,8 +6,8 @@ and which of those results conflict. That model is the valuable product of the
 review. It is also private, and it is lost when the project ends. The next person
 to ask a nearby question starts again from the papers.
 
-subgraft keeps the model. (A graft joins two plants that stay distinct, which is
-how its graphs are combined.) Given a research question, a coding agent reads the
+scibraid keeps the model. (The strands of a braid stay distinct, which is how
+its graphs are combined.) Given a research question, a coding agent reads the
 relevant papers and records what it finds as a small graph of hypotheses,
 experiments, conditions, observations and interpretations. Every link carries a
 confidence, a note of whether the paper's authors or the agent drew it, and a
@@ -26,7 +26,7 @@ the differing conditions are laid side by side. Nobody has to build a knowledge
 graph of science in advance. The graph grows from the questions people ask.
 
 There are no API keys and no model calls in the code. The agent harness (Claude
-Code) does the reading and the judging through two skills. The `subgraft`
+Code) does the reading and the judging through two skills. The `scibraid`
 command-line tool does everything that should be deterministic: literature
 search, schema validation, quote verification, storage, pooling, candidate
 ranking and the structural queries.
@@ -59,7 +59,7 @@ Curated approaches keep more of the structure. The
 contribution as structured properties so that papers can be compared in a table.
 [Nanopublications](https://nanopub.net) package a single assertion with its
 provenance. [Discourse graphs](https://discoursegraphs.com) link questions,
-claims and evidence in a researcher's notes. subgraft shares their view that a
+claims and evidence in a researcher's notes. scibraid shares their view that a
 claim should travel with its source. They depend on people doing the structuring
 by hand, and that has limited how much of the literature they cover.
 
@@ -76,7 +76,7 @@ terms that appeared in two literatures which did not cite each other. Much of
 literature-based discovery since has joined literatures on shared terms or
 extracted triples.
 
-subgraft differs from these on what it records, when it is built, how far it can
+scibraid differs from these on what it records, when it is built, how far it can
 be trusted and how graphs are combined. It records the experiment, its
 conditions, what was observed and what the authors made of it, as separate
 nodes, with failures given the same standing as successes. It is built on
@@ -114,7 +114,7 @@ same thing, 8 to be narrower or broader, 17 related and 21 different. The last
 group included traps that word overlap had ranked highly, such as "without
 instruction tuning" against "instruction-tuned".
 
-`subgraft observe` then ranked, first among failures sharing a condition, one
+`scibraid observe` then ranked, first among failures sharing a condition, one
 that neither question had asked about. Lu et al. (2024) found that emergent
 abilities mostly vanish in base GPT-3 when in-context learning is excluded. Wang
 et al. (2023) mention in a footnote that base GPT-3 175B gains little from
@@ -129,8 +129,8 @@ took two ordinary literature reviews and one alignment pass to surface.
 Requires [uv](https://docs.astral.sh/uv/) and Claude Code.
 
 ```sh
-git clone <this repo> subgraft && cd subgraft
-uv tool install --editable .        # puts `subgraft` on PATH
+git clone <this repo> scibraid && cd scibraid
+uv tool install --editable .        # puts `scibraid` on PATH
 ```
 
 Inside this repository Claude Code finds the skills through `.claude/skills`.
@@ -143,7 +143,7 @@ claude --plugin-dir /path/to/llm-sci-graph
 ## Use
 
 Ask a question. The agent searches, reads, extracts paper by paper, checks its
-work with `subgraft lint`, reports what the evidence shows, and pools the result.
+work with `scibraid lint`, reports what the evidence shows, and pools the result.
 
 ```
 /evidence-subgraph why is the ego-depletion effect still disputed?
@@ -153,7 +153,7 @@ Browse what it built. This serves a page on `http://127.0.0.1:8765/`. Click any
 node or link to see the quoted passage, the confidence and who asserted it.
 
 ```sh
-subgraft view
+scibraid view
 ```
 
 Once two or more graphs are pooled, align them and read the pool:
@@ -163,19 +163,19 @@ Once two or more graphs are pooled, align them and read the pool:
 ```
 
 ```sh
-subgraft observe
+scibraid observe
 ```
 
 The tools can also be driven by hand. A batch is a JSON file of nodes and links
 (the format is in `skills/evidence-subgraph/SKILL.md`):
 
 ```sh
-subgraft search "ego depletion replication" --limit 10
-subgraft paper show W2499154041
-subgraft new ego-depletion --question "Why is ego depletion still disputed?"
-subgraft add ego-depletion batch.json
-subgraft lint ego-depletion
-subgraft pool ego-depletion
+scibraid search "ego depletion replication" --limit 10
+scibraid paper show W2499154041
+scibraid new ego-depletion --question "Why is ego depletion still disputed?"
+scibraid add ego-depletion batch.json
+scibraid lint ego-depletion
+scibraid pool ego-depletion
 ```
 
 ## Commands
@@ -194,7 +194,7 @@ subgraft pool ego-depletion
 | `align add verdicts.json`, `align list` | record and list alignment verdicts |
 | `observe [--format json]` | candidate observations from the aligned pool |
 
-Data lives in `$SUBGRAFT_HOME`, by default `~/.local/share/subgraft`.
+Data lives in `$SCIBRAID_HOME`, by default `~/.local/share/scibraid`.
 
 ## Data model
 
@@ -228,7 +228,7 @@ expensive step, and this ordering spends it where a match would join the most
 structure. Hypothesis pairs are always proposed, because paraphrase defeats
 lexical matching and they matter most.
 
-Setting `SUBGRAFT_POOL_URL` switches to a remote pool over HTTP (`/subgraphs`,
+Setting `SCIBRAID_POOL_URL` switches to a remote pool over HTTP (`/subgraphs`,
 `/alignments`). No server exists yet. The skills will not need to change when
 one does.
 

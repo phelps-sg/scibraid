@@ -5,11 +5,11 @@ import pytest
 
 import threading
 
-from subgraft import align, main, openalex, store
-from subgraft.cli import make_server
-from subgraft.lint import lint
-from subgraft.models import Alignment, Batch, Paper, Subgraph
-from subgraft.pool import HttpPool, LocalPool
+from scibraid import align, main, openalex, store
+from scibraid.cli import make_server
+from scibraid.lint import lint
+from scibraid.models import Alignment, Batch, Paper, Subgraph
+from scibraid.pool import HttpPool, LocalPool
 
 ABSTRACT = (
     "We tested whether compound X reduces tumour growth in mice. Under hypoxic "
@@ -19,9 +19,9 @@ ABSTRACT = (
 
 
 @pytest.fixture(autouse=True)
-def subgraft_home(tmp_path, monkeypatch):
-    monkeypatch.setenv("SUBGRAFT_HOME", str(tmp_path))
-    monkeypatch.delenv("SUBGRAFT_POOL_URL", raising=False)
+def scibraid_home(tmp_path, monkeypatch):
+    monkeypatch.setenv("SCIBRAID_HOME", str(tmp_path))
+    monkeypatch.delenv("SCIBRAID_POOL_URL", raising=False)
     store.save_paper(Paper(id="W1", title="Compound X under hypoxia", abstract=ABSTRACT))
     store.save_paper(Paper(id="W2", title="No abstract held"))
 

@@ -1,5 +1,5 @@
 {
-  "name": "subgraft",
+  "name": "scibraid",
   "description": "Build provenance-rich evidence subgraphs from the scientific literature and pool them.",
   "version": "0.1.0",
   "author": { "name": "Steve Phelps" }
