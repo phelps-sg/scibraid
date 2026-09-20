@@ -57,8 +57,10 @@ Requires [uv](https://docs.astral.sh/uv/) and Claude Code.
 
 ```sh
 git clone <this repo> scibraid && cd scibraid
-uv tool install --editable .        # puts `scibraid` on PATH
+uv tool install --editable ".[embeddings]"   # puts `scibraid` on PATH
 ```
+
+The `embeddings` extra adds a small local embedding model (fastembed, about 70 MB on first use, no API key) that helps the alignment stage find matching conditions that share no words. Leave it off and everything still works on word overlap.
 
 Inside this repository Claude Code finds the skills through `.claude/skills`. To use them elsewhere, load the repository as a plugin:
 
@@ -135,7 +137,8 @@ The graph library, Cytoscape.js, loads from a CDN. Without a network connection 
 | `lint <slug>` | experiments without conditions, hypotheses without evidence, no recorded failures, unverified quotes |
 | `view [slug ...]` | browse in the browser; `-o file.html` writes a standalone page |
 | `pool <slug>`, `pool --list` | add a subgraph to the pool |
-| `candidates [--budget N] [--type T]` | rank unjudged cross-graph pairs by plausibility and consequence |
+| `candidates [--budget N] [--type T] [--lexical]` | rank unjudged cross-graph pairs by plausibility and consequence |
+| `hypotheses` | both hypothesis lists for each pair of pooled subgraphs, to be read in full |
 | `align add verdicts.json`, `align list` | record and list alignment verdicts |
 | `observe [--format json]` | candidate observations from the aligned pool |
 | `lead add leads.json`, `lead list [--status S]` | record and list checked leads |
@@ -154,7 +157,11 @@ A quote must match the held text on word boundaries. Whitespace, case and quote 
 
 The pool is a local SQLite file. Node ids are namespaced by subgraph, and alignment adds links between subgraphs without altering them. A verdict is one of `same`, `broader`, `narrower`, `related` or `different`, with a confidence and a rationale. When `observe` reads the pool, `same` at 0.7 or above joins two nodes, and `narrower` or `broader` at 0.7 or above lets whatever sits under the narrower condition count as sitting under the broader one. The reverse does not hold. `different` is stored too, so a rejected pair is not proposed again.
 
-Candidate pairs are scored by lexical similarity, shared ids and shared papers, then weighted by how well connected both nodes are. The agent's judgement is the expensive step, and this ordering spends it where a match would join the most structure. Hypothesis pairs are always proposed, because paraphrase defeats lexical matching and they matter most.
+Candidate pairs are scored by word overlap, shared ids and shared papers, averaged with embedding similarity when the `embeddings` extra is installed, then weighted by how well connected both nodes are. The agent's judgement is the expensive step, and this ordering spends it where a match would join the most structure.
+
+The scoring was checked against the 102 verdicts that had been recorded on three pooled subgraphs at the time. For conditions, the combined score placed 30 of 32 known matches in the top 80 of 6,984 pairs, against 28 for word overlap alone, and it proposed matches that share no words. About a third of what embeddings added was real. The rest were pairs that sound alike, which the judge rejected.
+
+Hypotheses are not ranked. Whether one hypothesis bears on another is not a matter of similarity. Neither word overlap nor embeddings ranked the related hypothesis pairs better than chance. Subgraphs have tens of hypotheses, so `scibraid hypotheses` gives the judge both lists to read in full, taking first the pairs of subgraphs that aligned conditions already bridge.
 
 `observe` reads six things off the aligned pool: conditions reached from different questions, failures that share a condition, experiments that may bear on another question's hypothesis, contradictions with the conditions unique to each side, hypotheses linked across questions, and experiments nobody ran. The last lists the conditions that scope results on one hypothesis and under which a linked hypothesis was never tested.
 
@@ -170,7 +177,7 @@ The comparison with related work draws on the author's knowledge of the field an
 
 The example graphs were built and aligned by the same agent in one session, so they were not independent in the way two researchers' graphs would be. No domain expert has audited the extractions. Quote verification shows that a passage exists. It does not show that the passage supports the link drawn from it.
 
-An observation's outcome is relative to what its experiment was looking for, so "negative" does not mean the same thing across experiments, and `observe` treats it as if it did. OpenAlex keyword search misses core papers on narrow topics, and at least one of its records pairs the wrong abstract with a paper. Full text is fetched by the agent from open-access sources. Inline mathematics is lost when HTML is converted to text. The candidate stage is lexical, and embeddings would find matches it misses.
+An observation's outcome is relative to what its experiment was looking for, so "negative" does not mean the same thing across experiments, and `observe` treats it as if it did. OpenAlex keyword search misses core papers on narrow topics, and at least one of its records pairs the wrong abstract with a paper. Full text is fetched by the agent from open-access sources. Inline mathematics is lost when HTML is converted to text. The candidate stage finds nodes that are alike. It cannot find hypotheses that bear on each other, which is left to the agent reading both lists, and that will not scale to hundreds of subgraphs without a better way to choose which pairs of subgraphs to compare.
 
 ## Development
 

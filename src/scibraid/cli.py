@@ -17,7 +17,7 @@ from pathlib import Path
 import httpx
 from pydantic import ValidationError
 
-from . import align, openalex, store
+from . import align, embed, openalex, store
 from .lint import lint
 from .models import Alignment, Batch, Lead, Paper, Subgraph
 from .pool import get_pool
@@ -252,8 +252,17 @@ def cmd_pool(args: argparse.Namespace) -> int:
 
 def cmd_candidates(args: argparse.Namespace) -> int:
     pool = get_pool()
-    found = align.candidates(pool.subgraphs(), pool.alignments(), args.budget, args.min_plausibility, args.type)
+    embedder = None if args.lexical else embed.default_embedder()
+    if embedder is None and not args.lexical:
+        print("embeddings not installed; ranking on word overlap only (install scibraid[embeddings])", file=sys.stderr)
+    found = align.candidates(pool.subgraphs(), pool.alignments(), args.budget, args.min_plausibility, args.type, embedder)
     _emit(found)
+    return 0
+
+
+def cmd_hypotheses(args: argparse.Namespace) -> int:
+    pool = get_pool()
+    _emit(align.hypothesis_lists(pool.subgraphs(), pool.alignments()))
     return 0
 
 
@@ -398,7 +407,11 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--budget", type=int, default=40, help="how many pairs to propose")
     p.add_argument("--min-plausibility", type=float, default=0.3)
     p.add_argument("--type", choices=["hypothesis", "experiment", "condition", "observation", "interpretation"])
+    p.add_argument("--lexical", action="store_true", help="rank on word overlap only, even if embeddings are installed")
     p.set_defaults(func=cmd_candidates)
+
+    p = sub.add_parser("hypotheses", help="both hypothesis lists for each pair of pooled subgraphs, to be read in full")
+    p.set_defaults(func=cmd_hypotheses)
 
     al = sub.add_parser("align", help="record or list alignment verdicts")
     al_sub = al.add_subparsers(dest="align_command", required=True)

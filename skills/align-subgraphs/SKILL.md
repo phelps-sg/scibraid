@@ -7,15 +7,18 @@ description: Align pooled evidence subgraphs and read off what the pooled struct
 
 Subgraphs in the pool were built by different people asking different questions. They name the same things differently and different things the same. Alignment decides which is which, without merging anything: a verdict is a link between two nodes, with its own confidence and rationale, that anyone can inspect and revise.
 
-The work is split by cost. `scibraid candidates` cheaply proposes pairs, ranked by how plausible the match is and by how much pooled structure it would join if true. You are the expensive stage: judge the pairs it ranks highest, and stop when the budget is spent. A pair it does not propose is simply not yet judged.
+The work is split by cost. `scibraid candidates` cheaply proposes pairs, ranked by how plausible the match is and by how much pooled structure it would join if true. You are the expensive stage: judge the pairs it ranks highest, and stop when the budget is spent. A pair it does not propose is simply not yet judged, and if you notice one while reading, judge it anyway: `align add` accepts any pair.
+
+With the `embeddings` extra installed, plausibility is the mean of word overlap and embedding similarity. Embeddings find matches that share no words ("models well below 100B" and "open models spanning 500M to 70B") and also propose pairs that merely sound alike ("GPT-5 family" and "T5", "sparse autoencoders" and "sparse transformers"). Expect about a third of what they add to be real.
 
 ## Workflow
 
 1. `scibraid pool --list` to see what is pooled. Fewer than two subgraphs: nothing to do.
 2. `scibraid candidates [--budget 40] [--type condition]` returns JSON pairs. Each has both nodes' labels, descriptions, attrs and `context` (how each node is used in its own subgraph), and the signals behind the score. Pairs already judged are not proposed again.
-3. Judge each pair, write a JSON list, and `scibraid align add verdicts.json`. Hypothesis pairs are always proposed, however unalike they read, because they matter most; most will be `different` or `related`, and saying so is the job.
-4. `scibraid observe` and report what it shows (below).
-5. If an observation looks important and rests on a link you were unsure of, go back to the sources (`scibraid paper show <id>`, the subgraph's passages via `scibraid show <slug> --format json`) and revise the verdict: `align add` with the same pair replaces it.
+3. Judge each pair, write a JSON list, and `scibraid align add verdicts.json`. Run `candidates` again until it proposes nothing you have not judged.
+4. Hypotheses are handled differently. `scibraid hypotheses` prints, for each pair of subgraphs, both hypothesis lists in full, with the verdicts already recorded between them. Pairs of subgraphs that aligned conditions already bridge come first. Read both lists and nominate the pairs yourself: whether one hypothesis bears on another is not a matter of similarity, and no cheap signal finds it. Record `same`, `broader`, `narrower` and `related` pairs, and `different` only for tempting look-alikes. Do this after the conditions, since knowing what the two subgraphs share tells you where their hypotheses might meet.
+5. `scibraid observe` and report what it shows (below).
+6. If an observation looks important and rests on a link you were unsure of, go back to the sources (`scibraid paper show <id>`, the subgraph's passages via `scibraid show <slug> --format json`) and revise the verdict: `align add` with the same pair replaces it.
 
 ## Verdicts
 

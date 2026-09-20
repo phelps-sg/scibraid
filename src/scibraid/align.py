@@ -19,6 +19,8 @@ from collections import Counter, defaultdict
 from dataclasses import dataclass, field
 from itertools import combinations
 
+from .embed import Embedder, calibrated
+from .embed import cosine as cosine_of
 from .models import Alignment, Edge, Lead, Node, NodeType, Outcome, Relation, Subgraph, Verdict
 
 STOPWORDS = frozenset(
@@ -92,8 +94,16 @@ def candidates(
     budget: int = 40,
     min_plausibility: float = 0.3,
     node_type: str | None = None,
+    embedder: Embedder | None = None,
 ) -> list[dict]:
-    """Rank unjudged cross-subgraph node pairs by plausibility x consequence."""
+    """Rank unjudged cross-subgraph node pairs by plausibility x consequence.
+
+    Plausibility is lexical, or the mean of lexical and embedding similarity when an
+    embedder is given: each signal's false positives are mostly the other's true negatives.
+    Hypotheses go through the same scoring, which finds restatements of one claim. It cannot
+    find hypotheses that bear on each other, which is not a matter of similarity; see
+    `hypothesis_lists`.
+    """
     index = PoolIndex.build(subgraphs)
     done = {(x.a, x.b) for x in judged}
     bags = {key: Counter(_tokens(index.text(key))) for key in index.nodes}
@@ -102,6 +112,11 @@ def candidates(
     idf = {token: math.log(1 + len(bags) / count) for token, count in df.items()}
     norm = {k: math.sqrt(sum((c * idf[t]) ** 2 for t, c in bag.items())) or 1.0 for k, bag in bags.items()}
     top_degree = max((index.degree(k) for k in index.nodes), default=1) or 1
+    vector: dict[str, list[float]] = {}
+    if embedder is not None:
+        wanted = [k for k, n in index.nodes.items() if not node_type or n.type.value == node_type]
+        texts = [f"{index.nodes[k].label}. {index.nodes[k].description}".strip() for k in wanted]
+        vector = dict(zip(wanted, embedder.vectors(texts)))
 
     found = []
     for a, b in combinations(sorted(index.nodes), 2):
@@ -116,17 +131,16 @@ def candidates(
         trigram = len(grams[a] & grams[b]) / len(union) if union else 0.0
         signals = {"cosine": round(cosine, 3), "label_trigram": round(trigram, 3)}
         plausibility = 0.6 * cosine + 0.4 * trigram
+        if vector:
+            semantic = cosine_of(vector[a], vector[b])
+            signals["semantic"] = round(semantic, 3)
+            plausibility = 0.5 * plausibility + 0.5 * calibrated(semantic)
         if na.id == nb.id:
             signals["same_id"] = True
             plausibility = max(plausibility, 0.9)
         if common := index.papers[a] & index.papers[b]:
             signals["shared_papers"] = sorted(common)
             plausibility = min(1.0, plausibility + 0.15)
-        if na.type is NodeType.HYPOTHESIS and plausibility < min_plausibility:
-            # Hypotheses are few, paraphrased beyond lexical reach, and joining two of them
-            # changes the most structure: always worth a judgement, ranked by consequence.
-            signals["always_proposed"] = True
-            plausibility = min_plausibility
         if plausibility < min_plausibility:
             continue
         # How much structure a match would join: well-connected nodes on both sides matter most.
@@ -465,3 +479,58 @@ def check_leads(subgraphs: list[Subgraph], alignments: list[Alignment], leads: l
                 f"lead {lead.id}: confidence {lead.confidence:.2f} exceeds its weakest alignment ({weakest:.2f})"
             )
     return errors
+
+
+def hypothesis_lists(subgraphs: list[Subgraph], alignments: list[Alignment]) -> list[dict]:
+    """Both hypothesis lists for each pair of subgraphs, for a judge to read in full.
+
+    Whether one hypothesis bears on another is not a matter of similarity: on three pooled
+    subgraphs, neither word overlap nor embeddings ranked the related pairs better than
+    chance. Subgraphs have tens of hypotheses, so the lists are the cheap stage. Pairs of
+    subgraphs already bridged by aligned conditions come first, since a link between their
+    hypotheses would join the most structure.
+    """
+    index = PoolIndex.build(subgraphs)
+    judged: dict[frozenset, list[Alignment]] = defaultdict(list)
+    bridges: Counter = Counter()
+    for x in alignments:
+        if x.a not in index.nodes or x.b not in index.nodes:
+            continue
+        pair = frozenset((index.slug_of[x.a], index.slug_of[x.b]))
+        if index.nodes[x.a].type is NodeType.HYPOTHESIS:
+            judged[pair].append(x)
+        elif index.nodes[x.a].type is NodeType.CONDITION and x.verdict in (Verdict.SAME, Verdict.BROADER, Verdict.NARROWER):
+            bridges[pair] += 1
+
+    def listing(sg: Subgraph) -> list[dict]:
+        rows = []
+        for node in sg.nodes.values():
+            if node.type is NodeType.HYPOTHESIS:
+                key = f"{sg.slug}/{node.id}"
+                into = [e for _, e in index.into[key]]
+                rows.append(
+                    {
+                        "key": key,
+                        "label": node.label,
+                        "supports": sum(e.relation is Relation.SUPPORTS for e in into),
+                        "contradicts": sum(e.relation is Relation.CONTRADICTS for e in into),
+                    }
+                )
+        return rows
+
+    out = []
+    for first, second in combinations(subgraphs, 2):
+        pair = frozenset((first.slug, second.slug))
+        out.append(
+            {
+                "subgraphs": [first.slug, second.slug],
+                "questions": [first.question, second.question],
+                "condition_bridges": bridges[pair],
+                "already_judged": [
+                    {"a": x.a, "b": x.b, "verdict": x.verdict.value, "confidence": x.confidence} for x in judged[pair]
+                ],
+                "hypotheses": {first.slug: listing(first), second.slug: listing(second)},
+            }
+        )
+    out.sort(key=lambda item: (len(item["already_judged"]) > 0, -item["condition_bridges"]))
+    return out

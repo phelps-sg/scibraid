@@ -328,7 +328,7 @@ def test_candidates_propose_cross_subgraph_pairs_and_skip_judged_ones():
     found = align.candidates([first, second_subgraph()])
     pairs = {(c["a"], c["b"]) for c in found}
     assert ("q/c:hypoxia", "y/c:low-oxygen") in pairs
-    assert ("q/h:x-reduces-growth", "y/h:y-slows-growth") in pairs  # hypotheses are always proposed
+    assert ("q/h:x-reduces-growth", "y/h:y-slows-growth") in pairs  # near-restatements score like any other pair
     assert all(c["a"].split("/")[0] != c["b"].split("/")[0] for c in found)
     assert not any("e:" in c["a"] and "c:" in c["b"] for c in found)  # same type only
 
@@ -372,7 +372,7 @@ def test_alignments_round_trip_through_the_local_pool(capsys):
     pool = LocalPool()
     pool.push(first)
     pool.push(second_subgraph())
-    assert main(["candidates", "--type", "condition"]) == 0
+    assert main(["candidates", "--type", "condition", "--lexical"]) == 0
     assert "q/c:hypoxia" in capsys.readouterr().out
     pool.add_alignments([Alignment(a="q/c:hypoxia", b="y/c:low-oxygen", verdict="same", confidence=0.9, rationale="Both mean hypoxic culture.")])
     assert [x.verdict for x in pool.alignments()] == ["same"]
@@ -476,3 +476,63 @@ def test_observe_inherits_conditions_from_narrower_to_broader():
     [failure] = align.observe(graphs, [broader])["shared_condition_failures"]
     assert failure["condition"] == ["Hypoxic conditions"]
     assert align.observe(graphs, [narrower.model_copy(update={"confidence": 0.5})])["shared_condition_failures"] == []
+
+
+class FakeEmbedder:
+    """Puts any text mentioning oxygen or hypoxia on one axis, everything else on another."""
+
+    def vectors(self, texts):
+        return [[1.0, 0.0] if ("oxygen" in t.lower() or "hypox" in t.lower()) else [0.0, 1.0] for t in texts]
+
+
+def test_embeddings_surface_a_match_that_shares_no_words():
+    first = Subgraph(slug="q", question="Does X work?")
+    store.add_batch(first, batch())
+    second = second_subgraph()
+    second.nodes["c:low-oxygen"].label = "Cultures starved of O2"  # no words in common with "Hypoxic conditions"
+    second.nodes["c:low-oxygen"].description = "oxygen held at one percent"
+    pair = ("q/c:hypoxia", "y/c:low-oxygen")
+    lexical = {(c["a"], c["b"]) for c in align.candidates([first, second], node_type="condition")}
+    assert pair not in lexical
+    [found] = [c for c in align.candidates([first, second], node_type="condition", embedder=FakeEmbedder()) if (c["a"], c["b"]) == pair]
+    assert found["signals"]["semantic"] == 1.0 and found["plausibility"] >= 0.5
+    # the two signals are averaged, so embedding similarity alone cannot reach the top score
+    assert found["plausibility"] < 0.9
+
+
+def test_hypothesis_lists_put_bridged_unjudged_subgraph_pairs_first():
+    first = Subgraph(slug="q", question="Does X work?")
+    store.add_batch(first, batch())
+    third = Subgraph(slug="z", question="An unrelated question?")
+    store.add_batch(third, Batch.model_validate({"nodes": [{"id": "h:other", "type": "hypothesis", "label": "Something else entirely"}]}))
+    graphs = [first, second_subgraph(), third]
+    bridge = Alignment(a="q/c:hypoxia", b="y/c:low-oxygen", verdict="same", confidence=0.9, rationale="Both mean hypoxic culture.")
+    lists = align.hypothesis_lists(graphs, [bridge])
+    assert lists[0]["subgraphs"] == ["q", "y"] and lists[0]["condition_bridges"] == 1
+    [h] = lists[0]["hypotheses"]["q"]
+    assert (h["key"], h["supports"], h["contradicts"]) == ("q/h:x-reduces-growth", 0, 1)
+    judged = Alignment(a="q/h:x-reduces-growth", b="y/h:y-slows-growth", verdict="related", confidence=0.6, rationale="Same pathway, different compound.")
+    lists = align.hypothesis_lists(graphs, [bridge, judged])
+    assert lists[-1]["subgraphs"] == ["q", "y"] and len(lists[-1]["already_judged"]) == 1  # reviewed pairs sink
+
+
+def test_embedding_vectors_are_cached_and_normalised(monkeypatch):
+    from scibraid import embed
+
+    calls = []
+
+    class Model:
+        def embed(self, texts):
+            calls.append(list(texts))
+            return [[3.0, 4.0] for _ in texts]
+
+    embedder = embed.FastEmbedder.__new__(embed.FastEmbedder)
+    embedder._model = Model()
+    import sqlite3
+    embedder._db = sqlite3.connect(store.home() / "embeddings.sqlite")
+    embedder._db.execute("CREATE TABLE IF NOT EXISTS vectors (key TEXT PRIMARY KEY, dim INTEGER, data BLOB)")
+    [v, w] = embedder.vectors(["a", "a"])
+    assert v == w and abs(v[0] - 0.6) < 1e-6 and abs(v[1] - 0.8) < 1e-6
+    embedder.vectors(["a", "b"])
+    assert calls == [["a"], ["b"]]  # "a" came from the cache the second time
+    assert embed.calibrated(0.65) == 0.0 and embed.calibrated(0.95) == 1.0
