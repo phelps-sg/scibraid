@@ -36,7 +36,7 @@ A question is posed with more than its one line. Whoever asks it often has hypot
 
 ## Extracting a paper
 
-Read the paper (`scibraid paper show <id>`, and the full text where you can get it: see Beyond the abstract). Run `scibraid show <slug>` immediately before writing, and reuse the ids that are there instead of minting duplicates. Write a JSON batch and apply it: `scibraid add <slug> batch.json --model <your model id>`. Other sessions and other extractors may be working in the same directory, so write batch files to your own scratch directory or give them names no one else will use. A batch is all-or-nothing; fix what the tool reports and re-run.
+Read the paper: `scibraid paper show <id>` for the record and abstract, and `scibraid paper show <id> --text` for the attached full text (see Beyond the abstract for getting one). Run `scibraid show <slug>` immediately before writing, and reuse the ids that are there instead of minting duplicates. Write a JSON batch and apply it: `scibraid add <slug> batch.json --model <your model id>`. Other sessions and other extractors may be working in the same directory, so write batch files to your own scratch directory or give them names no one else will use. A batch is all-or-nothing; fix what the tool reports and re-run.
 
 ## Node types
 

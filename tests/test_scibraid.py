@@ -1165,3 +1165,106 @@ def test_a_wrong_edge_or_node_is_retracted_with_a_record(capsys):
     assert "c:hypoxia" not in sg.nodes and all("c:hypoxia" not in (e.source, e.target) for e in sg.edges)
     assert sg.retracted[-1].node.label == "Hypoxic conditions"
     assert main(["show", "q"]) == 0 and "retracted: node c:hypoxia" in capsys.readouterr().out
+
+
+def _pooled_review():
+    sg = Subgraph(slug="q", question="Does X work?", brief="Keep hypoxia apart from normoxia.")
+    store.save_paper(Paper(id="W1", title="Compound X under hypoxia", abstract=ABSTRACT, year=2019, authors=["Smith, Ann", "Bo Lee"]))
+    store.add_batch(sg, batch())
+    store.frame(sg, conditions=["c:normoxia=Normal oxygen"])
+    store.save_subgraph(sg)
+    pool = LocalPool()
+    pool.push(sg)
+    pool.add_leads([Lead(id="oxygen-gates-x", claim="Compound X fails only when oxygen is low.", kind="other", status="holds", confidence=0.4,
+                         nodes=["q/c:hypoxia", "q/o:no-reduction"], would_confirm="A normoxia arm.", would_refute="Failure under normoxia too.",
+                         checks=[{"question": "Is the premise in the source?", "finding": "Yes, in the abstract.", "sources": ["W1"]}], posed_in=[])])
+    return sg
+
+
+def test_a_draft_starts_with_a_dossier_references_and_a_skeleton(tmp_path, capsys):
+    from scibraid import draft
+    _pooled_review()
+    out = tmp_path / "paper"
+    assert main(["draft", "start", str(out), "missing"]) == 1
+    capsys.readouterr()
+    assert main(["draft", "start", str(out), "q", "--focus", "does oxygen decide whether compound X works"]) == 0
+    report = json.loads(capsys.readouterr().out)
+    assert report["references"] == 1 and report["voice"] is None
+    dossier = (out / "dossier.md").read_text()
+    for expected in ("Focus: does oxygen decide", "framed with this brief: Keep hypoxia apart", "#### `h:x-reduces-growth`",
+                     "Contradicts: 1 observation(s) from 1 paper(s)", "[@smith2019compound] No reduction in tumour volume",
+                     "inferred by the reader, not stated in the paper", "under: Hypoxic conditions",
+                     "Framed conditions no experiment was recorded under", "- Normal oxygen",
+                     "### `oxygen-gates-x` (relevance", "nowhere that a search found", "`smith2019compound`: Smith et al. (2019)"):
+        assert expected in dossier, expected
+    assert "read from the abstract only: [@smith2019compound]" in dossier
+    assert "@article{smith2019compound" in (out / "refs.bib").read_text() or "@misc{smith2019compound" in (out / "refs.bib").read_text()
+    assert (out / "main.tex").read_text() == draft.TEMPLATE
+
+    (out / "main.tex").write_text("mine")  # starting again refreshes the evidence and leaves the writing alone
+    assert main(["draft", "start", str(out), "q"]) == 0
+    assert (out / "main.tex").read_text() == "mine" and "Focus: does oxygen decide" in (out / "dossier.md").read_text()
+
+    store.save_paper(Paper(id="W7", title="Compound X revisited", year=2019, authors=["Ann Smith"]))
+    store.save_paper(Paper(id="W8", title="Compound Y", year=2019, authors=["Ann Smith"]))
+    capsys.readouterr()
+    assert main(["draft", "cite", str(out), "W7", "W8"]) == 0
+    assert [r["key"] for r in json.loads(capsys.readouterr().out)] == ["smith2019compounda", "smith2019compoundb"]
+    assert json.loads((out / "draft.json").read_text())["keys"]["W1"] == "smith2019compound"  # existing keys never move
+
+
+def test_a_draft_is_checked_for_citations_quotations_arxiv_rules_and_tells(tmp_path, capsys):
+    from scibraid import draft
+    _pooled_review()
+    out = tmp_path / "paper"
+    assert main(["draft", "start", str(out), "q"]) == 0
+    capsys.readouterr()
+    good = draft.TEMPLATE.replace("TITLE", "Oxygen and compound X").replace("AUTHOR NAME", "A. Writer").replace("ABSTRACT", "Compound X fails under hypoxia.")
+    good = good.replace("\\section{Introduction}\n", "\\section{Introduction}\n\nUnder hypoxia the treated animals ``showed no reduction in tumour volume “relative to controls”'' \\citep{smith2019compound}.\n")
+    (out / "main.tex").write_text(good)
+    report = draft.check(out, compile_it=False)
+    assert report["ok"], report["errors"]
+
+    bad = good.replace("\\citep{smith2019compound}", "\\citep{smith2019compound,jones2020}")
+    bad = bad.replace("showed no reduction in tumour volume", "showed a marked reduction in tumour volume every time")
+    bad = bad.replace("\\section{Method}", "\\section{Method: how we did it}\n\nIt is worth noting that this is a robust and crucial result --- moreover, why does it matter?\n")
+    bad = bad.replace("\\pdfoutput=1\n", "").replace("Compound X fails under hypoxia.", "x" * 2000)
+    (out / "main.tex").write_text(bad)
+    assert main(["draft", "check", str(out), "--no-compile"]) == 1
+    report = json.loads(capsys.readouterr().out)
+    errors = " | ".join(report["errors"])
+    assert "\\cite{jones2020}: no such key" in errors and "quotation not found verbatim" in errors
+    assert "\\pdfoutput=1" in errors and "arXiv's limit is 1920" in errors
+    assert {"signposting", "puffery", "filler connectives", "em-dashes", "rhetorical questions", "headings that explain themselves"} <= set(report["tells"])
+
+
+def test_a_voice_exemplar_is_kept_outside_any_draft_and_one_is_the_default(tmp_path, capsys):
+    from scibraid import draft
+    essay = tmp_path / "essay.txt"
+    essay.write_text("We argue that cooperation pays. " * 400)
+    assert main(["voice", "set", str(essay), "--name", "mine"]) == 0
+    (tmp_path / "short.txt").write_text("too short")
+    assert main(["voice", "set", str(tmp_path / "short.txt")]) == 1
+    assert main(["voice", "set", str(essay), "--name", "other", "--default"]) == 0
+    capsys.readouterr()
+    assert [(v["name"], v["default"]) for v in draft.voices()] == [("mine", False), ("other", True)]
+    meta, path = draft.voice()
+    assert meta["name"] == "other" and path.parent == store.home() / "voice" and path.read_text().startswith("We argue")
+    _pooled_review()
+    assert main(["draft", "start", str(tmp_path / "paper"), "q", "--voice", "mine"]) == 0
+    assert json.loads(capsys.readouterr().out)["voice"]["name"] == "mine"
+
+
+def test_a_new_id_with_a_dot_in_it_is_refused():
+    data = batch().model_dump()
+    data["nodes"].append({"id": "c:gpt-3.5", "type": "condition", "label": "Model: GPT-3.5"})
+    report = store.add_batch(Subgraph(slug="q", question="?"), Batch.model_validate(data))
+    assert not report.ok and "'c:gpt-3-5'" in report.errors[0]
+
+
+def test_the_attached_full_text_can_be_printed(capsys):
+    assert main(["paper", "show", "W1", "--text"]) == 1
+    store.attach_text("W1", "Methods. Mice were kept at 1% oxygen.")
+    capsys.readouterr()
+    assert main(["paper", "show", "W1", "--text"]) == 0
+    assert capsys.readouterr().out.strip() == "Methods. Mice were kept at 1% oxygen."

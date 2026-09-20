@@ -182,6 +182,11 @@ def add_batch(sg: Subgraph, batch: Batch) -> AddReport:
     types = {nid: n.type for nid, n in sg.nodes.items()}
 
     for node in batch.nodes:
+        if "." in node.id and node.id not in sg.nodes:
+            report.errors.append(
+                f"node {node.id!r}: ids are kebab-case, with hyphens where a name has dots ({node.id.replace('.', '-')!r}). "
+                "A dotted id does not meet the same thing recorded elsewhere as " + repr(node.id.replace(".", "-"))
+            )
         if node.id in types and types[node.id] is not node.type:
             report.errors.append(
                 f"node {node.id!r} already exists as {types[node.id]}, not {node.type}"

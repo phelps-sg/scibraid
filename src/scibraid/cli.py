@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 import time
 import webbrowser
@@ -19,7 +20,7 @@ from pathlib import Path
 import httpx
 from pydantic import ValidationError
 
-from . import align, bibtex, embed, fulltext, identity, openalex, store
+from . import align, bibtex, draft, embed, fulltext, identity, openalex, store
 from .lint import lint
 from .models import Alignment, Batch, Builder, Lead, Paper, Subgraph
 from .pool import get_pool
@@ -190,8 +191,15 @@ def cmd_paper_show(args: argparse.Namespace) -> int:
     if (paper := store.load_paper(args.id)) is None:
         print(f"paper {args.id!r} is not cached", file=sys.stderr)
         return 1
+    text = store.load_text(args.id)
+    if args.text:
+        if text is None:
+            print(f"no full text is attached to {args.id}; try `scibraid fetch {args.id}`", file=sys.stderr)
+            return 1
+        print(text)
+        return 0
     data = paper.model_dump(mode="json")
-    data["fulltext_attached"] = store.load_text(args.id) is not None
+    data["fulltext_attached"] = text is not None
     _emit(data)
     return 0
 
@@ -411,6 +419,118 @@ def cmd_retract(args: argparse.Namespace) -> int:
     _emit({"ok": True, "edges_removed": removed, "node_removed": args.node, "totals": _totals(sg),
            "retractions_on_record": len(sg.retracted), "now_dangling_in_pool": dangling})
     return 0
+
+
+def cmd_voice_set(args: argparse.Namespace) -> int:
+    source = Path(args.source).expanduser()
+    if source.exists():
+        kind = source.suffix.lower()
+        text = (fulltext.pdf_to_text(source.read_bytes()) if kind == ".pdf"
+                else fulltext.html_to_text(source.read_text()) if kind in (".html", ".htm") else source.read_text())
+        meta = {"title": source.stem, "source": str(source)}
+    else:
+        try:
+            paper, _ = openalex.get(args.source)
+            got = fulltext.fetch(paper)
+        except (openalex.OpenAlexError, fulltext.FetchError) as exc:
+            print(f"{args.source}: {exc}\nGive a file instead (.pdf, .txt, .tex, .md or .html).", file=sys.stderr)
+            return 1
+        text, meta = got.text, {"title": paper.title, "authors": paper.authors, "year": paper.year, "source": got.url}
+    if len(text) < 5000:
+        print(f"only {len(text)} characters of text: too little to take a voice from", file=sys.stderr)
+        return 1
+    name = args.name or "-".join(re.findall(r"[a-z0-9]+", meta["title"].lower())[:4])
+    _emit(draft.save_voice(name, text, meta, args.default))
+    return 0
+
+
+def cmd_voice_list(args: argparse.Namespace) -> int:
+    _emit(draft.voices())
+    return 0
+
+
+def cmd_voice_show(args: argparse.Namespace) -> int:
+    if (found := draft.voice(args.name)) is None:
+        print("no such voice exemplar" if args.name else "no voice exemplar is set; add one with `scibraid voice set`", file=sys.stderr)
+        return 1
+    meta, path = found
+    _emit({**meta, "text": str(path)})
+    return 0
+
+
+def _draft_state(directory: Path) -> dict:
+    path = directory / "draft.json"
+    return json.loads(path.read_text()) if path.exists() else {}
+
+
+def _write_draft(directory: Path, state: dict) -> dict:
+    pool = get_pool()
+    subgraphs = [sg for sg in pool.subgraphs() if sg.slug in state["slugs"]]
+    papers = {pid: p for sg in subgraphs for pid, p in sg.papers.items()}
+    papers.update({pid: p for pid in state.get("extra", []) if (p := store.load_paper(pid)) is not None})
+    state["keys"] = draft.assign_keys(state.get("keys", {}), list(papers.values()))
+    embedder = embed.default_embedder() if state.get("focus") else None
+    text = draft.dossier(subgraphs, pool.alignments(), pool.leads(), state["keys"], state.get("focus", ""), embedder)
+    (directory / "dossier.md").write_text(text)
+    (directory / "refs.bib").write_text(draft.bib(state["keys"], papers))
+    (directory / "draft.json").write_text(json.dumps(state, indent=2))
+    return {"dossier": str(directory / "dossier.md"), "dossier_words": len(text.split()), "references": len(state["keys"])}
+
+
+def cmd_draft_start(args: argparse.Namespace) -> int:
+    pooled = {sg.slug for sg in get_pool().subgraphs()}
+    if missing := [s for s in args.slugs if s not in pooled]:
+        print(f"not in the pool: {', '.join(missing)} (a write-up rests on pooled subgraphs; `scibraid pool --list`)", file=sys.stderr)
+        return 1
+    directory = Path(args.dir).expanduser()
+    directory.mkdir(parents=True, exist_ok=True)
+    state = _draft_state(directory)
+    state.update({"slugs": args.slugs, "focus": args.focus if args.focus is not None else state.get("focus", ""), "started": state.get("started") or datetime.now(timezone.utc).isoformat(timespec="seconds")})
+    if args.voice or "voice" not in state:
+        found = draft.voice(args.voice)
+        if args.voice and found is None:
+            print(f"no voice exemplar called {args.voice!r}; see `scibraid voice list`", file=sys.stderr)
+            return 1
+        state["voice"] = found[0]["name"] if found else None
+    report = _write_draft(directory, state)
+    if not (directory / "main.tex").exists():
+        (directory / "main.tex").write_text(draft.TEMPLATE)
+    found = draft.voice(state["voice"]) if state["voice"] else None
+    _emit({"ok": True, "dir": str(directory), **report, "main": str(directory / "main.tex"), "focus": state["focus"],
+           "voice": {"name": found[0]["name"], "title": found[0].get("title"), "text": str(found[1])} if found else None})
+    return 0
+
+
+def cmd_draft_cite(args: argparse.Namespace) -> int:
+    directory = Path(args.dir).expanduser()
+    state = _draft_state(directory)
+    if not state:
+        print(f"{directory} has no draft.json; start with `scibraid draft start`", file=sys.stderr)
+        return 1
+    added, failed = [], 0
+    for identifier in args.identifiers:
+        paper = store.load_paper(identifier)
+        note = ""
+        if paper is None:
+            try:
+                paper, note = openalex.get(identifier)
+            except openalex.OpenAlexError as exc:
+                print(f"{identifier}: {exc}", file=sys.stderr)
+                failed += 1
+                continue
+            store.save_paper(_keeping_text_source(paper))
+        if paper.id not in state.setdefault("extra", []):
+            state["extra"].append(paper.id)
+        added.append((paper, note))
+    _write_draft(directory, state)
+    _emit([{"key": state["keys"][p.id], "id": p.id, "title": p.title, "year": p.year, **({"note": note} if note else {})} for p, note in added])
+    return 1 if failed else 0
+
+
+def cmd_draft_check(args: argparse.Namespace) -> int:
+    report = draft.check(Path(args.dir).expanduser(), compile_it=not args.no_compile)
+    _emit(report)
+    return 0 if report["ok"] else 1
 
 
 def cmd_list(args: argparse.Namespace) -> int:
@@ -819,6 +939,7 @@ def build_parser() -> argparse.ArgumentParser:
     paper_sub = paper.add_subparsers(dest="paper_command", required=True)
     p = paper_sub.add_parser("show", help="print a cached paper, abstract included")
     p.add_argument("id")
+    p.add_argument("--text", action="store_true", help="print the attached full text instead of the record")
     p.set_defaults(func=cmd_paper_show)
     p = paper_sub.add_parser("get", help="cache a paper from OpenAlex by DOI, arXiv id or URL, PubMed id or OpenAlex id")
     p.add_argument("identifiers", nargs="+")
@@ -895,6 +1016,36 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--reason", required=True, help="what was wrong with it")
     p.add_argument("--model", help="the language model doing this work (the tool cannot see it)")
     p.set_defaults(func=cmd_retract)
+
+    vo = sub.add_parser("voice", help="exemplar papers whose voice a write-up should take")
+    vo_sub = vo.add_subparsers(dest="voice_command", required=True)
+    p = vo_sub.add_parser("set", help="add an exemplar from a DOI, arXiv id or OpenAlex id with an open copy, or from a file")
+    p.add_argument("source", help="an identifier, or a .pdf, .txt, .tex, .md or .html file")
+    p.add_argument("--name", help="what to call it (default: from the title)")
+    p.add_argument("--default", action="store_true", help="use it when a write-up names no voice")
+    p.set_defaults(func=cmd_voice_set)
+    p = vo_sub.add_parser("list", help="the exemplars held")
+    p.set_defaults(func=cmd_voice_list)
+    p = vo_sub.add_parser("show", help="one exemplar and where its text is (the default one if none is named)")
+    p.add_argument("name", nargs="?")
+    p.set_defaults(func=cmd_voice_show)
+
+    dr = sub.add_parser("draft", help="a write-up of pooled subgraphs as a paper")
+    dr_sub = dr.add_subparsers(dest="draft_command", required=True)
+    p = dr_sub.add_parser("start", help="make (or refresh) a draft directory: the dossier, refs.bib and a LaTeX skeleton arXiv accepts")
+    p.add_argument("dir")
+    p.add_argument("slugs", nargs="+", help="the pooled subgraphs the paper rests on")
+    p.add_argument("--focus", help="the steer: what the paper is about. Orders the dossier; leaves nothing out")
+    p.add_argument("--voice", help="which exemplar's voice to take (default: the default exemplar)")
+    p.set_defaults(func=cmd_draft_start)
+    p = dr_sub.add_parser("cite", help="add a reference by DOI, arXiv id or paper id, and print its citation key")
+    p.add_argument("dir")
+    p.add_argument("identifiers", nargs="+")
+    p.set_defaults(func=cmd_draft_cite)
+    p = dr_sub.add_parser("check", help="citations resolve, quotations are verbatim, arXiv's requirements hold, prose tells, and it compiles")
+    p.add_argument("dir")
+    p.add_argument("--no-compile", action="store_true")
+    p.set_defaults(func=cmd_draft_check)
 
     p = sub.add_parser("list", help="list local subgraphs")
     p.add_argument("--format", choices=["text", "markdown"], default="text")

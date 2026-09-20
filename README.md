@@ -55,7 +55,7 @@ When a question reaches the point where the existing literature cannot settle it
 
 ## How it works
 
-There are no language-model calls and no model API keys in the Python code itself. The only model it runs is the optional local embedding model. The agent harness, currently Claude Code, does the reading, extraction and judgement through three skills and four subagents, each with a fixed model. The `scibraid` command-line tool handles the deterministic parts:
+There are no language-model calls and no model API keys in the Python code itself. The only model it runs is the optional local embedding model. The agent harness, currently Claude Code, does the reading, extraction and judgement through four skills and five subagents, each with a fixed model. The `scibraid` command-line tool handles the deterministic parts:
 
 - literature search and retrieval of open full text
 - schema validation
@@ -110,7 +110,7 @@ The important result is not that every candidate is an insight. Most are not. Th
 
 ## Install
 
-Requires `uv` and Claude Code. Reading PDFs uses `pdftotext` from poppler if it is installed, and otherwise needs the `fulltext` extra.
+Requires `uv` and Claude Code. Reading PDFs uses `pdftotext` from poppler if it is installed, and otherwise needs the `fulltext` extra. Compiling a write-up needs `pdflatex` and `bibtex`; without them the draft is checked but not compiled.
 
 ```bash
 git clone <this repo> scibraid && cd scibraid
@@ -172,6 +172,22 @@ A lead can seed the next review:
 scibraid new graded-cot-metrics --lead cot-threshold-never-scored-with-graded-metric
 ```
 
+When the pool has something to say on a topic, have it written up:
+
+```text
+/write-up what the literature shows about LLM agents told that their partner is a copy of themselves, for an economics audience
+```
+
+The text after the command is the steer: it chooses what the paper is about, and does not choose which evidence counts. The agent picks the pooled subgraphs the steer bears on and builds a dossier of their evidence. It then shows you a one-page spine (thesis, argument, what each section does) before writing anything. The draft is a single LaTeX file that arXiv accepts, with a bibliography generated from cached metadata. Every reference comes from a fetched record and none from the model's memory. `scibraid draft check` refuses a citation that is not in the bibliography and a quotation that is not verbatim in the source it cites, and it lists the phrases that make prose read as machine-written.
+
+The paper is written in the voice of an exemplar you choose, usually a paper of your own:
+
+```bash
+scibraid voice set ~/papers/my-best-paper.pdf --name mine --default   # or a DOI or arXiv id with an open copy
+```
+
+The exemplar is kept in the data directory, not in any draft, and the agent takes its register and rhythm and none of its sentences.
+
 The tools can also be driven by hand. A batch is a JSON file of nodes and links; the format is documented in `skills/evidence-subgraph/SKILL.md`.
 
 ```bash
@@ -227,6 +243,10 @@ Graphs can be filtered by node type, who asserted a relationship and confidence.
 | `lead add\|list` | Record or inspect checked leads |
 | `followups` | Show follow-up questions raised by leads |
 | `agenda` | Show open research questions, the experiment each needs, and whether the literature already poses it |
+| `voice set\|list\|show` | Exemplar papers whose voice a write-up takes |
+| `draft start <dir> <slug ...> [--focus ...] [--voice ...]` | Make or refresh a draft: the evidence dossier, `refs.bib` and a LaTeX skeleton arXiv accepts |
+| `draft cite <dir> <identifier ...>` | Add a reference by DOI, arXiv id or paper id, and print its citation key |
+| `draft check <dir>` | Citations resolve, quotations are verbatim, arXiv's requirements hold, prose tells, and it compiles |
 | `bibtex [slug ...] [-o refs.bib]` | BibTeX for the papers the subgraphs cite, generated from cached metadata |
 | `builder add <slug> --person --model ...` | Record who built a subgraph made before builders were recorded |
 | `repair list\|resolve` | List and resolve faults in subgraphs or judgements found while checking leads (recorded on the lead) |
@@ -296,7 +316,7 @@ Independence is reported as one of four levels, weakest first: `unknown` (nothin
 
 The steps do not all need the same model. Reading one paper and recording what it did is the bulk of the tokens, and the tool checks that work: every quoted passage must appear in the source. Deciding what several papers mean together, how two hypotheses bear on each other, and whether a lead is real is a small share of the tokens, and nothing checks it.
 
-So the work is divided among four subagents with a fixed model each, and the division holds whichever model the session itself runs on.
+So the work is divided among five subagents with a fixed model each, and the division holds whichever model the session itself runs on.
 
 | Agent | Model | Does |
 |---|---|---|
@@ -304,6 +324,7 @@ So the work is divided among four subagents with a fixed model each, and the div
 | `evidence-synthesiser` | Fable | Merges ids that parallel extractors minted twice (`scibraid duplicates`, `scibraid merge`), draws the links that span papers, and re-reads the results the question turns on |
 | `hypothesis-aligner` | Fable | Reads pairs of hypothesis lists in full and records how the claims bear on each other |
 | `lead-checker` | Fable | Triages what `observe` returns, checks leads against the sources and the literature, and records them |
+| `synthesis-writer` | Fable | Writes the spine and then the paper for a write-up, and edits it against the check |
 
 The session frames the question, retrieves the papers, judges the ranked candidate pairs during alignment, and relays what the agents report. To use another model for a step, change the `model:` line in `agents/<name>.md`; where the top model is not available to you, put the strongest you have.
 
@@ -322,6 +343,7 @@ The current system is a research prototype.
 - Builders are recorded per subgraph, not per link, so a subgraph that two readers contributed to counts as the weaker of the two everywhere.
 - No domain expert has audited the example extractions.
 - The example comparison with related work is based on the author's knowledge and a brief search rather than a systematic survey.
+- A write-up is a draft for its authors to check, not a finished paper. The check verifies that quotations are verbatim and that references exist; it cannot verify that a sentence characterises a cited result fairly, and a reference added with `draft cite` has not been read by anyone in the pipeline. The write-up skill has not yet produced a full paper.
 - Framing steers a review towards what its author expected. The framing is recorded and the skill requires rival hypotheses, but nothing checks that the rivals were sought as hard as the favoured ones.
 - Word search finds a minority of the relevant papers. Three hand-written queries per question, top 25 results each, returned 20 of the 62 papers the six example subgraphs cite; the rest were found through reference lists and the agent's own knowledge. Following citations (`--citing`, `--references-of`) is the remedy the skill prescribes, and its effect has not been measured.
 - OpenAlex's default search also matches full text, which it holds only for open papers: on the same queries 2% of its results were closed, against 19% when matching on title and abstract, which is now the default. Recall was the same either way (18 and 20 of 62).
