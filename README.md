@@ -1,6 +1,6 @@
 # scibraid
 
-scibraid is an agentic approach to literature review: agents build traceable evidence graphs from the scientific literature. Given a research question, they identify hypotheses, experiments, conditions and results, grounding each relationship in evidence from the original papers. Independent reviews can then be braided together to discover connections and contradictions that emerge only when different questions bring different parts of the literature into contact.
+scibraid is a multi-agentic approach to literature review: agents build traceable evidence graphs from the scientific literature. Given a research question, they identify hypotheses, experiments, conditions and results, grounding each relationship in evidence from the original papers. Independent reviews can then be braided together to discover connections and contradictions that emerge only when different questions bring different parts of the literature into contact.
 
 ![A subgraph in the viewer, with the evidence for and against each hypothesis listed beside it](docs/viewer-overview.png)
 
@@ -203,6 +203,7 @@ Graphs can be filtered by node type, who asserted a relationship and confidence.
 | `lead add\|list` | Record or inspect checked leads |
 | `followups` | Show follow-up questions raised by leads |
 | `agenda` | Show open research questions, the experiment each needs, and whether the literature already poses it |
+| `builder add <slug> --person --model ...` | Record who built a subgraph made before builders were recorded |
 | `repair list\|resolve` | List and resolve faults in subgraphs or judgements found while checking leads (recorded on the lead) |
 
 The commands that list things take `--format markdown` and print tables that paste into a README, an issue or a note: `list`, `pool --list`, `show`, `candidates`, `align list`, `lead list`, `followups`, `agenda`, `repair list` and `observe`. Most also take `--format json`.
@@ -260,13 +261,20 @@ Each lead records the claim, the graph elements and alignment judgements it depe
 
 The loop therefore preserves not only what the literature says, but also what the system considered, checked, rejected and left unresolved.
 
+## Who did the work
+
+Agreement between two subgraphs counts as confirmation only if they were read independently, and a lead checked by whoever built its evidence has not had a second reader. So every subgraph records its builders, every alignment judgement its judge and every lead its checker: the person, the agent harness, the model and the session. The tool takes the person, harness and session from the environment. It cannot see the model, so the agent passes `--model`.
+
+Independence is reported as one of four levels, weakest first: `unknown` (nothing recorded, which counts as not independent), `same reader` (same person and model, even in a new session), `same model` (different people, one model, so shared blind spots), and `different model`. `observe` gives the level for each candidate that spans subgraphs, and `agenda` gives it for the checker of each open question against the builders of its evidence.
+
 ## Limitations
 
 The current system is a research prototype.
 
 - A check that a lead is already known, or that a question has already been asked, is a brief agent search, not a systematic literature review. `holds`, `open` and "not found posed anywhere" therefore mean that nothing was found, not that nothing exists.
 - Quote verification establishes that a passage exists in the source. It does not establish that the passage actually supports the relationship the agent attached to it.
-- The example graphs were built and aligned by the same agent in one session, so they are not independent in the way reviews produced by different researchers would be.
+- The example graphs were built and aligned by the same agent in one session, so they are not independent in the way reviews produced by different researchers would be. The tool now reports this (`same reader`) instead of leaving it to be remembered.
+- Builders are recorded per subgraph, not per link, so a subgraph that two readers contributed to counts as the weaker of the two everywhere.
 - No domain expert has audited the example extractions.
 - The example comparison with related work is based on the author's knowledge and a brief search rather than a systematic survey.
 - OpenAlex search can miss relevant papers, and metadata can contain errors.
