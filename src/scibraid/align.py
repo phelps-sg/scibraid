@@ -19,7 +19,7 @@ from collections import Counter, defaultdict
 from dataclasses import dataclass, field
 from itertools import combinations
 
-from .models import Alignment, Edge, Node, NodeType, Outcome, Relation, Subgraph, Verdict
+from .models import Alignment, Edge, Lead, Node, NodeType, Outcome, Relation, Subgraph, Verdict
 
 STOPWORDS = frozenset(
     "a an and are as at be by for from in is it its of on or that the their this to under "
@@ -364,6 +364,44 @@ def observe(subgraphs: list[Subgraph], alignments: list[Alignment], min_confiden
                 }
             )
 
+    # 6. Absent experiments. A condition that scopes a result bearing on one hypothesis is a
+    #    moderator that matters for it. If a linked hypothesis in another subgraph was never
+    #    tested under that condition, the pool is pointing at an experiment nobody ran.
+    def moderators(h: str) -> dict[str, list[str]]:
+        found: dict[str, list[str]] = defaultdict(list)
+        for s_key, e in index.into[h]:
+            if e.relation in (Relation.SUPPORTS, Relation.CONTRADICTS):
+                for t, scoped in index.out[s_key]:
+                    if scoped.relation is Relation.OBSERVED_UNDER:
+                        found[clusters.find(t)].append(f"[{index.nodes[s_key].outcome.value}] {label(s_key)}")
+        return found
+
+    def ever_under(h: str) -> set[str]:
+        keys = [s_key for s_key, e in index.into[h] if e.relation in (Relation.TESTS, Relation.SUPPORTS, Relation.CONTRADICTS)]
+        return set().union(*(conditions_of(k) for k in keys)) if keys else set()
+
+    untested = []
+    for x in alignments:
+        if x.verdict is Verdict.DIFFERENT or x.a not in index.nodes or index.nodes[x.a].type is not NodeType.HYPOTHESIS:
+            continue
+        for source, target in ((x.a, x.b), (x.b, x.a)):
+            missing = {c: obs for c, obs in moderators(source).items() if c not in ever_under(target)}
+            if missing:
+                untested.append(
+                    {
+                        "hypothesis": label(target),
+                        "in": index.slug_of[target],
+                        "never_tested_under": sorted(label(c) for c in missing),
+                        "which_scope_results_on": label(source),
+                        "from": index.slug_of[source],
+                        "those_results": sorted({o for obs in missing.values() for o in obs}),
+                        "hypotheses_judged": x.verdict.value,
+                        "confidence": x.confidence,
+                        "rationale": x.rationale,
+                    }
+                )
+    untested.sort(key=lambda u: (-u["confidence"], -len(u["never_tested_under"])))
+
     thin = [
         {"hypothesis": label(k), "in": index.slug_of[k], **evidence(k)}
         for k, n in index.nodes.items()
@@ -377,6 +415,33 @@ def observe(subgraphs: list[Subgraph], alignments: list[Alignment], min_confiden
         "shared_condition_failures": shared_failures,
         "cross_bearing": cross[:25],
         "contradictions_by_regime": regimes,
+        "absent_experiments": untested,
         "linked_hypotheses": linked,
         "thinly_evidenced_hypotheses": thin,
     }
+
+
+def check_leads(subgraphs: list[Subgraph], alignments: list[Alignment], leads: list[Lead]) -> list[str]:
+    """A lead must point at things in the pool, and cannot be surer than its weakest link."""
+    index = PoolIndex.build(subgraphs)
+    verdicts = {(x.a, x.b): x for x in alignments}
+    errors = []
+    for lead in leads:
+        if missing := [key for key in lead.nodes if key not in index.nodes]:
+            errors.append(f"lead {lead.id}: nodes not in the pool: {missing}")
+        weakest = 1.0
+        for a, b in lead.alignments:
+            verdict = verdicts.get((a, b)) or verdicts.get((b, a))
+            if verdict is None:
+                errors.append(f"lead {lead.id}: no alignment verdict for {a} ~ {b}")
+            elif verdict.verdict is Verdict.DIFFERENT:
+                errors.append(f"lead {lead.id}: rests on {a} ~ {b}, which was judged different")
+            else:
+                weakest = min(weakest, verdict.confidence)
+        if len({index.slug_of[k] for k in lead.nodes if k in index.nodes}) > 1 and not lead.alignments:
+            errors.append(f"lead {lead.id}: spans subgraphs but names no alignment verdict it rests on")
+        if lead.confidence > weakest:
+            errors.append(
+                f"lead {lead.id}: confidence {lead.confidence:.2f} exceeds its weakest alignment ({weakest:.2f})"
+            )
+    return errors

@@ -3,7 +3,7 @@
 The pool is local SQLite for now. Setting SCIBRAID_POOL_URL switches to a remote
 pool over HTTP; the contract is `POST {url}/subgraphs` with the subgraph JSON and
 `GET {url}/subgraphs` for the listing (`?full=1` for whole subgraphs), and
-`POST`/`GET {url}/alignments`, so the skills do not change when a server arrives.
+`POST`/`GET {url}/alignments` and `{url}/leads`, so the skills do not change when a server arrives.
 Pooled subgraphs are kept separate (node ids are namespaced by slug): alignment
 adds links between them, it never merges them destructively.
 """
@@ -17,7 +17,7 @@ from typing import Protocol
 
 import httpx
 
-from .models import Alignment, Subgraph, _now
+from .models import Alignment, Lead, Subgraph, _now
 from .store import home
 
 SCHEMA = """
@@ -37,6 +37,7 @@ CREATE TABLE IF NOT EXISTS alignments (
     a TEXT NOT NULL, b TEXT NOT NULL, verdict TEXT NOT NULL, confidence REAL NOT NULL,
     rationale TEXT NOT NULL, judged TEXT NOT NULL, PRIMARY KEY (a, b)
 );
+CREATE TABLE IF NOT EXISTS leads (id TEXT PRIMARY KEY, updated TEXT NOT NULL, payload TEXT NOT NULL);
 """
 
 
@@ -46,6 +47,8 @@ class Pool(Protocol):
     def subgraphs(self) -> list[Subgraph]: ...
     def add_alignments(self, alignments: list[Alignment]) -> None: ...
     def alignments(self) -> list[Alignment]: ...
+    def add_leads(self, leads: list[Lead]) -> None: ...
+    def leads(self) -> list[Lead]: ...
 
 
 class LocalPool:
@@ -118,6 +121,18 @@ class LocalPool:
         keys = ("a", "b", "verdict", "confidence", "rationale", "judged")
         return [Alignment(**dict(zip(keys, row))) for row in rows]
 
+    def add_leads(self, leads: list[Lead]) -> None:
+        with self._connect() as db:
+            db.executemany(
+                "INSERT OR REPLACE INTO leads VALUES (?, ?, ?)",
+                [(x.id, x.updated, x.model_dump_json()) for x in leads],
+            )
+
+    def leads(self) -> list[Lead]:
+        with self._connect() as db:
+            rows = db.execute("SELECT payload FROM leads ORDER BY updated, id").fetchall()
+        return [Lead.model_validate_json(row[0]) for row in rows]
+
 
 class HttpPool:
     def __init__(self, url: str, client: httpx.Client | None = None) -> None:
@@ -147,6 +162,15 @@ class HttpPool:
         response = self.client.get(f"{self.url}/alignments")
         response.raise_for_status()
         return [Alignment.model_validate(item) for item in response.json()]
+
+    def add_leads(self, leads: list[Lead]) -> None:
+        payload = [json.loads(x.model_dump_json()) for x in leads]
+        self.client.post(f"{self.url}/leads", json=payload).raise_for_status()
+
+    def leads(self) -> list[Lead]:
+        response = self.client.get(f"{self.url}/leads")
+        response.raise_for_status()
+        return [Lead.model_validate(item) for item in response.json()]
 
 
 def get_pool() -> Pool:

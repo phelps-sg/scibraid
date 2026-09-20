@@ -19,7 +19,7 @@ from pydantic import ValidationError
 
 from . import align, openalex, store
 from .lint import lint
-from .models import Alignment, Batch, Paper, Subgraph
+from .models import Alignment, Batch, Lead, Paper, Subgraph
 from .pool import get_pool
 
 
@@ -171,10 +171,12 @@ def cmd_list(args: argparse.Namespace) -> int:
 def render_view(subgraphs: list[Subgraph]) -> str:
     """A self-contained HTML page for browsing the given subgraphs and their alignments."""
     try:
-        alignments = [x.model_dump(mode="json") for x in get_pool().alignments()]
+        pool = get_pool()
+        alignments = [x.model_dump(mode="json") for x in pool.alignments()]
+        leads = [x.model_dump(mode="json") for x in pool.leads()]
     except httpx.HTTPError:
-        alignments = []
-    payload = {"subgraphs": [sg.model_dump(mode="json") for sg in subgraphs], "alignments": alignments}
+        alignments, leads = [], []
+    payload = {"subgraphs": [sg.model_dump(mode="json") for sg in subgraphs], "alignments": alignments, "leads": leads}
     data = json.dumps(payload, ensure_ascii=False)
     # Embedded in a <script> block: keep any "</script>" or "<!--" in the data inert.
     data = data.replace("<", "\\u003c")
@@ -285,12 +287,42 @@ def _print_observations(report: dict) -> None:
         ("Failures sharing a condition across papers", "shared_condition_failures"),
         ("Results that may bear on another question's hypothesis", "cross_bearing"),
         ("Contradictions, and the conditions that differ", "contradictions_by_regime"),
+        ("Experiments nobody ran: a linked hypothesis never tested under a condition that matters", "absent_experiments"),
         ("Hypotheses linked across questions", "linked_hypotheses"),
         ("Thinly evidenced hypotheses (fewer than 2 papers)", "thinly_evidenced_hypotheses"),
     ]:
         print(f"\n## {title} ({len(report[key])})")
         for item in report[key]:
             print("-", json.dumps(item, ensure_ascii=False))
+
+
+def cmd_lead_add(args: argparse.Namespace) -> int:
+    pool = get_pool()
+    raw = sys.stdin.read() if args.file == "-" else Path(args.file).read_text()
+    try:
+        leads = [Lead.model_validate(item) for item in json.loads(raw)]
+    except ValidationError as exc:
+        _emit({"ok": False, "errors": _errors(exc)})
+        return 1
+    if errors := align.check_leads(pool.subgraphs(), pool.alignments(), leads):
+        _emit({"ok": False, "errors": errors})
+        return 1
+    pool.add_leads(leads)
+    _emit({"ok": True, "added": len(leads), "status": Counter(x.status.value for x in leads)})
+    return 0
+
+
+def cmd_lead_list(args: argparse.Namespace) -> int:
+    leads = [x for x in get_pool().leads() if not args.status or x.status.value == args.status]
+    if args.format == "json":
+        _emit([x.model_dump(mode="json") for x in leads])
+        return 0
+    for x in leads:
+        print(f"{x.status.value:9} {x.confidence:.2f}  {x.id}  [{x.kind.value}]")
+        print(f"          {x.claim}")
+        if x.follow_up:
+            print(f"          next: {x.follow_up}")
+    return 0
 
 
 def cmd_observe(args: argparse.Namespace) -> int:
@@ -373,6 +405,16 @@ def build_parser() -> argparse.ArgumentParser:
     p.set_defaults(func=cmd_align_add)
     p = al_sub.add_parser("list", help="print the pool's alignment verdicts")
     p.set_defaults(func=cmd_align_list)
+
+    ld = sub.add_parser("lead", help="record or list leads drawn from the pool")
+    ld_sub = ld.add_subparsers(dest="lead_command", required=True)
+    p = ld_sub.add_parser("add", help="validate a JSON list of leads and store it in the pool")
+    p.add_argument("file", help="JSON file, or - for stdin")
+    p.set_defaults(func=cmd_lead_add)
+    p = ld_sub.add_parser("list", help="print the pool's leads")
+    p.add_argument("--status", choices=["candidate", "holds", "known", "refuted"])
+    p.add_argument("--format", choices=["text", "json"], default="text")
+    p.set_defaults(func=cmd_lead_list)
 
     p = sub.add_parser("observe", help="read candidate observations off the aligned pool")
     p.add_argument("--min-confidence", type=float, default=0.7, help="'same' verdicts below this are ignored")

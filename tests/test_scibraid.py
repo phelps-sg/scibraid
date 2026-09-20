@@ -8,7 +8,7 @@ import threading
 from scibraid import align, main, openalex, store
 from scibraid.cli import make_server
 from scibraid.lint import lint
-from scibraid.models import Alignment, Batch, Paper, Subgraph
+from scibraid.models import Alignment, Batch, Lead, Paper, Subgraph
 from scibraid.pool import HttpPool, LocalPool
 
 ABSTRACT = (
@@ -378,3 +378,86 @@ def test_alignments_round_trip_through_the_local_pool(capsys):
     assert [x.verdict for x in pool.alignments()] == ["same"]
     assert main(["observe"]) == 0 and main(["align", "list"]) == 0
     assert "Both mean hypoxic culture." in capsys.readouterr().out
+
+
+def lead(**overrides):
+    data = {
+        "id": "hypoxia-blunts-both", "kind": "shared_failure", "confidence": 0.4,
+        "claim": "Hypoxia blunts the effect of both compounds on tumour growth.",
+        "nodes": ["q/o:no-reduction", "y/o:y-no-effect"],
+        "alignments": [("q/c:hypoxia", "y/c:low-oxygen")],
+    }
+    data.update(overrides)
+    return Lead.model_validate(data)
+
+
+def test_lead_must_be_checked_before_it_is_judged():
+    assert lead().status == "candidate"
+    with pytest.raises(ValueError, match="records no checks"):
+        lead(status="refuted")
+    checks = [{"question": "Is the oxygen level comparable?", "finding": "Yes, both report 1% oxygen.", "sources": ["W1", "W5"]}]
+    with pytest.raises(ValueError, match="what would confirm"):
+        lead(status="holds", checks=checks)
+    with pytest.raises(ValueError, match="say where"):
+        lead(status="known", checks=checks)
+    assert lead(status="known", checks=checks, known_in=["W9"]).status == "known"
+
+
+def test_lead_cannot_be_surer_than_its_weakest_alignment():
+    first = Subgraph(slug="q", question="Does X work?")
+    store.add_batch(first, batch())
+    graphs = [first, second_subgraph()]
+    same = Alignment(a="q/c:hypoxia", b="y/c:low-oxygen", verdict="same", confidence=0.6, rationale="Both mean hypoxic culture.")
+    assert align.check_leads(graphs, [same], [lead()]) == []
+    errors = "\n".join(align.check_leads(graphs, [same], [lead(confidence=0.8), lead(id="b", nodes=["q/o:gone", "y/o:y-no-effect"])]))
+    assert "exceeds its weakest alignment (0.60)" in errors and "not in the pool" in errors
+    assert "no alignment verdict" in align.check_leads(graphs, [], [lead()])[0]
+    different = Alignment(a="q/c:hypoxia", b="y/c:low-oxygen", verdict="different", confidence=0.9, rationale="Not the same oxygen level.")
+    assert "judged different" in align.check_leads(graphs, [different], [lead()])[0]
+    assert "names no alignment" in align.check_leads(graphs, [same], [lead(alignments=[])])[0]
+
+
+def test_observe_reports_a_linked_hypothesis_never_tested_under_a_moderator():
+    first = Subgraph(slug="q", question="Does X work?")
+    store.add_batch(first, batch())
+    report = store.add_batch(first, Batch.model_validate({
+        "nodes": [{"id": "c:high-dose", "type": "condition", "label": "High dose"}],
+        "edges": [
+            {"source": "o:no-reduction", "target": "c:high-dose", "relation": "observed_under", "confidence": 0.9,
+             "asserted_by": "author", "provenance": prov("showed no reduction in tumour volume")},
+            {"source": "o:no-reduction", "target": "c:hypoxia", "relation": "observed_under", "confidence": 0.9,
+             "asserted_by": "author", "provenance": prov("Under hypoxic conditions")},
+        ],
+    }))
+    assert report.ok, report.errors
+    graphs = [first, second_subgraph()]
+    verdicts = [
+        Alignment(a="q/c:hypoxia", b="y/c:low-oxygen", verdict="same", confidence=0.9, rationale="Both mean hypoxic culture."),
+        Alignment(a="q/h:x-reduces-growth", b="y/h:y-slows-growth", verdict="related", confidence=0.6, rationale="Same pathway, different compound."),
+    ]
+    [gap] = align.observe(graphs, verdicts)["absent_experiments"]
+    # Y was tested under hypoxia (aligned), so only the dose is missing
+    assert gap["hypothesis"] == "Y slows tumour growth" and gap["never_tested_under"] == ["High dose"]
+    assert gap["confidence"] == 0.6
+    assert align.observe(graphs, verdicts[:1])["absent_experiments"] == []  # unlinked hypotheses: no claim
+
+
+def test_leads_round_trip_and_reach_the_viewer(tmp_path, capsys):
+    first = Subgraph(slug="q", question="Does X work?")
+    store.add_batch(first, batch())
+    second = second_subgraph()
+    pool = LocalPool()
+    for sg in (first, second):
+        pool.push(sg)
+        store.save_subgraph(sg)
+    pool.add_alignments([Alignment(a="q/c:hypoxia", b="y/c:low-oxygen", verdict="same", confidence=0.9, rationale="Both mean hypoxic culture.")])
+    path = tmp_path / "leads.json"
+    path.write_text(json.dumps([lead(confidence=0.95).model_dump(mode="json")]))
+    assert main(["lead", "add", str(path)]) == 1  # surer than its alignment
+    path.write_text(json.dumps([lead().model_dump(mode="json")]))
+    assert main(["lead", "add", str(path)]) == 0
+    assert main(["lead", "list"]) == 0
+    assert "Hypoxia blunts the effect" in capsys.readouterr().out
+    out = tmp_path / "view.html"
+    assert main(["view", "-o", str(out)]) == 0
+    assert "hypoxia-blunts-both" in out.read_text()

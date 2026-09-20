@@ -200,3 +200,65 @@ class Alignment(BaseModel):
             flip = {Verdict.BROADER: Verdict.NARROWER, Verdict.NARROWER: Verdict.BROADER}
             self.verdict = flip.get(self.verdict, self.verdict)
         return self
+
+
+class LeadKind(StrEnum):
+    """Which reading of the pool suggested the lead."""
+
+    BRIDGE = "bridge"
+    SHARED_FAILURE = "shared_failure"
+    CROSS_BEARING = "cross_bearing"
+    REGIME = "regime"
+    UNTESTED = "untested"
+    OTHER = "other"
+
+
+class LeadStatus(StrEnum):
+    CANDIDATE = "candidate"  # read off the pool, not yet checked
+    HOLDS = "holds"  # premise verified, no confound found, not found in the literature
+    KNOWN = "known"  # holds, but the literature already makes the connection
+    REFUTED = "refuted"  # the premise fails or a confound explains it
+
+
+class Check(BaseModel):
+    """One thing that was checked about a lead, and what was found."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    question: str = Field(min_length=10)
+    finding: str = Field(min_length=10)
+    sources: list[str] = []  # paper ids or URLs consulted
+
+
+class Lead(BaseModel):
+    """A candidate observation drawn from the pooled structure, kept with what it rests on.
+
+    A lead is what the pool is for, so it is stored as carefully as a link: the nodes
+    and alignment verdicts behind it, the checks made, and what would settle it.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    id: str = Field(pattern=r"^[a-z0-9][a-z0-9\-]*$")
+    claim: str = Field(min_length=20)
+    kind: LeadKind
+    status: LeadStatus = LeadStatus.CANDIDATE
+    confidence: float = Field(ge=0.0, le=1.0)
+    nodes: list[str] = Field(min_length=2, description="<slug>/<node id> keys the lead rests on")
+    alignments: list[tuple[str, str]] = []  # (a, b) pairs of the verdicts it rests on
+    checks: list[Check] = []
+    would_confirm: str = ""
+    would_refute: str = ""
+    known_in: list[str] = []  # where the literature already says it
+    follow_up: str | None = None  # a question to hand back to evidence-subgraph
+    updated: str = Field(default_factory=_now)
+
+    @model_validator(mode="after")
+    def _checked_before_judged(self) -> Lead:
+        if self.status is not LeadStatus.CANDIDATE and not self.checks:
+            raise ValueError(f"lead {self.id!r} is {self.status.value} but records no checks")
+        if self.status is LeadStatus.KNOWN and not self.known_in:
+            raise ValueError(f"lead {self.id!r} is known: say where, in known_in")
+        if self.status is LeadStatus.HOLDS and not (self.would_confirm and self.would_refute):
+            raise ValueError(f"lead {self.id!r} holds: say what would confirm and what would refute it")
+        return self

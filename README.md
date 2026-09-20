@@ -6,9 +6,9 @@ scibraid keeps the model. (The strands of a braid stay distinct, which is how it
 
 A single graph is useful on its own, from the first question, with nothing in the pool and no server. A corpus-wide graph is worth nothing until the corpus has been processed, and a shared platform is worth little until others have joined it. The first graph is already a literature review whose every claim can be checked: the hypotheses in contention, the evidence for and against each, the results that conflict and the conditions they were obtained under, each traceable to a quoted passage. `scibraid lint` points out what the review has missed, such as a hypothesis with no direct evidence or a search that turned up no failures, and `scibraid view` lets a reader browse it. Pooling adds to this later. It is not a precondition.
 
-Graphs built for different questions are then pooled. They are never merged. A second pass judges which nodes in different graphs refer to the same thing and records each judgement as a link with its own rationale. The pooled structure can show things that no single review was looking for: a condition shared by failures in two unrelated lines of work, or a contradiction that disappears once the differing conditions are laid side by side. No one has to build a knowledge graph of science in advance: it grows from the questions people ask.
+Graphs built for different questions are then pooled. They are never merged. A second pass judges which nodes in different graphs refer to the same thing and records each judgement as a link with its own rationale. The pooled structure can show things that no single review was looking for: a condition shared by failures in two unrelated lines of work, or a contradiction that disappears once the differing conditions are laid side by side. A third pass takes what the pooled structure suggests and checks it against the sources and the wider literature. Each lead is recorded with the checks made, whether it held, was already known or fell over, and the next question to ask. No one has to build a knowledge graph of science in advance: it grows from the questions people ask.
 
-There are no API keys and no model calls in the code. The agent harness (Claude Code) does the reading and the judging through two skills. The `scibraid` command-line tool does everything that should be deterministic: literature search, schema validation, quote verification, storage, pooling, candidate ranking and the structural queries.
+There are no API keys and no model calls in the code. The agent harness (Claude Code) does the reading and the judging through three skills. The `scibraid` command-line tool does everything that should be deterministic: literature search, schema validation, quote verification, storage, pooling, candidate ranking and the structural queries.
 
 ## Related work
 
@@ -39,7 +39,17 @@ The first produced a graph of 96 nodes and 158 links from 12 papers, the second 
 
 The cheap stage proposed 56 cross-graph pairs. The agent judged 10 to be the same thing, 8 to be narrower or broader, 17 related and 21 different. The last group included traps that word overlap had ranked highly, such as "without instruction tuning" against "instruction-tuned".
 
-`scibraid observe` then ranked, first among failures sharing a condition, one that neither question had asked about. Lu et al. (2024) found that emergent abilities mostly vanish in base GPT-3 when in-context learning is excluded. Wang et al. (2023) mention in a footnote that base GPT-3 175B gains little from chain-of-thought prompting. Both results sit under the condition "no instruction tuning". One comes from the emergence literature and one from the prompting literature. Together they suggest that instruction tuning, and not parameter count alone, gates both effects. That is a lead to follow up, not a finding. It took two ordinary literature reviews and one alignment pass to surface.
+`scibraid observe` then ranked, first among failures sharing a condition, one that neither question had asked about. Lu et al. (2024) found that emergent abilities mostly vanish in base GPT-3 when in-context learning is excluded. Wang et al. (2023) mention in a footnote that base GPT-3 175B gains little from chain-of-thought prompting. Both results sit under the condition "no instruction tuning". One comes from the emergence literature and one from the prompting literature.
+
+```
+/pursue-leads
+```
+
+The third pass checked that observation and two others against the sources. The base model is the same in both papers. The two results do not share their other conditions, since Lu's is zero-shot by design and Wang's is few-shot. The connection itself is already in the literature: Wang et al. make their remark "echoing Fu et al. (2022)", an essay that traces chain-of-thought ability to how a model was trained after pre-training and not to its size. The lead was recorded as known. The pool had recovered, from two papers that do not frame it that way, a connection the field took some time to state.
+
+A second lead held. The alignment pass had judged two hypotheses related: that chain-of-thought helps only above about 100B parameters, and that apparent emergence is produced by all-or-nothing metrics. `observe` reported that the first had never been tested under the graded metrics that dissolve thresholds in the second graph. The sources bear this out. Wei et al. report only solve rate, BIG-Bench Hard states that it measures exact match, and Schaeffer et al. never mention chain-of-thought. Wei et al. also note that small models often produce no parseable final answer, which scores zero however good the reasoning. The check found a limit to the idea as well. Chain-of-thought makes small models worse than standard prompting, and a scoring artefact does not predict that. The lead stands at a confidence of 0.45, with the experiment that would settle it and a follow-up question for the next review.
+
+A third candidate was refuted. Two negative results appeared to share the MMLU benchmark. One of them was not about MMLU at all, and sat under that condition only because its experiment had been run on twelve tasks. The refutation is kept in the pool with the check that sank it, so the next person does not chase it.
 
 ## Install
 
@@ -70,14 +80,16 @@ Browse what it built. Click any node or link to see the quoted passage, the conf
 scibraid view
 ```
 
-Once two or more graphs are pooled, align them and read the pool:
+Once two or more graphs are pooled, align them, then check what the pool suggests:
 
 ```
 /align-subgraphs
+/pursue-leads
 ```
 
 ```sh
-scibraid observe
+scibraid observe        # what the aligned pool suggests, unchecked
+scibraid lead list      # what has been checked, and what came of it
 ```
 
 The tools can also be driven by hand. A batch is a JSON file of nodes and links (the format is in `skills/evidence-subgraph/SKILL.md`):
@@ -107,7 +119,7 @@ Clicking a node or a link shows what it rests on. Below, the selected link says 
 
 ![A selected link, with its confidence, who asserted it, the agent's note and the verified source passage](docs/viewer-passage.png)
 
-The nodes and links can be filtered by type, by who asserted them and by minimum confidence, and searched by text. A table view lists the same links in sortable rows. Choosing "All subgraphs together" draws the alignment verdicts between graphs, and selecting one shows its rationale. The address bar records the subgraph and the selection, so a view can be bookmarked or sent to someone running the same data.
+The nodes and links can be filtered by type, by who asserted them and by minimum confidence, and searched by text. A table view lists the same links in sortable rows. Choosing "All subgraphs together" draws the alignment verdicts between graphs, and selecting one shows its rationale. Recorded leads are listed in the side panel. Selecting one highlights the nodes it rests on and shows its checks, its status and the next question. The address bar records the subgraph and the selection, so a view can be bookmarked or sent to someone running the same data.
 
 The graph library, Cytoscape.js, loads from a CDN. Without a network connection the table and the side panel still work.
 
@@ -126,6 +138,7 @@ The graph library, Cytoscape.js, loads from a CDN. Without a network connection 
 | `candidates [--budget N] [--type T]` | rank unjudged cross-graph pairs by plausibility and consequence |
 | `align add verdicts.json`, `align list` | record and list alignment verdicts |
 | `observe [--format json]` | candidate observations from the aligned pool |
+| `lead add leads.json`, `lead list [--status S]` | record and list checked leads |
 
 Data lives in `$SCIBRAID_HOME`, by default `~/.local/share/scibraid`.
 
@@ -143,9 +156,15 @@ The pool is a local SQLite file. Node ids are namespaced by subgraph, and alignm
 
 Candidate pairs are scored by lexical similarity, shared ids and shared papers, then weighted by how well connected both nodes are. The agent's judgement is the expensive step, and this ordering spends it where a match would join the most structure. Hypothesis pairs are always proposed, because paraphrase defeats lexical matching and they matter most.
 
-Setting `SCIBRAID_POOL_URL` switches to a remote pool over HTTP (`/subgraphs`, `/alignments`). No server exists yet. The skills will not need to change when one does.
+`observe` reads six things off the aligned pool: conditions reached from different questions, failures that share a condition, experiments that may bear on another question's hypothesis, contradictions with the conditions unique to each side, hypotheses linked across questions, and experiments nobody ran. The last lists the conditions that scope results on one hypothesis and under which a linked hypothesis was never tested.
+
+These are coincidences of structure, and most are not insights. A lead is one that has been checked. It records the claim, the nodes and alignment verdicts it rests on, each check and its finding, what would confirm and refute it, and a follow-up question. Its status is `candidate`, `holds`, `known` or `refuted`. The tool rejects a lead that is judged without checks, and one whose confidence exceeds the weakest alignment verdict it rests on.
+
+Setting `SCIBRAID_POOL_URL` switches to a remote pool over HTTP (`/subgraphs`, `/alignments`, `/leads`). No server exists yet. The skills will not need to change when one does.
 
 ## Limitations
+
+The check for whether a lead is already known is a brief search by the agent, not a systematic one, so `holds` means that nothing was found, not that nothing exists. In the example, the essay by Fu et al. is described from Wang et al.'s citation of it and was not itself read. A candidate from `observe` can be an artefact of the graph: an observation inherits every condition of its experiment, and a condition that a paper used but the agent did not record looks the same as one that was never tried.
 
 The comparison with related work draws on the author's knowledge of the field and a brief search. It is not a systematic survey, and the descriptions of other systems are from their public documentation.
 

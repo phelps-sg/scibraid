@@ -185,7 +185,9 @@ function build(slug) {
   });
   const judged = new Set((DATA.alignments || []).map((x) => `${x.a}|${x.b}`));
   const unjudged = same.filter((p) => !judged.has(`${p.s}|${p.t}`) && !judged.has(`${p.t}|${p.s}`));
-  return { graphs, many, nodes, edges, papers, same: unjudged, links };
+  // A lead is shown wherever at least two of the nodes it rests on are on screen.
+  const leads = (DATA.leads || []).map((l) => ({ ...l, key: `lead:${l.id}`, present: l.nodes.filter((k) => nodes.has(k)) })).filter((l) => l.present.length >= 2);
+  return { graphs, many, nodes, edges, papers, same: unjudged, links, leads };
 }
 
 function visible() {
@@ -259,6 +261,17 @@ function highlight() {
   cy.elements().removeClass("faded lit hit near").unselect();
   const q = state.query.toLowerCase();
   if (q) cy.nodes().forEach((n) => { const m = model.nodes.get(n.id()); if ((m.label + " " + m.id + " " + (m.description || "")).toLowerCase().includes(q)) n.addClass("hit"); });
+  const lead = model.leads.find((l) => l.key === state.selected);
+  if (lead) {
+    let hood = cy.collection();
+    lead.present.forEach((k) => { hood = hood.union(cy.getElementById(k)); });
+    hood = hood.union(hood.edgesWith(hood));
+    lead.alignments.forEach(([a, b]) => { hood = hood.union(cy.edges().filter((e) => e.data("relation") === "aligned" && [a, b].includes(e.data("source")) && [a, b].includes(e.data("target")))); });
+    cy.elements().not(hood).addClass("faded");
+    hood.edges().addClass("lit");
+    hood.nodes().addClass("near hit");
+    return;
+  }
   const sel = state.selected && cy.getElementById(state.selected);
   if (sel && sel.nonempty()) {
     const hood = sel.isNode() ? sel.closedNeighborhood() : sel.union(sel.connectedNodes());
@@ -282,7 +295,12 @@ function select(key, centre) {
   writeHash();
   highlight();
   renderPanel();
-  if (centre && cy && key) {
+  const chosen = model.leads.find((l) => l.key === key);
+  if (chosen && cy) {
+    let eles = cy.collection();
+    chosen.present.forEach((k) => { eles = eles.union(cy.getElementById(k)); });
+    if (eles.nonempty()) cy.fit(eles, 120);
+  } else if (centre && cy && key) {
     const e = cy.getElementById(key);
     if (e.nonempty()) {
       cy.fit(e.isNode() ? e.closedNeighborhood() : e.union(e.connectedNodes()), 90);
@@ -346,6 +364,19 @@ function renderPanel() {
       edge.note ? el("div", { class: "note" }, edge.note) : null,
       el("h3", {}, "From"), nodeLink(model.nodes.get(edge.s)), el("h3", {}, "To"), nodeLink(model.nodes.get(edge.t)),
       el("h3", {}, "Source passage"), provenance(edge.provenance));
+  } else if (model.leads.some((l) => l.key === state.selected)) {
+    const lead = model.leads.find((l) => l.key === state.selected);
+    const STATUS = { candidate: "not yet checked", holds: "holds up so far", known: "already in the literature", refuted: "refuted" };
+    add(panel, el("div", { class: "meta" }, "lead", lead.kind.replace(/_/g, " "), `${lead.status}: ${STATUS[lead.status]}`), el("h2", {}, lead.claim),
+      el("dl", {}, el("dt", {}, "confidence"), el("dd", {}, lead.confidence.toFixed(2)), el("dt", {}, "updated"), el("dd", {}, lead.updated)),
+      lead.follow_up ? [el("h3", {}, "Next question"), el("div", { class: "card" }, lead.follow_up)] : null,
+      lead.checks.length ? [el("h3", {}, "Checks"), lead.checks.map((c) => el("div", { class: "card" }, el("div", { class: "rel" }, c.question), el("div", {}, c.finding),
+        c.sources.length ? el("div", { class: "src" }, c.sources.join(" · ")) : null))] : null,
+      lead.would_confirm ? [el("h3", {}, "Would confirm"), el("div", {}, lead.would_confirm)] : null,
+      lead.would_refute ? [el("h3", {}, "Would refute"), el("div", {}, lead.would_refute)] : null,
+      lead.known_in.length ? [el("h3", {}, "Already said in"), lead.known_in.map((k) => el("div", { class: "src" }, k))] : null,
+      el("h3", {}, "Rests on"), lead.present.map((k) => nodeLink(model.nodes.get(k))),
+      lead.present.length < lead.nodes.length ? el("p", { class: "src" }, `${lead.nodes.length - lead.present.length} more node(s) are in a subgraph not shown. Choose "All subgraphs together".`) : null);
   } else if (link) {
     add(panel, el("div", { class: "meta" }, "alignment verdict"), el("h2", {}, link.verdict === "same" ? "Judged to be the same thing" : `First is ${link.verdict} ${link.verdict === "related" ? "to" : "than"} second`),
       el("dl", {}, el("dt", {}, "confidence"), el("dd", {}, link.confidence.toFixed(2)), el("dt", {}, "judged"), el("dd", {}, link.judged || "")),
@@ -375,6 +406,8 @@ function overview(panel) {
   const clashes = model.edges.filter((e) => e.relation === "contradicts" && model.nodes.get(e.t).type === "observation");
   if (clashes.length) add(panel, el("h3", {}, "Results in conflict"), clashes.map((e) => el("div", { class: "card link", onclick: () => select(e.key, true) },
     short(model.nodes.get(e.s).label, 80), el("div", { class: "meta" }, "contradicts"), short(model.nodes.get(e.t).label, 80))));
+  if (model.leads.length) add(panel, el("h3", {}, `Leads (${model.leads.length})`), model.leads.map((l) => el("div", { class: "card link", onclick: () => select(l.key, true) },
+    el("div", { class: "meta" }, l.status, l.kind.replace(/_/g, " "), l.confidence.toFixed(2)), short(l.claim, 170))));
   const joins = model.links.filter((x) => x.verdict !== "related");
   if (joins.length) add(panel, el("h3", {}, `Judged same, narrower or broader (${joins.length})`), joins.map((x) => el("div", { class: "card link", onclick: () => select(x.key, true) },
     el("div", { class: "meta" }, x.verdict, x.confidence.toFixed(2)), short(model.nodes.get(x.s).label, 70), el("div", { class: "src" }, short(model.nodes.get(x.t).label, 70)))));
