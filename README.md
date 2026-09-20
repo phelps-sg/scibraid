@@ -64,7 +64,7 @@ Ask a question. The agent searches, reads, extracts paper by paper, checks its w
 /evidence-subgraph why is the ego-depletion effect still disputed?
 ```
 
-Browse what it built. This serves a page on `http://127.0.0.1:8765/`. Click any node or link to see the quoted passage, the confidence and who asserted it.
+Browse what it built. Click any node or link to see the quoted passage, the confidence and who asserted it. The viewer is described below.
 
 ```sh
 scibraid view
@@ -90,6 +90,26 @@ scibraid add ego-depletion batch.json
 scibraid lint ego-depletion
 scibraid pool ego-depletion
 ```
+
+## Viewer
+
+```sh
+scibraid view
+```
+
+This serves one page on `http://127.0.0.1:8765/` and opens it. The page is rebuilt on every request, so refreshing the browser shows a subgraph as it is being built. `scibraid view -o graph.html` writes the same page as a standalone file with the data embedded.
+
+![A subgraph in the viewer, with the evidence for and against each hypothesis listed beside it](docs/viewer-overview.png)
+
+Each node type has its own shape and colour: hypotheses, experiments, conditions, observations and interpretations. Links that support a hypothesis are blue and links that contradict one are red. A dashed link is one the agent inferred and the paper did not state. Line width shows confidence. With nothing selected, the side panel lists each hypothesis with a bar of the links for and against it, then the results that conflict with each other, then the papers.
+
+Clicking a node or a link shows what it rests on. Below, the selected link says that one result contradicts another. The panel gives the confidence, records that the agent drew the link and the papers' authors did not, shows the agent's note on why the two results may not be in true conflict, and quotes the passage from the source with a mark that the quote was checked.
+
+![A selected link, with its confidence, who asserted it, the agent's note and the verified source passage](docs/viewer-passage.png)
+
+The nodes and links can be filtered by type, by who asserted them and by minimum confidence, and searched by text. A table view lists the same links in sortable rows. Choosing "All subgraphs together" draws the alignment verdicts between graphs, and selecting one shows its rationale. The address bar records the subgraph and the selection, so a view can be bookmarked or sent to someone running the same data.
+
+The graph library, Cytoscape.js, loads from a CDN. Without a network connection the table and the side panel still work.
 
 ## Commands
 
