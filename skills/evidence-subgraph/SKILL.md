@@ -79,7 +79,7 @@ Every edge needs `confidence` (0-1), `asserted_by`, and provenance from exactly 
 
 **Failures are first-class.** Null results, failed replications, abandoned approaches and "did not reach significance" are constraints on hypothesis space, and the literature under-reports them. Record them with the same care as positive results, with their conditions: a failure is only informative alongside the circumstances it failed under.
 
-**Conditions are the alignment surface.** Record every condition the source gives you, even ones that seem irrelevant to this question. Put quantities in `attrs` (`{"n": 2141, "labs": 23, "dose_mg_kg": 5}`) and keep the label human-readable.
+**Conditions are the alignment surface.** Record every condition the source gives you, even ones that seem irrelevant to this question. Whatever was studied is a condition too, and the one most often left in a label or an `attrs` list where the pool cannot see it: the model (`c:gpt-4`, labelled "Model: GPT-4"), the species or cell line, the compound, the dataset. Give each its own condition node at the granularity the paper reports results for, with the plainest id you can (`c:gpt-4`, not `c:gpt-4-as-pricing-agent`), so that another question's subgraph, which studied the same thing for a different reason, meets yours there. Put quantities in `attrs` (`{"n": 2141, "labs": 23, "dose_mg_kg": 5}`) and keep the label human-readable.
 
 **Do not smooth over disagreement.** If two papers conflict, record both and a `contradicts` edge between the observations. Do not pick a winner.
 

@@ -80,6 +80,7 @@ aside h3 { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; co
 .meta { color: var(--text-2); font-size: 13px; display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; }
 .id { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; color: var(--text-3); word-break: break-all; }
 .card { border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; margin: 6px 0; background: var(--surface-2); }
+button.back { margin: 0 0 10px; font-size: 12px; }
 .card.link { cursor: pointer; } .card.link:hover { border-color: var(--text-3); }
 .rel { font-weight: 600; } .rel.supports { color: var(--text); } .rel.contradicts { color: var(--text); }
 .pill { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text-2); }
@@ -307,7 +308,11 @@ function writeHash() {
   history.replaceState(null, "", "#" + params);
 }
 
+let viewBefore = null;  // the pan and zoom before a selection moved them, so that clearing it goes back
+
 function select(key, centre) {
+  const moves = key && cy && (centre || model.leads.some((l) => l.key === key));
+  if (moves && !viewBefore) viewBefore = { zoom: cy.zoom(), pan: { ...cy.pan() } };
   state.selected = key;
   writeHash();
   highlight();
@@ -324,6 +329,7 @@ function select(key, centre) {
       if (cy.zoom() > 1.3) cy.zoom({ level: 1.3, renderedPosition: { x: cy.width() / 2, y: cy.height() / 2 } });
     }
   }
+  if (!key && cy && viewBefore) { cy.viewport(viewBefore); viewBefore = null; }
 }
 
 // ---- papers -------------------------------------------------------------------
@@ -385,6 +391,7 @@ function nodeLink(n) {
 function renderPanel() {
   const panel = $("panel");
   panel.replaceChildren();
+  if (state.selected) add(panel, el("button", { class: "back", onclick: () => select(null), title: "Esc, or click empty space" }, "\u2190 Overview"));
   const node = model.nodes.get(state.selected), edge = model.edges.find((e) => e.key === state.selected);
   const same = model.same.find((s) => s.key === state.selected);
   const link = model.links.find((x) => x.key === state.selected);
@@ -464,7 +471,7 @@ function overview(panel) {
     el("div", { class: "meta" }, `${Object.keys(model.papers).length} papers`, `${model.nodes.size} nodes`, `${model.edges.length} relationships`,
       `${count((e) => e.asserted_by === "model")} model-asserted`),
     el("div", { class: "src" }, model.graphs.map((g) => el("div", {}, `${model.many ? g.slug + ": " : ""}built by ${(g.builders || []).map((b) => [b.person, b.model || "model unknown", b.agent].filter(Boolean).join(" / ")).join("; ") || "not recorded"}`))),
-    el("p", { class: "src" }, "Click a node or an edge for its passages. Click empty space to come back here."),
+    el("p", { class: "src" }, "Click a node or an edge for its passages. Esc, the Overview button, a second click on the same node, or a click on empty space comes back here."),
     el("h3", {}, "Hypotheses: evidence for and against"));
   for (const h of [...model.nodes.values()].filter((n) => n.type === "hypothesis")) {
     const s = model.edges.filter((e) => e.t === h.key && e.relation === "supports"), c = model.edges.filter((e) => e.t === h.key && e.relation === "contradicts");
@@ -546,12 +553,15 @@ function init() {
     document.documentElement.dataset.theme = dark ? "light" : "dark";
     if (cy) cy.style(cyStyle());
   });
+  document.addEventListener("keydown", (ev) => {
+    if (ev.key === "Escape" && state.selected && !["INPUT", "SELECT", "TEXTAREA"].includes(document.activeElement.tagName)) select(null);
+  });
   matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => cy && cy.style(cyStyle()));
 
   if (!DATA.subgraphs.length) { $("notice").textContent = "No subgraphs to show. Build one with the evidence-subgraph skill."; return; }
   if (window.cytoscape) {
     cy = cytoscape({ container: $("cy"), style: cyStyle(), wheelSensitivity: 0.3, minZoom: 0.15, maxZoom: 3 });
-    cy.on("tap", (ev) => select(ev.target === cy ? null : ev.target.id()));
+    cy.on("tap", (ev) => select(ev.target === cy || ev.target.id() === state.selected ? null : ev.target.id()));
   } else {
     $("notice").textContent = "The graph library could not be loaded (it comes from a CDN, so this needs a network connection). The table view and the detail panel still work.";
     view(true);
