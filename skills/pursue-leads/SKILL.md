@@ -7,7 +7,7 @@ description: Turn what the aligned pool suggests into checked, recorded leads. T
 
 `scibraid observe` reads structure off the aligned pool. What it returns are coincidences of structure: two failures under one condition, a result sitting under another question's conditions, a hypothesis never tested under a condition that matters for its neighbour. Some of these are insights. Most are artefacts of how the graphs were built, or things the field already knows. Your job is to find out which, and to record the answer so that it is not lost.
 
-This is work for the strongest model available. Extraction can be delegated to a cheaper reader because the tool checks its quotes; nothing checks a lead except the care of whoever wrote it.
+This is work for the strongest model available. Extraction can be delegated to a cheaper reader because the tool checks its quotes; nothing checks a lead except the care of whoever wrote it. If you are the top-level session and the `lead-checker` agent is available, hand it the whole job, triage included, with any focus the user asked for: it runs on the strongest model whichever model you are, and it comes to the pool without having built it. Relay its report, and do not soften or sharpen what it says about how far each check went. If you are that agent, or have no subagents, the rest of this skill is yours.
 
 A lead is recorded as carefully as a link. It names the nodes and alignment verdicts it rests on, the checks that were made, what would confirm and what would refute it, and the next question. A lead that turns out to be already known, or wrong, is still worth recording: it stops the next person chasing it.
 

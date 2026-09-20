@@ -55,7 +55,7 @@ When a question reaches the point where the existing literature cannot settle it
 
 ## How it works
 
-There are no language-model calls and no model API keys in the Python code itself. The only model it runs is the optional local embedding model. The agent harness, currently Claude Code, does the reading, extraction and judgement through three skills and one subagent that extracts a single paper. The `scibraid` command-line tool handles the deterministic parts:
+There are no language-model calls and no model API keys in the Python code itself. The only model it runs is the optional local embedding model. The agent harness, currently Claude Code, does the reading, extraction and judgement through three skills and four subagents, each with a fixed model. The `scibraid` command-line tool handles the deterministic parts:
 
 - literature search and retrieval of open full text
 - schema validation
@@ -121,7 +121,7 @@ Literature search uses [OpenAlex](https://openalex.org/), which needs no account
 
 The `embeddings` extra adds a small local embedding model (fastembed, about 70 MB on first use, no API key) to help the alignment stage find matching conditions that share no words. Leave it off and the system still works using word overlap.
 
-Inside this repository Claude Code finds the skills and the extractor agent through `.claude/skills` and `.claude/agents`. To use them elsewhere, load the repository as a plugin:
+Inside this repository Claude Code finds the skills and the agents through `.claude/skills` and `.claude/agents`. To use them elsewhere, load the repository as a plugin:
 
 ```bash
 claude --plugin-dir /path/to/scibraid
@@ -129,7 +129,7 @@ claude --plugin-dir /path/to/scibraid
 
 ## Use
 
-Ask a question. The agent frames the hypotheses in contention, searches, fetches open full text, hands each paper to an extractor subagent, and then draws the links that span papers itself. It checks the result with `scibraid lint`, reports what the evidence shows, and can pool it with other reviews.
+Ask a question. The agent frames the hypotheses in contention, searches, fetches open full text, hands each paper to an extractor subagent, and hands the extracted graph to a synthesiser that draws the links spanning papers. It checks the result with `scibraid lint`, reports what the evidence shows, and can pool it with other reviews.
 
 ```text
 /evidence-subgraph why is the ego-depletion effect still disputed?
@@ -293,11 +293,20 @@ Independence is reported as one of four levels, weakest first: `unknown` (nothin
 
 ## Which model does what
 
-The steps do not all need the same model. Reading one paper and recording what it did is the bulk of the tokens, and the tool checks that work: every quoted passage must appear in the source. Deciding what several papers mean together is a small share of the tokens, and nothing checks it.
+The steps do not all need the same model. Reading one paper and recording what it did is the bulk of the tokens, and the tool checks that work: every quoted passage must appear in the source. Deciding what several papers mean together, how two hypotheses bear on each other, and whether a lead is real is a small share of the tokens, and nothing checks it.
 
-So the `evidence-subgraph` skill hands each paper to a `paper-extractor` subagent, which runs on Sonnet with a fresh context and one paper in front of it, and records its own model on what it adds. The session's model frames the question, retrieves, and then makes a synthesis pass over the extracted graph: it merges ids that parallel extractors minted twice (`scibraid duplicates`, `scibraid merge`) and draws the links that span papers. Hypothesis alignment and `pursue-leads` stay on the session's model.
+So the work is divided among four subagents with a fixed model each, and the division holds whichever model the session itself runs on.
 
-This split comes from one comparison, not a benchmark. Three models extracted the same five papers for the same question. Sonnet recorded 92 links to the top model's 36, five conditions per experiment to its three and eight failures to its one, and caught an error in the top model's reading of one paper. Haiku had 6 of its 13 batches rejected, recorded one failure, rated its own links at a mean confidence of 0.90, and lost the claim under test: each of its ten hypotheses restated one paper, and none was evidenced by more than one. Sonnet connected the papers as well as the top model had. The synthesis pass sits with the session's model for a structural reason: extractors that each see one paper cannot link two.
+| Agent | Model | Does |
+|---|---|---|
+| `paper-extractor` | Sonnet | Extracts one paper, with a fresh context, and records its own model on what it adds |
+| `evidence-synthesiser` | Fable | Merges ids that parallel extractors minted twice (`scibraid duplicates`, `scibraid merge`), draws the links that span papers, and re-reads the results the question turns on |
+| `hypothesis-aligner` | Fable | Reads pairs of hypothesis lists in full and records how the claims bear on each other |
+| `lead-checker` | Fable | Triages what `observe` returns, checks leads against the sources and the literature, and records them |
+
+The session frames the question, retrieves the papers, judges the ranked candidate pairs during alignment, and relays what the agents report. To use another model for a step, change the `model:` line in `agents/<name>.md`; where the top model is not available to you, put the strongest you have.
+
+The extraction tier comes from one comparison, not a benchmark. Three models extracted the same five papers for the same question. Sonnet recorded 92 links to the top model's 36, five conditions per experiment to its three and eight failures to its one, and caught an error in the top model's reading of one paper. Haiku had 6 of its 13 batches rejected, recorded one failure, rated its own links at a mean confidence of 0.90, and lost the claim under test: each of its ten hypotheses restated one paper, and none was evidenced by more than one. Sonnet connected the papers as well as the top model had, so the synthesis pass sits with the top model for a structural reason, that extractors who each see one paper cannot link two, and as a second reading of what they extracted.
 
 A useful side effect is that a subgraph extracted by one model and checked by another has had a second reader of a different kind, which `agenda` and `observe` report.
 
@@ -308,7 +317,7 @@ The current system is a research prototype.
 - A check that a lead is already known, or that a question has already been asked, is a brief agent search, not a systematic literature review. `holds`, `open` and "not found posed anywhere" therefore mean that nothing was found, not that nothing exists.
 - Quote verification establishes that a passage exists in the source. It does not establish that the passage actually supports the relationship the agent attached to it.
 - The example graphs were built and aligned by the same agent in one session, so they are not independent in the way reviews produced by different researchers would be. The tool now reports this (`same reader`) instead of leaving it to be remembered.
-- The model tiers rest on a single five-paper comparison on one question. Whether alignment, or the checking of leads, can also move to a cheaper model has not been tested, so both stay on the session's model.
+- The model tiers rest on a single five-paper comparison on one question. Whether hypothesis alignment or the checking of leads can move to a cheaper model has not been tested, so both are pinned to the top model. Framing, retrieval and the judging of candidate pairs run on the session's model, and have only been tried with the top model as the session.
 - Builders are recorded per subgraph, not per link, so a subgraph that two readers contributed to counts as the weaker of the two everywhere.
 - No domain expert has audited the example extractions.
 - The example comparison with related work is based on the author's knowledge and a brief search rather than a systematic survey.
