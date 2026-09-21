@@ -1,0 +1,2691 @@
+{
+  "slug": "cot-scale-threshold",
+  "question": "Does chain-of-thought prompting only help above a certain model scale, and why?",
+  "brief": "",
+  "prompted_by": null,
+  "builders": [
+    {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  ],
+  "created": "2026-09-20T08:26:25+00:00",
+  "updated": "2026-09-20T16:11:01+00:00",
+  "papers": {
+    "W4404394948": {
+      "id": "W4404394948",
+      "title": "To CoT or not to CoT? Chain-of-thought helps mainly on math and symbolic reasoning",
+      "doi": "10.48550/arxiv.2409.12183",
+      "year": 2024,
+      "authors": [
+        "Zayne Sprague",
+        "Fangcong Yin",
+        "Juan Diego Rodríguez",
+        "Dongwei Jiang",
+        "Manya Wadhwa",
+        "Prasann Singhal",
+        "Xinyu Zhao",
+        "Xi Ye"
+      ],
+      "author_ids": [],
+      "author_orcids": [],
+      "venue": "arXiv (Cornell University)",
+      "url": "http://arxiv.org/abs/2409.12183",
+      "cited_by_count": 13,
+      "source_tier": "grey",
+      "abstract": "Chain-of-thought (CoT) via prompting is the de facto method for eliciting reasoning capabilities from large language models (LLMs). But for what kinds of tasks is this extra ``thinking'' really helpful? To analyze this, we conducted a quantitative meta-analysis covering over 100 papers using CoT and ran our own evaluations of 20 datasets across 14 models. Our results show that CoT gives strong performance benefits primarily on tasks involving math or logic, with much smaller gains on other types of tasks. On MMLU, directly generating the answer without CoT leads to almost identical accuracy as CoT unless the question or model's response contains an equals sign, indicating symbolic operations and reasoning. Following this finding, we analyze the behavior of CoT on these problems by separating planning and execution and comparing against tool-augmented LLMs. Much of CoT's gain comes from improving symbolic execution, but it underperforms relative to using a symbolic solver. Our results indicate that CoT can be applied selectively, maintaining performance while saving inference costs. Furthermore, they suggest a need to move beyond prompt-based CoT to new paradigms that better leverage intermediate computation across the whole range of LLM applications.",
+      "oa_status": null,
+      "oa_url": null,
+      "arxiv_id": null,
+      "pmcid": null,
+      "text_source": null
+    },
+    "W4281557260": {
+      "id": "W4281557260",
+      "title": "Large Language Models are Zero-Shot Reasoners",
+      "doi": "10.48550/arxiv.2205.11916",
+      "year": 2022,
+      "authors": [
+        "Takeshi Kojima",
+        "Shixiang Gu",
+        "Machel Reid",
+        "Yutaka Matsuo",
+        "Yusuke Iwasawa"
+      ],
+      "author_ids": [],
+      "author_orcids": [],
+      "venue": "arXiv (Cornell University)",
+      "url": "http://arxiv.org/abs/2205.11916",
+      "cited_by_count": 1120,
+      "source_tier": "grey",
+      "abstract": "Pretrained large language models (LLMs) are widely used in many sub-fields of natural language processing (NLP) and generally known as excellent few-shot learners with task-specific exemplars. Notably, chain of thought (CoT) prompting, a recent technique for eliciting complex multi-step reasoning through step-by-step answer examples, achieved the state-of-the-art performances in arithmetics and symbolic reasoning, difficult system-2 tasks that do not follow the standard scaling laws for LLMs. While these successes are often attributed to LLMs' ability for few-shot learning, we show that LLMs are decent zero-shot reasoners by simply adding \"Let's think step by step\" before each answer. Experimental results demonstrate that our Zero-shot-CoT, using the same single prompt template, significantly outperforms zero-shot LLM performances on diverse benchmark reasoning tasks including arithmetics (MultiArith, GSM8K, AQUA-RAT, SVAMP), symbolic reasoning (Last Letter, Coin Flip), and other logical reasoning tasks (Date Understanding, Tracking Shuffled Objects), without any hand-crafted few-shot examples, e.g. increasing the accuracy on MultiArith from 17.7% to 78.7% and GSM8K from 10.4% to 40.7% with large InstructGPT model (text-davinci-002), as well as similar magnitudes of improvements with another off-the-shelf large model, 540B parameter PaLM. The versatility of this single prompt across very diverse reasoning tasks hints at untapped and understudied fundamental zero-shot capabilities of LLMs, suggesting high-level, multi-task broad cognitive capabilities may be extracted by simple prompting. We hope our work not only serves as the minimal strongest zero-shot baseline for the challenging reasoning benchmarks, but also highlights the importance of carefully exploring and analyzing the enormous zero-shot knowledge hidden inside LLMs before crafting finetuning datasets or few-shot exemplars.",
+      "oa_status": null,
+      "oa_url": null,
+      "arxiv_id": null,
+      "pmcid": null,
+      "text_source": null
+    },
+    "W4385571157": {
+      "id": "W4385571157",
+      "title": "Challenging BIG-Bench Tasks and Whether Chain-of-Thought Can Solve Them",
+      "doi": "10.18653/v1/2023.findings-acl.824",
+      "year": 2023,
+      "authors": [
+        "Mirac Süzgün",
+        "Nathan Scales",
+        "Nathanael Schärli",
+        "Sebastian Gehrmann",
+        "Yi Tay",
+        "Hyung Won Chung",
+        "Aakanksha Chowdhery",
+        "Quoc V. Le"
+      ],
+      "author_ids": [],
+      "author_orcids": [],
+      "venue": null,
+      "url": "https://doi.org/10.18653/v1/2023.findings-acl.824",
+      "cited_by_count": 244,
+      "source_tier": "published",
+      "abstract": "Mirac Suzgun, Nathan Scales, Nathanael Schärli, Sebastian Gehrmann, Yi Tay, Hyung Won Chung, Aakanksha Chowdhery, Quoc Le, Ed Chi, Denny Zhou, Jason Wei. Findings of the Association for Computational Linguistics: ACL 2023. 2023.",
+      "oa_status": null,
+      "oa_url": null,
+      "arxiv_id": null,
+      "pmcid": null,
+      "text_source": null
+    },
+    "W4385571045": {
+      "id": "W4385571045",
+      "title": "Towards Understanding Chain-of-Thought Prompting: An Empirical Study of What Matters",
+      "doi": "10.18653/v1/2023.acl-long.153",
+      "year": 2023,
+      "authors": [
+        "Boshi Wang",
+        "Sewon Min",
+        "Xiang Deng",
+        "Jiaming Shen",
+        "You Wu",
+        "Luke Zettlemoyer",
+        "Huan Sun"
+      ],
+      "author_ids": [],
+      "author_orcids": [],
+      "venue": null,
+      "url": "https://doi.org/10.18653/v1/2023.acl-long.153",
+      "cited_by_count": 113,
+      "source_tier": "published",
+      "abstract": "Boshi Wang, Sewon Min, Xiang Deng, Jiaming Shen, You Wu, Luke Zettlemoyer, Huan Sun. Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers). 2023.",
+      "oa_status": null,
+      "oa_url": null,
+      "arxiv_id": null,
+      "pmcid": null,
+      "text_source": null
+    },
+    "W4318719086": {
+      "id": "W4318719086",
+      "title": "Specializing Smaller Language Models towards Multi-Step Reasoning",
+      "doi": "10.48550/arxiv.2301.12726",
+      "year": 2023,
+      "authors": [
+        "Yao Fu",
+        "Hao Peng",
+        "Litu Ou",
+        "Ashish Sabharwal",
+        "Tushar Khot"
+      ],
+      "author_ids": [],
+      "author_orcids": [],
+      "venue": "arXiv (Cornell University)",
+      "url": "http://arxiv.org/abs/2301.12726",
+      "cited_by_count": 45,
+      "source_tier": "grey",
+      "abstract": "The surprising ability of Large Language Models (LLMs) to perform well on complex reasoning with only few-shot chain-of-thought prompts is believed to emerge only in very large-scale models (100+ billion parameters). We show that such abilities can, in fact, be distilled down from GPT-3.5 ($\\ge$ 175B) to T5 variants ($\\le$ 11B). We propose model specialization, to specialize the model's ability towards a target task. The hypothesis is that large models (commonly viewed as larger than 100B) have strong modeling power, but are spread on a large spectrum of tasks. Small models (commonly viewed as smaller than 10B) have limited model capacity, but if we concentrate their capacity on a specific target task, the model can achieve a decent improved performance. We use multi-step math reasoning as our testbed because it is a very typical emergent ability. We show two important aspects of model abilities: (1). there exists a very complex balance/ tradeoff between language models' multi-dimensional abilities; (2). by paying the price of decreased generic ability, we can clearly lift up the scaling curve of models smaller than 10B towards a specialized multi-step math reasoning ability. We further give comprehensive discussions about important design choices for better generalization, including the tuning data format, the start model checkpoint, and a new model selection method. We hope our practice and discoveries can serve as an important attempt towards specialized smaller models in the new research paradigm set by LLMs.",
+      "oa_status": null,
+      "oa_url": null,
+      "arxiv_id": null,
+      "pmcid": null,
+      "text_source": null
+    },
+    "W4385571260": {
+      "id": "W4385571260",
+      "title": "Teaching Small Language Models to Reason",
+      "doi": "10.18653/v1/2023.acl-short.151",
+      "year": 2023,
+      "authors": [
+        "Lucie Charlotte Magister",
+        "Jonathan Mallinson",
+        "Jakub Adámek",
+        "Eric Malmi",
+        "Aliaksei Severyn"
+      ],
+      "author_ids": [],
+      "author_orcids": [],
+      "venue": null,
+      "url": "https://doi.org/10.18653/v1/2023.acl-short.151",
+      "cited_by_count": 119,
+      "source_tier": "published",
+      "abstract": "Lucie Charlotte Magister, Jonathan Mallinson, Jakub Adamek, Eric Malmi, Aliaksei Severyn. Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 2: Short Papers). 2023.",
+      "oa_status": null,
+      "oa_url": null,
+      "arxiv_id": null,
+      "pmcid": null,
+      "text_source": null
+    },
+    "W4385571219": {
+      "id": "W4385571219",
+      "title": "Large Language Models Are Reasoning Teachers",
+      "doi": "10.18653/v1/2023.acl-long.830",
+      "year": 2023,
+      "authors": [
+        "Namgyu Ho",
+        "Laura Schmid",
+        "Se-Young Yun"
+      ],
+      "author_ids": [],
+      "author_orcids": [],
+      "venue": null,
+      "url": "https://doi.org/10.18653/v1/2023.acl-long.830",
+      "cited_by_count": 114,
+      "source_tier": "published",
+      "abstract": "Recent works have shown that chain-of-thought (CoT) prompting can elicit language models to solve complex reasoning tasks, step-by-step.However, prompt-based CoT methods are dependent on very large models such as GPT-3 175B which are prohibitive to deploy at scale.In this paper, we use these large models as reasoning teachers to enable complex reasoning in smaller models and reduce model size requirements by several orders of magnitude.We propose Fine-tune-CoT, a method that generates reasoning samples from very large teacher models to fine-tune smaller models.We evaluate our method on a wide range of public models and complex tasks.We find that Fine-tune-CoT enables substantial reasoning capability in small models, far outperforming prompt-based baselines and even the teacher model in many tasks.Additionally, we extend our method by leveraging the teacher model's ability to generate multiple distinct rationales for each original sample.Enriching the fine-tuning data with such diverse reasoning results in a substantial performance boost across datasets, even for very small models.We conduct ablations and sample studies to understand the emergence of reasoning capabilities of student models. 110 20 30 40 50 60 70 SVAMP d av in ci te x t-d av in ci -0 0 1 te x t-d av in ci -0 0 2 te x t-d av in ci -0 0 3 10 20 30 40 50 60 70 Accuracy (%)",
+      "oa_status": null,
+      "oa_url": null,
+      "arxiv_id": null,
+      "pmcid": null,
+      "text_source": null
+    },
+    "W4385571831": {
+      "id": "W4385571831",
+      "title": "Distilling Reasoning Capabilities into Smaller Language Models",
+      "doi": "10.18653/v1/2023.findings-acl.441",
+      "year": 2023,
+      "authors": [
+        "Kumar Shridhar",
+        "Alessandro Stolfo",
+        "Mrinmaya Sachan"
+      ],
+      "author_ids": [],
+      "author_orcids": [],
+      "venue": null,
+      "url": "https://doi.org/10.18653/v1/2023.findings-acl.441",
+      "cited_by_count": 71,
+      "source_tier": "published",
+      "abstract": "Step-by-step reasoning approaches like chain of thought (CoT) have proved to be very effective in inducing reasoning capabilities in large language models.However, the success of the CoT approach is fundamentally tied to the model size, and billion parameter-scale models are often needed to get CoT to work.In this paper, we propose a knowledge distillation approach that leverages the step-by-step CoT reasoning capabilities of larger models and distills these abilities into smaller models.In this work, we propose an alternative reasoning scheme, SOCRATIC COT that learns a decomposition of the original problem into a sequence of subproblems and uses it to guide the intermediate reasoning steps.We use SO-CRATIC COT to train a combination of two small distilled models: a problem decomposer and a subproblem solver.In practice, given a new problem, the two distilled models work in sync to decompose and solve complex problems.On multiple reasoning datasets (GSM8K, StrategyQA, and SVAMP), our proposed distillation strategies boost the performance of smaller models over 70% compared to the baselines.Finally, we investigate when SOCRATIC COT is an effective alternative to CoT, demonstrating cases where a much smaller model (GPT-2 large) can outperform a 10X larger model (GPT-3 6B).Our code is available here.* Equal contribution.!LLM !Small LM Fine-tuning A robe takes 2 bolts of blue fiber and half that much white fiber.How many bolts in total does it take?\" CoT: It takes 2/2=<<2/2=1>>1 bolt of white fiber.So the total amount of fabric is… Reasoning Skill TransferFew-shot Prompting Generate AnnotationCoT: How many bolts of white fiber does it take?It takes 2/2=<<2/2=1>>1 bolt of white fiber.How many bolts in total does it take?So the total amount of fabric is 2+1=<<2+1=3>>3 bolts of fabric. Socratic CoT:How many bolts of white fiber does it take?It takes… !!",
+      "oa_status": null,
+      "oa_url": null,
+      "arxiv_id": null,
+      "pmcid": null,
+      "text_source": null
+    },
+    "W4389519396": {
+      "id": "W4389519396",
+      "title": "Inverse Scaling Can Become U-Shaped",
+      "doi": "10.18653/v1/2023.emnlp-main.963",
+      "year": 2023,
+      "authors": [
+        "Jason Wei",
+        "Najoung Kim",
+        "Yi Tay",
+        "Quoc V. Le"
+      ],
+      "author_ids": [],
+      "author_orcids": [],
+      "venue": null,
+      "url": "https://doi.org/10.18653/v1/2023.emnlp-main.963",
+      "cited_by_count": 21,
+      "source_tier": "published",
+      "abstract": "Scaling up language models has been empirically shown to improve performance on a wide range of downstream tasks.However, if we were to observe worse performance as a function of scale (inverse scaling) on certain tasks, this would indicate that scaling can also encourage behaviors that are misaligned with human preferences.The Inverse Scaling Prize (McKenzie et al., 2023) identified eleven such inverse scaling tasks, evaluated on models of up to 280B parameters and up to 500 zettaFLOPs of training compute.In this paper, we evaluate models of up to 540B parameters, trained on five times more compute than those evaluated in the Inverse Scaling Prize.With this increased range of model sizes and compute, only four out of the eleven tasks remain inverse scaling.Six tasks exhibit Ushaped scaling, where performance decreases up to a certain size, and then increases again up to the largest model evaluated (the one remaining task displays positive scaling).In addition, 1-shot examples and chain-of-thought can help mitigate undesirable scaling patterns even further.U-shaped scaling suggests that the inverse scaling trend observed in McKenzie et al. (2023) may not continue to hold for larger models, which we attribute to the presence of distractor tasks that only sufficiently large models can avoid.",
+      "oa_status": null,
+      "oa_url": null,
+      "arxiv_id": null,
+      "pmcid": null,
+      "text_source": null
+    },
+    "W7133224126": {
+      "id": "W7133224126",
+      "title": "Chain-Of-Thought Prompting Elicits Reasoning in Large Language Models",
+      "doi": "10.52202/068431-1800",
+      "year": 2022,
+      "authors": [
+        "Jason Wei",
+        "Xuezhi Wang",
+        "Dale Schuurmans",
+        "Maarten Bosma",
+        "Brian Ichter",
+        "Fei Xia",
+        "Ed Chi",
+        "Quoc V Le"
+      ],
+      "author_ids": [],
+      "author_orcids": [],
+      "venue": null,
+      "url": "https://doi.org/10.52202/068431-1800",
+      "cited_by_count": 2123,
+      "source_tier": "published",
+      "abstract": "We explore how generating a chain of thought -- a series of intermediate reasoning steps -- significantly improves the ability of large language models to perform complex reasoning. In particular, we show how such reasoning abilities emerge naturally in sufficiently large language models via a simple method called chain of thought prompting, where a few chain of thought demonstrations are provided as exemplars in prompting. Experiments on three large language models show that chain of thought prompting improves performance on a range of arithmetic, commonsense, and symbolic reasoning tasks. The empirical gains can be striking. For instance, prompting a 540B-parameter language model with just eight chain of thought exemplars achieves state of the art accuracy on the GSM8K benchmark of math word problems, surpassing even finetuned GPT-3 with a verifier.",
+      "oa_status": "green",
+      "oa_url": "https://arxiv.org/pdf/2201.11903",
+      "arxiv_id": "2201.11903",
+      "pmcid": null,
+      "text_source": null
+    }
+  },
+  "nodes": {
+    "h:cot-gains-require-large-scale": {
+      "id": "h:cot-gains-require-large-scale",
+      "type": "hypothesis",
+      "label": "Chain-of-thought prompting improves reasoning only in sufficiently large models (around 100B parameters and above); below that it gives no gain or hurts",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [
+        {
+          "paper_id": "W7133224126",
+          "passage": "chain-of-thought prompting does not positively impact performance for small models, and only yields performance gains when used with models of 100B parameters",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "derived_from": null,
+      "framed": false
+    },
+    "h:cot-success-composite-of-scale-dependent-skills": {
+      "id": "h:cot-success-composite-of-scale-dependent-skills",
+      "type": "hypothesis",
+      "label": "Chain-of-thought success depends on several separate abilities (semantic understanding, symbol mapping, staying on topic, arithmetic), each of which itself needs scale",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [
+        {
+          "paper_id": "W7133224126",
+          "passage": "the success of chain-of-thought reasoning as a result of model scale is a complicated phenomena that likely involves a variety of emergent abilities",
+          "location": "appendix",
+          "verified": true
+        }
+      ],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:few-shot-cot-prompting": {
+      "id": "c:few-shot-cot-prompting",
+      "type": "condition",
+      "label": "Few-shot prompting with chain-of-thought exemplars",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:gsm8k": {
+      "id": "c:gsm8k",
+      "type": "condition",
+      "label": "GSM8K math word problems",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:math-word-problems": {
+      "id": "c:math-word-problems",
+      "type": "condition",
+      "label": "Multi-step math word problem tasks",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:symbolic-reasoning-tasks": {
+      "id": "c:symbolic-reasoning-tasks",
+      "type": "condition",
+      "label": "Symbolic reasoning tasks (last letter, coin flip)",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:lamda-models": {
+      "id": "c:lamda-models",
+      "type": "condition",
+      "label": "LaMDA models (422M to 137B)",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:gpt3-instructgpt-models": {
+      "id": "c:gpt3-instructgpt-models",
+      "type": "condition",
+      "label": "GPT-3 / InstructGPT models (ada to davinci)",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:palm-models": {
+      "id": "c:palm-models",
+      "type": "condition",
+      "label": "PaLM models (8B, 62B, 540B)",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:small-models": {
+      "id": "c:small-models",
+      "type": "condition",
+      "label": "Models well below 100B parameters",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "e:wei-2022-cot-across-scales": {
+      "id": "e:wei-2022-cot-across-scales",
+      "type": "experiment",
+      "label": "Wei et al. 2022: chain-of-thought vs standard prompting across model sizes in three families",
+      "description": "",
+      "outcome": null,
+      "attrs": {
+        "lamda_sizes": [
+          "422M",
+          "2B",
+          "8B",
+          "68B",
+          "137B"
+        ],
+        "palm_sizes": [
+          "8B",
+          "62B",
+          "540B"
+        ],
+        "exemplars": 8
+      },
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:wei-2022-cot-gains-only-near-100b": {
+      "id": "o:wei-2022-cot-gains-only-near-100b",
+      "type": "observation",
+      "label": "Chain-of-thought gives no gain for small models and gains only at around 100B parameters",
+      "description": "",
+      "outcome": "positive",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:wei-2022-small-models-illogical-cot": {
+      "id": "o:wei-2022-small-models-illogical-cot",
+      "type": "observation",
+      "label": "Smaller models produce fluent but illogical chains of thought and do worse than with standard prompting",
+      "description": "",
+      "outcome": "negative",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:wei-2022-small-models-fail-symbol-mapping": {
+      "id": "o:wei-2022-small-models-fail-symbol-mapping",
+      "type": "observation",
+      "label": "Small models fail even easy symbol-mapping tasks that reuse the exemplars' logical structure",
+      "description": "",
+      "outcome": "negative",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:wei-2022-small-models-unparseable-answers": {
+      "id": "o:wei-2022-small-models-unparseable-answers",
+      "type": "observation",
+      "label": "Small models often produce no parseable final answer, through repetition or logic that never concludes",
+      "description": "",
+      "outcome": "negative",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "e:wei-2022-palm-62b-error-analysis": {
+      "id": "e:wei-2022-palm-62b-error-analysis",
+      "type": "experiment",
+      "label": "Wei et al. 2022: manual analysis of PaLM 62B chain-of-thought errors and whether 540B fixes them",
+      "description": "",
+      "outcome": null,
+      "attrs": {
+        "errors_read": 45,
+        "semantic_understanding": 20,
+        "one_step_missing": 18,
+        "other": 7
+      },
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:wei-2022-540b-fixes-62b-errors": {
+      "id": "o:wei-2022-540b-fixes-62b-errors",
+      "type": "observation",
+      "label": "Scaling PaLM from 62B to 540B fixes a large portion of one-step-missing and semantic-understanding errors",
+      "description": "",
+      "outcome": "positive",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "i:wei-2022-cot-scale-is-composite": {
+      "id": "i:wei-2022-cot-scale-is-composite",
+      "type": "interpretation",
+      "label": "Chain-of-thought's dependence on scale likely reflects several emergent abilities rather than one",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "h:cot-benefit-confined-to-math-and-symbolic": {
+      "id": "h:cot-benefit-confined-to-math-and-symbolic",
+      "type": "hypothesis",
+      "label": "Chain-of-thought helps mainly on math, logic and symbolic tasks, with little gain elsewhere",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [
+        {
+          "paper_id": "W4404394948",
+          "passage": "CoT gives strong performance benefits primarily on tasks involving math or logic, with much smaller gains on other types of tasks",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:zero-shot-cot-prompting": {
+      "id": "c:zero-shot-cot-prompting",
+      "type": "condition",
+      "label": "Zero-shot chain-of-thought ('Let's think step by step'), no exemplars",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:commonsense-reasoning-tasks": {
+      "id": "c:commonsense-reasoning-tasks",
+      "type": "condition",
+      "label": "Commonsense reasoning tasks (CommonsenseQA, StrategyQA)",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:original-gpt3-models": {
+      "id": "c:original-gpt3-models",
+      "type": "condition",
+      "label": "Original GPT-3 models without instruction tuning",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "e:kojima-2022-zero-shot-cot-model-size": {
+      "id": "e:kojima-2022-zero-shot-cot-model-size",
+      "type": "experiment",
+      "label": "Kojima et al. 2022: zero-shot chain-of-thought vs zero-shot across model sizes",
+      "description": "",
+      "outcome": null,
+      "attrs": {
+        "datasets": 12
+      },
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:kojima-2022-flat-without-cot-steep-with": {
+      "id": "o:kojima-2022-flat-without-cot-steep-with",
+      "type": "observation",
+      "label": "Without chain of thought the scaling curve is mostly flat; with it performance rises drastically with model size",
+      "description": "",
+      "outcome": "positive",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:kojima-2022-no-gain-on-commonsense": {
+      "id": "o:kojima-2022-no-gain-on-commonsense",
+      "type": "observation",
+      "label": "Zero-shot chain-of-thought gives no gain on commonsense reasoning tasks",
+      "description": "",
+      "outcome": "null",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:big-bench-hard": {
+      "id": "c:big-bench-hard",
+      "type": "condition",
+      "label": "BIG-Bench Hard: 23 BIG-Bench tasks where models had not beaten average human raters",
+      "description": "",
+      "outcome": null,
+      "attrs": {
+        "tasks": 23
+      },
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:answer-only-prompting": {
+      "id": "c:answer-only-prompting",
+      "type": "condition",
+      "label": "Standard few-shot answer-only prompting",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:codex-models": {
+      "id": "c:codex-models",
+      "type": "condition",
+      "label": "Codex (code-davinci-002)",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "e:suzgun-2022-bbh-cot-by-scale": {
+      "id": "e:suzgun-2022-bbh-cot-by-scale",
+      "type": "experiment",
+      "label": "Suzgun et al. 2022: chain-of-thought vs answer-only on BIG-Bench Hard across model scales",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:suzgun-2022-cot-zero-or-negative-for-small-models": {
+      "id": "o:suzgun-2022-cot-zero-or-negative-for-small-models",
+      "type": "observation",
+      "label": "Chain-of-thought gain is negative or zero for text-ada-001 to text-curie-002 and negative for PaLM 8B, growing with scale",
+      "description": "",
+      "outcome": "negative",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:suzgun-2022-cot-unlocks-flat-tasks": {
+      "id": "o:suzgun-2022-cot-unlocks-flat-tasks",
+      "type": "observation",
+      "label": "Chain-of-thought gives better-than-random performance on several BBH tasks whose answer-only scaling curves are flat",
+      "description": "",
+      "outcome": "positive",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "h:cot-demonstrations-specify-format": {
+      "id": "h:cot-demonstrations-specify-format",
+      "type": "hypothesis",
+      "label": "Large models already have the reasoning ability from pretraining; chain-of-thought demonstrations mainly specify an output format that keeps generation step-by-step, ordered and relevant",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [
+        {
+          "paper_id": "W4385571045",
+          "passage": "they have already gained a lot of such “reasoning abilities” from pretraining, and the demonstrations may mainly specify an output space/format that regularizes the model generation to look step-by-step while being in order and relevant to the query",
+          "location": "introduction",
+          "verified": true
+        }
+      ],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:invalid-reasoning-demonstrations": {
+      "id": "c:invalid-reasoning-demonstrations",
+      "type": "condition",
+      "label": "Chain-of-thought exemplars whose reasoning steps are invalid",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:base-model-without-instruction-tuning": {
+      "id": "c:base-model-without-instruction-tuning",
+      "type": "condition",
+      "label": "Pretrained model without instruction finetuning",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:multi-hop-factual-qa": {
+      "id": "c:multi-hop-factual-qa",
+      "type": "condition",
+      "label": "Multi-hop factual question answering",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "e:wang-2023-invalid-reasoning-ablation": {
+      "id": "e:wang-2023-invalid-reasoning-ablation",
+      "type": "experiment",
+      "label": "Wang et al. 2023: chain-of-thought with invalid reasoning in the demonstrations, InstructGPT-175B",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:wang-2023-invalid-demos-keep-most-of-gain": {
+      "id": "o:wang-2023-invalid-demos-keep-most-of-gain",
+      "type": "observation",
+      "label": "Demonstrations with completely invalid reasoning retain over 80-90% of chain-of-thought performance",
+      "description": "",
+      "outcome": "positive",
+      "attrs": {
+        "retained_fraction_min": 0.8
+      },
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:wang-2023-relevance-and-order-matter": {
+      "id": "o:wang-2023-relevance-and-order-matter",
+      "type": "observation",
+      "label": "Relevance to the query and correct ordering of steps matter much more than validity of reasoning",
+      "description": "",
+      "outcome": "positive",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:wang-2023-base-gpt3-175b-little-cot-gain": {
+      "id": "o:wang-2023-base-gpt3-175b-little-cot-gain",
+      "type": "observation",
+      "label": "Original GPT-3 175B without instruction finetuning gains little from chain-of-thought over standard prompting (preliminary)",
+      "description": "",
+      "outcome": "null",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "i:wang-2023-demos-specify-format": {
+      "id": "i:wang-2023-demos-specify-format",
+      "type": "interpretation",
+      "label": "Demonstrations regularise output format; the reasoning ability comes from pretraining",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "h:cot-reasoning-transferable-to-small-models": {
+      "id": "h:cot-reasoning-transferable-to-small-models",
+      "type": "hypothesis",
+      "label": "Step-by-step reasoning is not intrinsic to very large scale: models under about 10B can do it when finetuned on chain-of-thought data from a larger teacher",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [
+        {
+          "paper_id": "W4318719086",
+          "passage": "We show that such abilities can, in fact, be distilled down from GPT-3.5 ($\\ge$ 175B) to T5 variants ($\\le$ 11B).",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:cot-distillation-finetuning": {
+      "id": "c:cot-distillation-finetuning",
+      "type": "condition",
+      "label": "Student finetuned on chain-of-thought outputs generated by a larger teacher model",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:t5-models": {
+      "id": "c:t5-models",
+      "type": "condition",
+      "label": "T5 / Flan-T5 models (up to 11B)",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:svamp": {
+      "id": "c:svamp",
+      "type": "condition",
+      "label": "SVAMP math word problems",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:strategyqa": {
+      "id": "c:strategyqa",
+      "type": "condition",
+      "label": "StrategyQA",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "e:fu-2023-model-specialization": {
+      "id": "e:fu-2023-model-specialization",
+      "type": "experiment",
+      "label": "Fu et al. 2023: specialising T5 variants for multi-step math reasoning by distillation from GPT-3.5",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:fu-2023-small-model-scaling-curve-lifted": {
+      "id": "o:fu-2023-small-model-scaling-curve-lifted",
+      "type": "observation",
+      "label": "Scaling curve of sub-10B models for multi-step math reasoning is lifted, at the cost of generic ability",
+      "description": "",
+      "outcome": "positive",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:fu-2023-ability-tradeoff": {
+      "id": "o:fu-2023-ability-tradeoff",
+      "type": "observation",
+      "label": "There is a complex trade-off between a model's different abilities when specialising",
+      "description": "",
+      "outcome": "mixed",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "e:magister-2022-cot-distillation": {
+      "id": "e:magister-2022-cot-distillation",
+      "type": "experiment",
+      "label": "Magister et al. 2022: finetuning T5 students on chain-of-thought from PaLM 540B and GPT-3 175B",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:magister-2022-t5-xxl-gsm8k-gain": {
+      "id": "o:magister-2022-t5-xxl-gsm8k-gain",
+      "type": "observation",
+      "label": "T5 XXL on GSM8K improves from 8.11% to 21.99% (PaLM teacher) and 18.42% (GPT-3 teacher)",
+      "description": "",
+      "outcome": "positive",
+      "attrs": {
+        "baseline_pct": 8.11,
+        "palm_teacher_pct": 21.99,
+        "gpt3_teacher_pct": 18.42
+      },
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "e:ho-2023-fine-tune-cot": {
+      "id": "e:ho-2023-fine-tune-cot",
+      "type": "experiment",
+      "label": "Ho et al. 2023: Fine-tune-CoT, small students trained on reasoning samples from very large teachers",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:ho-2023-small-models-beat-prompted-baselines": {
+      "id": "o:ho-2023-small-models-beat-prompted-baselines",
+      "type": "observation",
+      "label": "Fine-tuned small models far outperform prompt-based baselines and in many tasks the teacher",
+      "description": "",
+      "outcome": "positive",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "e:shridhar-2023-socratic-cot": {
+      "id": "e:shridhar-2023-socratic-cot",
+      "type": "experiment",
+      "label": "Shridhar et al. 2023: Socratic CoT distillation into a decomposer and a subproblem solver",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:shridhar-2023-gpt2-large-beats-gpt3-6b": {
+      "id": "o:shridhar-2023-gpt2-large-beats-gpt3-6b",
+      "type": "observation",
+      "label": "Distilled GPT-2 large can outperform a 10x larger GPT-3 6B; distillation lifts small models by over 70% against baselines",
+      "description": "",
+      "outcome": "positive",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:mmlu": {
+      "id": "c:mmlu",
+      "type": "condition",
+      "label": "MMLU benchmark",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:direct-answer-prompting": {
+      "id": "c:direct-answer-prompting",
+      "type": "condition",
+      "label": "Direct answer generation without chain of thought",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "e:sprague-2024-cot-meta-analysis": {
+      "id": "e:sprague-2024-cot-meta-analysis",
+      "type": "experiment",
+      "label": "Sprague et al. 2024: meta-analysis of 100+ chain-of-thought papers plus evaluation of 20 datasets across 14 models",
+      "description": "",
+      "outcome": null,
+      "attrs": {
+        "papers": 100,
+        "datasets": 20,
+        "models": 14
+      },
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:sprague-2024-gains-mainly-math-and-logic": {
+      "id": "o:sprague-2024-gains-mainly-math-and-logic",
+      "type": "observation",
+      "label": "Chain-of-thought gives strong gains primarily on math and logic tasks and much smaller gains elsewhere",
+      "description": "",
+      "outcome": "mixed",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:sprague-2024-mmlu-gain-only-with-equals-sign": {
+      "id": "o:sprague-2024-mmlu-gain-only-with-equals-sign",
+      "type": "observation",
+      "label": "On MMLU direct answering matches chain-of-thought unless the question or response contains an equals sign",
+      "description": "",
+      "outcome": "null",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "i:sprague-2024-gain-is-symbolic-execution": {
+      "id": "i:sprague-2024-gain-is-symbolic-execution",
+      "type": "interpretation",
+      "label": "Much of chain-of-thought's gain comes from improved symbolic execution",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:inverse-scaling-prize-tasks": {
+      "id": "c:inverse-scaling-prize-tasks",
+      "type": "condition",
+      "label": "Inverse Scaling Prize tasks",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "e:wei-2023-inverse-scaling-with-cot": {
+      "id": "e:wei-2023-inverse-scaling-with-cot",
+      "type": "experiment",
+      "label": "Wei et al. 2023: Inverse Scaling Prize tasks at up to 540B parameters, with 1-shot and chain-of-thought variants",
+      "description": "",
+      "outcome": null,
+      "attrs": {
+        "max_params": "540B",
+        "tasks": 11
+      },
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:wei-2023-cot-mitigates-inverse-scaling": {
+      "id": "o:wei-2023-cot-mitigates-inverse-scaling",
+      "type": "observation",
+      "label": "1-shot examples and chain-of-thought mitigate inverse and U-shaped scaling patterns",
+      "description": "",
+      "outcome": "positive",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    }
+  },
+  "edges": [
+    {
+      "source": "e:wei-2022-cot-across-scales",
+      "target": "h:cot-gains-require-large-scale",
+      "relation": "tests",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W7133224126",
+          "passage": "we show how such reasoning abilities emerge naturally in sufficiently large language models via a simple method called chain of thought prompting",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:wei-2022-cot-across-scales",
+      "target": "c:few-shot-cot-prompting",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W7133224126",
+          "passage": "a few chain of thought demonstrations are provided as exemplars in prompting",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:wei-2022-cot-across-scales",
+      "target": "c:gsm8k",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W7133224126",
+          "passage": "achieves state of the art accuracy on the GSM8K benchmark of math word problems",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:wei-2022-cot-across-scales",
+      "target": "c:math-word-problems",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W7133224126",
+          "passage": "Chain-of-thought prompting enables large language models to solve challenging math problems.",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:wei-2022-cot-across-scales",
+      "target": "c:lamda-models",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W7133224126",
+          "passage": "The second is LaMDA (Thoppilan et al., 2022), which has models of 422M, 2B, 8B, 68B, and 137B parameters.",
+          "location": "methods",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:wei-2022-cot-across-scales",
+      "target": "c:gpt3-instructgpt-models",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W7133224126",
+          "passage": "The first is GPT-3 (Brown et al., 2020), for which we use text-ada-001, text-babbage-001, text-curie-001, and text-davinci-002",
+          "location": "methods",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:wei-2022-cot-across-scales",
+      "target": "c:palm-models",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W7133224126",
+          "passage": "The third is PaLM, which has models of 8B, 62B, and 540B parameters.",
+          "location": "methods",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:wei-2022-cot-across-scales",
+      "target": "o:wei-2022-cot-gains-only-near-100b",
+      "relation": "yields",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W7133224126",
+          "passage": "chain-of-thought prompting does not positively impact performance for small models, and only yields performance gains when used with models of 100B parameters",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": "The source reads '~100B'; the tilde is lost in the HTML-to-text conversion."
+    },
+    {
+      "source": "o:wei-2022-cot-gains-only-near-100b",
+      "target": "h:cot-gains-require-large-scale",
+      "relation": "supports",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W7133224126",
+          "passage": "First, Figure 4 shows that chain-of-thought prompting is an emergent ability of model scale (Wei et al., 2022b).",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:wei-2022-cot-across-scales",
+      "target": "o:wei-2022-small-models-illogical-cot",
+      "relation": "yields",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W7133224126",
+          "passage": "We qualitatively found that models of smaller scale produced fluent but illogical chains of thought, leading to lower performance than standard prompting.",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:wei-2022-small-models-illogical-cot",
+      "target": "c:small-models",
+      "relation": "observed_under",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W7133224126",
+          "passage": "models of smaller scale produced fluent but illogical chains of thought",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:wei-2022-small-models-illogical-cot",
+      "target": "h:cot-gains-require-large-scale",
+      "relation": "supports",
+      "confidence": 0.85,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W7133224126",
+          "passage": "models of smaller scale produced fluent but illogical chains of thought, leading to lower performance than standard prompting",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:wei-2022-cot-across-scales",
+      "target": "o:wei-2022-small-models-fail-symbol-mapping",
+      "relation": "yields",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W7133224126",
+          "passage": "The first observation is that small language models fail at even relatively easy symbol mapping tasks.",
+          "location": "appendix",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:wei-2022-small-models-fail-symbol-mapping",
+      "target": "c:symbolic-reasoning-tasks",
+      "relation": "observed_under",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W7133224126",
+          "passage": "for even symbolic reasoning tasks that only require generalization to new examples using the same chain of thought logical structure that was given in the few-shot exemplars, small language models still failed",
+          "location": "appendix",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:wei-2022-small-models-fail-symbol-mapping",
+      "target": "c:small-models",
+      "relation": "observed_under",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W7133224126",
+          "passage": "small language models fail at even relatively easy symbol mapping tasks",
+          "location": "appendix",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:wei-2022-small-models-fail-symbol-mapping",
+      "target": "h:cot-success-composite-of-scale-dependent-skills",
+      "relation": "supports",
+      "confidence": 0.75,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W7133224126",
+          "passage": "There are also three notable points regarding why small language models fail.",
+          "location": "appendix",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:wei-2022-cot-across-scales",
+      "target": "o:wei-2022-small-models-unparseable-answers",
+      "relation": "yields",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W7133224126",
+          "passage": "we noticed qualitatively that small language models often did not generate a final answer that could be parsed, due to either repetitions or logic that never arrived at a final answer",
+          "location": "appendix",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:wei-2022-small-models-unparseable-answers",
+      "target": "c:small-models",
+      "relation": "observed_under",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W7133224126",
+          "passage": "small language models often did not generate a final answer that could be parsed",
+          "location": "appendix",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:wei-2022-small-models-unparseable-answers",
+      "target": "h:cot-success-composite-of-scale-dependent-skills",
+      "relation": "supports",
+      "confidence": 0.7,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W7133224126",
+          "passage": "There are also three notable points regarding why small language models fail.",
+          "location": "appendix",
+          "verified": true
+        }
+      ],
+      "note": "An unparseable answer scores zero under answer-matching however good the reasoning before it: part of the measured threshold may be output formatting."
+    },
+    {
+      "source": "e:wei-2022-palm-62b-error-analysis",
+      "target": "h:cot-success-composite-of-scale-dependent-skills",
+      "relation": "tests",
+      "confidence": 0.8,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W7133224126",
+          "passage": "To provide a small insight into why scaling improves chain-of-thought reasoning ability, we performed a similar analysis of errors made by PaLM 62B and whether those errors were fixed by scaling to PaLM 540B.",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:wei-2022-palm-62b-error-analysis",
+      "target": "c:palm-models",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W7133224126",
+          "passage": "This small analysis involved manually reading 45 errors made by PaLM 62B",
+          "location": "appendix",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:wei-2022-palm-62b-error-analysis",
+      "target": "c:gsm8k",
+      "relation": "performed_under",
+      "confidence": 0.7,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W7133224126",
+          "passage": "To better understand why chain-of-thought prompting works, we manually examined model-generated chains of thought by LaMDA 137B for GSM8K.",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": "Described as 'a similar analysis' to the GSM8K one; the dataset is not restated for PaLM."
+    },
+    {
+      "source": "e:wei-2022-palm-62b-error-analysis",
+      "target": "o:wei-2022-540b-fixes-62b-errors",
+      "relation": "yields",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W7133224126",
+          "passage": "scaling PaLM to 540B fixes a large portion of one-step missing and semantic understanding errors in the 62B model",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:wei-2022-540b-fixes-62b-errors",
+      "target": "h:cot-success-composite-of-scale-dependent-skills",
+      "relation": "supports",
+      "confidence": 0.7,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W7133224126",
+          "passage": "categorizing them into semantic understanding (20 errors), one step missing (18 errors), and other errors (7 errors)",
+          "location": "appendix",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "i:wei-2022-cot-scale-is-composite",
+      "target": "o:wei-2022-cot-gains-only-near-100b",
+      "relation": "explains",
+      "confidence": 0.85,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W7133224126",
+          "passage": "the success of chain-of-thought reasoning as a result of model scale is a complicated phenomena that likely involves a variety of emergent abilities",
+          "location": "appendix",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "i:wei-2022-cot-scale-is-composite",
+      "target": "h:cot-success-composite-of-scale-dependent-skills",
+      "relation": "proposes",
+      "confidence": 0.85,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W7133224126",
+          "passage": "the success of chain-of-thought reasoning as a result of model scale is a complicated phenomena that likely involves a variety of emergent abilities",
+          "location": "appendix",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:kojima-2022-zero-shot-cot-model-size",
+      "target": "h:cot-gains-require-large-scale",
+      "relation": "tests",
+      "confidence": 0.85,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4281557260",
+          "passage": "Does model size matter for zero-shot reasoning?",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:kojima-2022-zero-shot-cot-model-size",
+      "target": "c:zero-shot-cot-prompting",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4281557260",
+          "passage": "we show that LLMs are decent zero-shot reasoners by simply adding \"Let's think step by step\" before each answer",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:kojima-2022-zero-shot-cot-model-size",
+      "target": "c:gpt3-instructgpt-models",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4281557260",
+          "passage": "with large InstructGPT model (text-davinci-002)",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:kojima-2022-zero-shot-cot-model-size",
+      "target": "c:original-gpt3-models",
+      "relation": "performed_under",
+      "confidence": 0.85,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4281557260",
+          "passage": "as the model size gets bigger, for Original/Instruct GPT-3 and PaLM",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:kojima-2022-zero-shot-cot-model-size",
+      "target": "c:palm-models",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4281557260",
+          "passage": "similar magnitudes of improvements with another off-the-shelf large model, 540B parameter PaLM",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:kojima-2022-zero-shot-cot-model-size",
+      "target": "c:gsm8k",
+      "relation": "performed_under",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4281557260",
+          "passage": "arithmetics (MultiArith, GSM8K, AQUA-RAT, SVAMP)",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:kojima-2022-zero-shot-cot-model-size",
+      "target": "o:kojima-2022-flat-without-cot-steep-with",
+      "relation": "yields",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4281557260",
+          "passage": "Without chain of thought reasoning, the performance does not increase or increases slowly as the model scale is increased, i.e., the curve is mostly flat.",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:kojima-2022-flat-without-cot-steep-with",
+      "target": "h:cot-gains-require-large-scale",
+      "relation": "supports",
+      "confidence": 0.85,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4281557260",
+          "passage": "In contrast, the performance drastically increases with chain of thought reasoning, as the model size gets bigger, for Original/Instruct GPT-3 and PaLM.",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:kojima-2022-zero-shot-cot-model-size",
+      "target": "o:kojima-2022-no-gain-on-commonsense",
+      "relation": "yields",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4281557260",
+          "passage": "In commonsense reasoning tasks, Zero-shot-CoT does not provide performance gains.",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:kojima-2022-no-gain-on-commonsense",
+      "target": "c:commonsense-reasoning-tasks",
+      "relation": "observed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4281557260",
+          "passage": "For commonsense reasoning, we use CommonsenseQA (Talmor et al., 2019) and StrategyQA (Geva et al., 2021).",
+          "location": "methods",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:kojima-2022-no-gain-on-commonsense",
+      "target": "h:cot-benefit-confined-to-math-and-symbolic",
+      "relation": "supports",
+      "confidence": 0.7,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4281557260",
+          "passage": "In commonsense reasoning tasks, Zero-shot-CoT does not provide performance gains.",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": "Kojima et al. instead suggest it may be a scale effect (gains on StrategyQA appear at PaLM 540B)."
+    },
+    {
+      "source": "e:suzgun-2022-bbh-cot-by-scale",
+      "target": "h:cot-gains-require-large-scale",
+      "relation": "tests",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571157",
+          "passage": "we explore the interaction between CoT and model scale on BBH",
+          "location": "introduction",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:suzgun-2022-bbh-cot-by-scale",
+      "target": "c:big-bench-hard",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571157",
+          "passage": "we focus on a suite of 23 challenging BIG-Bench tasks which we call BIG-Bench Hard (BBH)",
+          "location": "introduction",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:suzgun-2022-bbh-cot-by-scale",
+      "target": "c:few-shot-cot-prompting",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571157",
+          "passage": "We evaluate few-shot performance via standard “answer-only” prompting (Brown et al., 2020; Srivastava et al., 2022) and chain-of-thought prompting (Wei et al., 2022b).",
+          "location": "methods",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:suzgun-2022-bbh-cot-by-scale",
+      "target": "c:answer-only-prompting",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571157",
+          "passage": "We evaluate few-shot performance via standard “answer-only” prompting (Brown et al., 2020; Srivastava et al., 2022) and chain-of-thought prompting (Wei et al., 2022b).",
+          "location": "methods",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:suzgun-2022-bbh-cot-by-scale",
+      "target": "c:palm-models",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571157",
+          "passage": "For PaLM, we use the three available model sizes: 8B, 62B, and 540B.",
+          "location": "methods",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:suzgun-2022-bbh-cot-by-scale",
+      "target": "c:gpt3-instructgpt-models",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571157",
+          "passage": "We evaluate several model scales for both OpenAI models (Brown et al., 2020; Ouyang et al., 2022; Chen et al., 2021a) and PaLM (Chowdhery et al., 2022).",
+          "location": "methods",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:suzgun-2022-bbh-cot-by-scale",
+      "target": "c:codex-models",
+      "relation": "performed_under",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571157",
+          "passage": "Codex (code-davinci-002) to surpass the average human-rater performance on 17 of the 23 tasks",
+          "location": "introduction",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:suzgun-2022-bbh-cot-by-scale",
+      "target": "o:suzgun-2022-cot-zero-or-negative-for-small-models",
+      "relation": "yields",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571157",
+          "passage": "For the OpenAI models, CoT prompting has negative or zero performance gain for text-ada-001 to text-curie-002, but the performance delta between CoT and no CoT increases with model scale up to the largest model size.",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:suzgun-2022-cot-zero-or-negative-for-small-models",
+      "target": "h:cot-gains-require-large-scale",
+      "relation": "supports",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571157",
+          "passage": "This analysis reinforces that that performance gains from CoT prompting only emerge with sufficient model size",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:suzgun-2022-bbh-cot-by-scale",
+      "target": "o:suzgun-2022-cot-unlocks-flat-tasks",
+      "relation": "yields",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571157",
+          "passage": "CoT prompting can enable better than random performance for several BBH tasks that exhibit flat scaling curves",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:suzgun-2022-cot-unlocks-flat-tasks",
+      "target": "h:cot-gains-require-large-scale",
+      "relation": "supports",
+      "confidence": 0.6,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4385571157",
+          "passage": "CoT enables emergent task performance on several BBH tasks with otherwise flat scaling curves",
+          "location": "introduction",
+          "verified": true
+        }
+      ],
+      "note": "Shows the threshold is a property of prompt x scale jointly: the same models look flat under answer-only prompting."
+    },
+    {
+      "source": "e:wang-2023-invalid-reasoning-ablation",
+      "target": "h:cot-demonstrations-specify-format",
+      "relation": "tests",
+      "confidence": 0.85,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571045",
+          "passage": "In this paper, we show that CoT reasoning is possible even with invalid demonstrations",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:wang-2023-invalid-reasoning-ablation",
+      "target": "c:invalid-reasoning-demonstrations",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571045",
+          "passage": "by providing rationales with completely invalid reasoning steps",
+          "location": "introduction",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:wang-2023-invalid-reasoning-ablation",
+      "target": "c:few-shot-cot-prompting",
+      "relation": "performed_under",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571045",
+          "passage": "Results of standard prompting, Chain-of-Thought (CoT) prompting, and our ablation setting with invalid reasoning",
+          "location": "introduction",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:wang-2023-invalid-reasoning-ablation",
+      "target": "c:gpt3-instructgpt-models",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571045",
+          "passage": "text-davinci-002 as our backbone LLM, which is one of the most performant and widely-used LLMs with public APIs",
+          "location": "methods",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:wang-2023-invalid-reasoning-ablation",
+      "target": "c:math-word-problems",
+      "relation": "performed_under",
+      "confidence": 0.85,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571045",
+          "passage": "On two representative multi-step reasoning tasks—arithmetic reasoning and multi-hop factual question answering (QA)",
+          "location": "introduction",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:wang-2023-invalid-reasoning-ablation",
+      "target": "c:multi-hop-factual-qa",
+      "relation": "performed_under",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571045",
+          "passage": "On two representative multi-step reasoning tasks—arithmetic reasoning and multi-hop factual question answering (QA)",
+          "location": "introduction",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:wang-2023-invalid-reasoning-ablation",
+      "target": "o:wang-2023-invalid-demos-keep-most-of-gain",
+      "relation": "yields",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571045",
+          "passage": "by providing rationales with completely invalid reasoning steps, the LLM can still achieve over 80-90% of the performance of CoT under various metrics while generating coherent lines of reasoning towards the answer",
+          "location": "introduction",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:wang-2023-invalid-demos-keep-most-of-gain",
+      "target": "h:cot-demonstrations-specify-format",
+      "relation": "supports",
+      "confidence": 0.85,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571045",
+          "passage": "We find that valid reasoning for the demonstrations matters only a small portion to the performance of CoT",
+          "location": "introduction",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:wang-2023-invalid-reasoning-ablation",
+      "target": "o:wang-2023-relevance-and-order-matter",
+      "relation": "yields",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571045",
+          "passage": "being relevant to the query and correctly ordering the reasoning steps are the key for the effectiveness of CoT prompting",
+          "location": "introduction",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:wang-2023-relevance-and-order-matter",
+      "target": "h:cot-demonstrations-specify-format",
+      "relation": "supports",
+      "confidence": 0.7,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571045",
+          "passage": "the demonstrations may mainly specify an output space/format that regularizes the model generation to look step-by-step while being in order and relevant to the query",
+          "location": "introduction",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:wang-2023-invalid-reasoning-ablation",
+      "target": "o:wang-2023-base-gpt3-175b-little-cot-gain",
+      "relation": "yields",
+      "confidence": 0.8,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571045",
+          "passage": "We also tried the original GPT-3 175B without instruction-finetuning in our preliminary experiments, but find that CoT prompting does not yield much performance gain than standard prompting, echoing Fu et al. (2022).",
+          "location": "methods",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:wang-2023-base-gpt3-175b-little-cot-gain",
+      "target": "c:base-model-without-instruction-tuning",
+      "relation": "observed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571045",
+          "passage": "the original GPT-3 175B without instruction-finetuning",
+          "location": "methods",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:wang-2023-base-gpt3-175b-little-cot-gain",
+      "target": "h:cot-gains-require-large-scale",
+      "relation": "contradicts",
+      "confidence": 0.6,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4385571045",
+          "passage": "find that CoT prompting does not yield much performance gain than standard prompting",
+          "location": "methods",
+          "verified": true
+        }
+      ],
+      "note": "A 175B model above the claimed threshold with little gain: parameter count is not sufficient; training recipe matters. A footnoted preliminary result."
+    },
+    {
+      "source": "o:wang-2023-base-gpt3-175b-little-cot-gain",
+      "target": "o:kojima-2022-flat-without-cot-steep-with",
+      "relation": "contradicts",
+      "confidence": 0.5,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4385571045",
+          "passage": "We also tried the original GPT-3 175B without instruction-finetuning in our preliminary experiments, but find that CoT prompting does not yield much performance gain than standard prompting",
+          "location": "methods",
+          "verified": true
+        }
+      ],
+      "note": "Kojima report drastic gains with scale for 'Original/Instruct GPT-3'. Regimes differ: zero-shot CoT on MultiArith vs few-shot CoT on Wang's tasks."
+    },
+    {
+      "source": "i:wang-2023-demos-specify-format",
+      "target": "o:wang-2023-invalid-demos-keep-most-of-gain",
+      "relation": "explains",
+      "confidence": 0.85,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571045",
+          "passage": "Rather, they have already gained a lot of such “reasoning abilities” from pretraining",
+          "location": "introduction",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "i:wang-2023-demos-specify-format",
+      "target": "h:cot-demonstrations-specify-format",
+      "relation": "proposes",
+      "confidence": 0.85,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571045",
+          "passage": "the demonstrations may mainly specify an output space/format that regularizes the model generation to look step-by-step while being in order and relevant to the query",
+          "location": "introduction",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:fu-2023-model-specialization",
+      "target": "h:cot-reasoning-transferable-to-small-models",
+      "relation": "tests",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4318719086",
+          "passage": "We show that such abilities can, in fact, be distilled down from GPT-3.5 ($\\ge$ 175B) to T5 variants ($\\le$ 11B).",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:fu-2023-model-specialization",
+      "target": "h:cot-gains-require-large-scale",
+      "relation": "tests",
+      "confidence": 0.85,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4318719086",
+          "passage": "is believed to emerge only in very large-scale models (100+ billion parameters)",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:fu-2023-model-specialization",
+      "target": "c:cot-distillation-finetuning",
+      "relation": "performed_under",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4318719086",
+          "passage": "such abilities can, in fact, be distilled down from GPT-3.5",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:fu-2023-model-specialization",
+      "target": "c:t5-models",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4318719086",
+          "passage": "distilled down from GPT-3.5 ($\\ge$ 175B) to T5 variants ($\\le$ 11B)",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:fu-2023-model-specialization",
+      "target": "c:math-word-problems",
+      "relation": "performed_under",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4318719086",
+          "passage": "We use multi-step math reasoning as our testbed because it is a very typical emergent ability.",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:fu-2023-model-specialization",
+      "target": "o:fu-2023-small-model-scaling-curve-lifted",
+      "relation": "yields",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4318719086",
+          "passage": "by paying the price of decreased generic ability, we can clearly lift up the scaling curve of models smaller than 10B towards a specialized multi-step math reasoning ability",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:fu-2023-small-model-scaling-curve-lifted",
+      "target": "h:cot-reasoning-transferable-to-small-models",
+      "relation": "supports",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4318719086",
+          "passage": "we can clearly lift up the scaling curve of models smaller than 10B towards a specialized multi-step math reasoning ability",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:fu-2023-small-model-scaling-curve-lifted",
+      "target": "h:cot-gains-require-large-scale",
+      "relation": "contradicts",
+      "confidence": 0.6,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4318719086",
+          "passage": "is believed to emerge only in very large-scale models (100+ billion parameters). We show that such abilities can, in fact, be distilled down",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": "The scale claim concerns prompting an unadapted model; this is finetuning. It refutes 'small models cannot reason step by step', not 'prompting alone fails below 100B'."
+    },
+    {
+      "source": "e:fu-2023-model-specialization",
+      "target": "o:fu-2023-ability-tradeoff",
+      "relation": "yields",
+      "confidence": 0.85,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4318719086",
+          "passage": "there exists a very complex balance/ tradeoff between language models' multi-dimensional abilities",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "h:cot-reasoning-transferable-to-small-models",
+      "target": "h:cot-gains-require-large-scale",
+      "relation": "competes_with",
+      "confidence": 0.65,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4318719086",
+          "passage": "is believed to emerge only in very large-scale models (100+ billion parameters). We show that such abilities can, in fact, be distilled down",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:magister-2022-cot-distillation",
+      "target": "h:cot-reasoning-transferable-to-small-models",
+      "relation": "tests",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571260",
+          "passage": "we explore the transfer of such reasoning capabilities to smaller models via knowledge distillation, also investigating model and dataset size trade-off",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:magister-2022-cot-distillation",
+      "target": "c:cot-distillation-finetuning",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571260",
+          "passage": "we finetune a student model on the chain of thought outputs generated by a larger teacher model",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:magister-2022-cot-distillation",
+      "target": "c:t5-models",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571260",
+          "passage": "the accuracy of T5 XXL on GSM8K improves",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:magister-2022-cot-distillation",
+      "target": "c:gsm8k",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571260",
+          "passage": "the accuracy of T5 XXL on GSM8K improves",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:magister-2022-cot-distillation",
+      "target": "o:magister-2022-t5-xxl-gsm8k-gain",
+      "relation": "yields",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571260",
+          "passage": "the accuracy of T5 XXL on GSM8K improves from 8.11% to 21.99% and 18.42% when finetuned on PaLM 540B and GPT-3 175B generated chains of thought, respectively",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:magister-2022-t5-xxl-gsm8k-gain",
+      "target": "h:cot-reasoning-transferable-to-small-models",
+      "relation": "supports",
+      "confidence": 0.8,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571260",
+          "passage": "Our experiments show that the proposed method improves task performance across arithmetic, commonsense and symbolic reasoning datasets.",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": "21.99% is far below PaLM 540B's prompted GSM8K performance: transferable, but not equivalent."
+    },
+    {
+      "source": "e:ho-2023-fine-tune-cot",
+      "target": "h:cot-reasoning-transferable-to-small-models",
+      "relation": "tests",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571219",
+          "passage": "we use these large models as reasoning teachers to enable complex reasoning in smaller models and reduce model size requirements by several orders of magnitude",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:ho-2023-fine-tune-cot",
+      "target": "c:cot-distillation-finetuning",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571219",
+          "passage": "a method that generates reasoning samples from very large teacher models to fine-tune smaller models",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:ho-2023-fine-tune-cot",
+      "target": "o:ho-2023-small-models-beat-prompted-baselines",
+      "relation": "yields",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571219",
+          "passage": "We find that Fine-tune-CoT enables substantial reasoning capability in small models, far outperforming prompt-based baselines and even the teacher model in many tasks.",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:ho-2023-small-models-beat-prompted-baselines",
+      "target": "h:cot-reasoning-transferable-to-small-models",
+      "relation": "supports",
+      "confidence": 0.85,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571219",
+          "passage": "Fine-tune-CoT enables substantial reasoning capability in small models",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:shridhar-2023-socratic-cot",
+      "target": "h:cot-reasoning-transferable-to-small-models",
+      "relation": "tests",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571831",
+          "passage": "we propose a knowledge distillation approach that leverages the step-by-step CoT reasoning capabilities of larger models and distills these abilities into smaller models",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:shridhar-2023-socratic-cot",
+      "target": "c:cot-distillation-finetuning",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571831",
+          "passage": "distills these abilities into smaller models",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:shridhar-2023-socratic-cot",
+      "target": "c:gsm8k",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571831",
+          "passage": "On multiple reasoning datasets (GSM8K, StrategyQA, and SVAMP)",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:shridhar-2023-socratic-cot",
+      "target": "c:strategyqa",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571831",
+          "passage": "On multiple reasoning datasets (GSM8K, StrategyQA, and SVAMP)",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:shridhar-2023-socratic-cot",
+      "target": "c:svamp",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571831",
+          "passage": "On multiple reasoning datasets (GSM8K, StrategyQA, and SVAMP)",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:shridhar-2023-socratic-cot",
+      "target": "o:shridhar-2023-gpt2-large-beats-gpt3-6b",
+      "relation": "yields",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571831",
+          "passage": "demonstrating cases where a much smaller model (GPT-2 large) can outperform a 10X larger model (GPT-3 6B)",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:shridhar-2023-gpt2-large-beats-gpt3-6b",
+      "target": "h:cot-reasoning-transferable-to-small-models",
+      "relation": "supports",
+      "confidence": 0.75,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571831",
+          "passage": "our proposed distillation strategies boost the performance of smaller models over 70% compared to the baselines",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:sprague-2024-cot-meta-analysis",
+      "target": "h:cot-benefit-confined-to-math-and-symbolic",
+      "relation": "tests",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4404394948",
+          "passage": "But for what kinds of tasks is this extra ``thinking'' really helpful?",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:sprague-2024-cot-meta-analysis",
+      "target": "c:mmlu",
+      "relation": "performed_under",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4404394948",
+          "passage": "On MMLU, directly generating the answer without CoT leads to almost identical accuracy as CoT",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:sprague-2024-cot-meta-analysis",
+      "target": "c:direct-answer-prompting",
+      "relation": "performed_under",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4404394948",
+          "passage": "directly generating the answer without CoT",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:sprague-2024-cot-meta-analysis",
+      "target": "o:sprague-2024-gains-mainly-math-and-logic",
+      "relation": "yields",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4404394948",
+          "passage": "Our results show that CoT gives strong performance benefits primarily on tasks involving math or logic, with much smaller gains on other types of tasks.",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:sprague-2024-gains-mainly-math-and-logic",
+      "target": "h:cot-benefit-confined-to-math-and-symbolic",
+      "relation": "supports",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4404394948",
+          "passage": "CoT gives strong performance benefits primarily on tasks involving math or logic, with much smaller gains on other types of tasks",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:sprague-2024-cot-meta-analysis",
+      "target": "o:sprague-2024-mmlu-gain-only-with-equals-sign",
+      "relation": "yields",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4404394948",
+          "passage": "On MMLU, directly generating the answer without CoT leads to almost identical accuracy as CoT unless the question or model's response contains an equals sign, indicating symbolic operations and reasoning.",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:sprague-2024-mmlu-gain-only-with-equals-sign",
+      "target": "c:mmlu",
+      "relation": "observed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4404394948",
+          "passage": "On MMLU, directly generating the answer without CoT leads to almost identical accuracy as CoT",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:sprague-2024-mmlu-gain-only-with-equals-sign",
+      "target": "h:cot-benefit-confined-to-math-and-symbolic",
+      "relation": "supports",
+      "confidence": 0.85,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4404394948",
+          "passage": "unless the question or model's response contains an equals sign, indicating symbolic operations and reasoning",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "i:sprague-2024-gain-is-symbolic-execution",
+      "target": "o:sprague-2024-gains-mainly-math-and-logic",
+      "relation": "explains",
+      "confidence": 0.85,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4404394948",
+          "passage": "Much of CoT's gain comes from improving symbolic execution, but it underperforms relative to using a symbolic solver.",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:wei-2023-inverse-scaling-with-cot",
+      "target": "h:cot-gains-require-large-scale",
+      "relation": "tests",
+      "confidence": 0.45,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4389519396",
+          "passage": "1-shot examples and chain-of-thought can help mitigate undesirable scaling patterns even further",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": "Bears on how chain-of-thought interacts with scale, not on the threshold itself."
+    },
+    {
+      "source": "e:wei-2023-inverse-scaling-with-cot",
+      "target": "c:inverse-scaling-prize-tasks",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4389519396",
+          "passage": "The Inverse Scaling Prize (McKenzie et al., 2023) identified eleven such inverse scaling tasks",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:wei-2023-inverse-scaling-with-cot",
+      "target": "o:wei-2023-cot-mitigates-inverse-scaling",
+      "relation": "yields",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4389519396",
+          "passage": "1-shot examples and chain-of-thought can help mitigate undesirable scaling patterns even further",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    }
+  ],
+  "retracted": []
+}

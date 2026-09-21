@@ -9,6 +9,8 @@ You are building a small, inspectable graph of *what was done and what was seen*
 
 You do the reading and the judgement. The `scibraid` CLI does the deterministic parts: retrieval, schema validation, checking that your quoted passages really appear in the source, storage, and pooling. If `scibraid` is not on PATH, run it as `uv run --project <repo> scibraid ...`, where `<repo>` is two directories above this skill's base directory.
 
+If a search or fetch fails in a way you cannot explain, or `scibraid` reports a missing tool, run `scibraid doctor`: it says what is not set up on this machine and how to fix it. Relay its fixes to the user rather than working around the fault.
+
 The subgraph will later be pooled with subgraphs built by other people asking other questions, and aligned against them. That is where the value is: a condition you record carefully may be the link to an investigation you know nothing about. So record what is there, specifically, rather than what serves the question's narrative.
 
 ## Workflow

@@ -1,0 +1,206 @@
+[
+  {
+    "id": "base-gpt3-weak-cot-is-missing-code-not-missing-instruction-tuning",
+    "claim": "A large base model's ability to benefit from chain-of-thought prompting depends on source code in its pre-training data, not on instruction tuning: that is why base PaLM 540B gains from it and base GPT-3 175B gains little.",
+    "kind": "regime",
+    "status": "open",
+    "confidence": 0.4,
+    "nodes": [
+      "post-training-and-cot/o:chung-2022-base-palm-540b-gains-from-cot",
+      "post-training-and-cot/o:wang-2023-base-gpt3-gains-little-from-cot",
+      "post-training-and-cot/o:kojima-2022-original-gpt3-gains-with-scale",
+      "post-training-and-cot/o:ma-2023-code-in-pretraining-improves-general-reasoning",
+      "post-training-and-cot/o:aryabumi-2024-code-raises-nl-reasoning",
+      "post-training-and-cot/h:code-training-gives-models-multi-step-reasoning",
+      "post-training-and-cot/h:instruction-tuning-is-what-makes-cot-work",
+      "post-training-and-cot/c:code-in-pre-training"
+    ],
+    "alignments": [],
+    "checks": [
+      {
+        "question": "Is the premise true in the sources?",
+        "finding": "Partly. Base PaLM 540B's chain-of-thought gain is in Chung et al.'s Table 4, and the PaLM paper says its pre-training data includes source code from GitHub. Base GPT-3's weak gain is one footnoted preliminary result in Wang et al., and Kojima et al. report the opposite for zero-shot chain-of-thought on arithmetic. That GPT-3's pre-training data contains essentially no code is my background knowledge of the GPT-3 paper; no source in the pool states it.",
+        "sources": [
+          "W4307079201",
+          "W4224308101",
+          "W4385571045",
+          "W4281557260"
+        ]
+      },
+      {
+        "question": "Is there a duller explanation?",
+        "finding": "Yes, several, and the literature cannot separate them. The two base models differ in size (175B against 540B), in training tokens and data quality, and by two years, as well as in code. Du et al. and Yuan et al. elsewhere in the pool find pre-training loss predicts reasoning better than parameter count, which would explain the difference without code.",
+        "sources": [
+          "W4307079201",
+          "W4393212671",
+          "W4385970164"
+        ]
+      },
+      {
+        "question": "Has the controlled experiment been run?",
+        "finding": "Not at the scale or on the measure that matters. Ma et al. (2.6B and 13B), Aryabumi et al. (470M to 2.8B) and Shao et al. (7B) ablate code in pre-training and find reasoning improves, but none reports the gain from chain-of-thought over direct prompting, and none is near the scale where base-model chain-of-thought gains were first reported.",
+        "sources": [
+          "W4387221974",
+          "W4403011998",
+          "arxiv:2402.03300"
+        ]
+      },
+      {
+        "question": "Has anyone already asked this question, as distinct from answering it?",
+        "finding": "Yes. The field already treats the broader question as open: Shao et al. call it 'a popular yet unverified hypothesis' that code training improves reasoning, and offer 'a partial response' for mathematics at 7B. Fu et al.'s essay, which could not be read directly, is cited by Wang et al. for the same attribution. This lead is a sharper version of that question (base models, the gain from chain-of-thought specifically, and large scale), not a question the pool discovered.",
+        "sources": [
+          "arxiv:2402.03300",
+          "W4385571045"
+        ]
+      }
+    ],
+    "would_confirm": "Pre-train matched base models with and without source code in the mixture (as Aryabumi et al. and Ma et al. did), at the largest scale affordable, and report the gain from few-shot and zero-shot chain-of-thought over direct prompting on GSM8K and BIG-Bench Hard, without any instruction tuning. Confirmed if the gain appears, or appears at a smaller size, only with code. Existing checkpoints from those two studies could be re-evaluated this way without new training.",
+    "would_refute": "The chain-of-thought gain is the same with and without code once pre-training loss is matched, which would leave size and data quality as the explanation.",
+    "known_in": [],
+    "posed_in": [
+      "Shao et al. (2024), DeepSeekMath, arxiv:2402.03300: 'A popular yet unverified hypothesis suggests that code training improves reasoning.'",
+      "Fu, Peng and Khot (2022), How does GPT Obtain its Ability?, as cited by Wang et al. (2023), W4385571045; not read directly"
+    ],
+    "follow_up": null,
+    "repairs": [],
+    "by": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    },
+    "updated": "2026-09-20T14:15:00.715239+00:00"
+  },
+  {
+    "id": "mmlu-shared-failures-coincidence",
+    "claim": "Negative results from Du et al. and Sprague et al. under the MMLU benchmark point to a common limitation of MMLU as a test of reasoning.",
+    "kind": "shared_failure",
+    "status": "refuted",
+    "confidence": 0.05,
+    "nodes": [
+      "llm-emergent-abilities/o:du-2024-other-tasks-track-loss-smoothly",
+      "cot-scale-threshold/o:sprague-2024-mmlu-gain-only-with-equals-sign",
+      "cot-scale-threshold/c:mmlu",
+      "llm-emergent-abilities/c:mmlu"
+    ],
+    "alignments": [
+      [
+        "cot-scale-threshold/c:mmlu",
+        "llm-emergent-abilities/c:mmlu"
+      ]
+    ],
+    "checks": [
+      {
+        "question": "Is the premise true in the sources?",
+        "finding": "No. Du's observation concerns TriviaQA, HellaSwag, RACE and WinoGrande, and is not about MMLU at all. It sits under the MMLU condition only because its experiment as a whole was run on twelve tasks including MMLU. Its 'negative' outcome means 'no emergence threshold', which is unrelated to Sprague's null on chain-of-thought gains. The candidate is an artefact of observations inheriting every condition of their experiment.",
+        "sources": [
+          "W4393212671",
+          "W4404394948"
+        ]
+      }
+    ],
+    "would_confirm": "",
+    "would_refute": "",
+    "known_in": [],
+    "posed_in": null,
+    "follow_up": null,
+    "repairs": [
+      {
+        "kind": "extraction",
+        "target": "llm-emergent-abilities/o:du-2024-other-tasks-track-loss-smoothly",
+        "problem": "The observation concerns TriviaQA, HellaSwag, RACE and WinoGrande but inherits MMLU, C-Eval and GSM8K from its experiment. It needs observed_under links to the tasks it is actually about, or its own experiment node.",
+        "resolved": false,
+        "resolution": ""
+      }
+    ],
+    "by": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    },
+    "updated": "2026-09-20T14:15:00.715239+00:00"
+  },
+  {
+    "id": "training-recipe-gates-cot-and-emergence",
+    "claim": "How a model was trained after pre-training, and not its parameter count alone, decides whether chain-of-thought helps and whether 'emergent' abilities appear: the 175B base GPT-3 shows neither.",
+    "kind": "shared_failure",
+    "status": "known",
+    "confidence": 0.5,
+    "nodes": [
+      "cot-scale-threshold/o:wang-2023-base-gpt3-175b-little-cot-gain",
+      "llm-emergent-abilities/o:lu-2024-two-tasks-emergent-without-icl",
+      "cot-scale-threshold/c:base-model-without-instruction-tuning",
+      "llm-emergent-abilities/c:non-instruction-tuned",
+      "cot-scale-threshold/o:kojima-2022-flat-without-cot-steep-with"
+    ],
+    "alignments": [
+      [
+        "cot-scale-threshold/c:base-model-without-instruction-tuning",
+        "llm-emergent-abilities/c:non-instruction-tuned"
+      ]
+    ],
+    "checks": [
+      {
+        "question": "Is the base model the same in both papers?",
+        "finding": "Yes. Lu et al. name 'davinci, the non-instruction-tuned 175B GPT model'; Wang et al. name 'the original GPT-3 175B without instruction-finetuning'. Same model.",
+        "sources": [
+          "W4402671818",
+          "W4385571045"
+        ]
+      },
+      {
+        "question": "Do the two null results share their other conditions?",
+        "finding": "No. Lu's is zero-shot by design, to exclude in-context learning; Wang's is few-shot with chain-of-thought exemplars. So the base model is the only thing they share, and Wang's result is in some tension with Lu's own account: in-context examples were present and the base model still gained little.",
+        "sources": [
+          "W4402671818",
+          "W4385571045"
+        ]
+      },
+      {
+        "question": "Is there contrary evidence in the pool?",
+        "finding": "Yes. Kojima et al. report that zero-shot chain-of-thought performance rises drastically with size 'for Original/Instruct GPT-3', which includes base davinci. Already recorded as a contradiction at 0.5; the regimes differ (zero-shot CoT on arithmetic vs few-shot CoT on Wang's tasks).",
+        "sources": [
+          "W4281557260"
+        ]
+      },
+      {
+        "question": "Does the field already say this?",
+        "finding": "Yes. Wang et al. make the remark 'echoing Fu et al. (2022)', an essay tracing GPT-3.5's abilities, chain-of-thought included, to training on code and instruction tuning rather than to scale. Lu et al. devote their Section 4 to instruction tuning as implicit in-context learning. The pool recovered a connection the literature had made, from two papers that do not frame it that way.",
+        "sources": [
+          "W4385571045",
+          "W4402671818"
+        ]
+      },
+      {
+        "question": "After a literature review (subgraph post-training-and-cot, nine papers), which part of training is responsible?",
+        "finding": "The lead's framing was too narrow: it is not instruction tuning. In Chung et al.'s Table 4 base PaLM 540B, with no instruction tuning, gains strongly from chain-of-thought (BBH-alg 38.3 to 57.6, MGSM 18.3 to 45.9), and the same paper finds that instruction tuning without chain-of-thought data degrades reasoning, while adding nine chain-of-thought datasets restores it and unlocks zero-shot chain-of-thought. So base GPT-3's weak gain is not explained by its lacking instruction tuning. Code is the better-supported factor: three controlled studies find code in pre-training improves reasoning (Ma et al., against a matched text-only model; Aryabumi et al., +8.2% relative; Shao et al., code before math), and PaLM's pre-training data includes source code. But all three are at 13B or below and none measures chain-of-thought gain. RL raises Maj@K and not Pass@K (Shao et al.), so it sharpens rather than adds. Kojima et al. report gains for original GPT-3 under zero-shot chain-of-thought, which still conflicts with Wang et al.'s footnote. The Fu et al. essay could not be read (a JavaScript-rendered page) and remains cited through Wang et al.",
+        "sources": [
+          "W4307079201",
+          "W4387221974",
+          "W4403011998",
+          "arxiv:2402.03300",
+          "W4224308101",
+          "W4281557260",
+          "W4385571045"
+        ]
+      }
+    ],
+    "would_confirm": "Base and post-trained checkpoints of one model, matched for size, evaluated with the same chain-of-thought prompts and the same emergent-ability tasks.",
+    "would_refute": "A base model above 100B that shows full chain-of-thought gains under few-shot prompting, as Kojima's davinci result suggests may exist.",
+    "known_in": [
+      "Fu, Peng and Khot (2022), How does GPT Obtain its Ability? https://yaofu.notion.site/How-does-GPT-Obtain-its-Ability-Tracing-Emergent-Abilities-of-Language-Models-to-their-Sources-b9a57ac0fcf74f30a1ab9e3e36fa1dc1",
+      "Lu et al. (2024) Section 4, W4402671818"
+    ],
+    "posed_in": null,
+    "follow_up": "Which part of post-training is responsible for chain-of-thought gains in large models: instruction tuning, training on code, or RLHF, and what is the evidence from base-versus-tuned comparisons at matched scale?",
+    "repairs": [],
+    "by": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    },
+    "updated": "2026-09-20T14:15:00.715239+00:00"
+  }
+]

@@ -1,0 +1,1920 @@
+[
+  {
+    "a": "cot-scale-threshold/c:answer-only-prompting",
+    "b": "llm-emergent-abilities/c:chain-of-thought-prompting",
+    "verdict": "different",
+    "confidence": 0.95,
+    "rationale": "These are the two arms being contrasted; treating them as one would erase the experiment.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/c:answer-only-prompting",
+    "b": "llm-emergent-abilities/c:few-shot-prompting",
+    "verdict": "narrower",
+    "confidence": 0.75,
+    "rationale": "Standard few-shot answer-only prompting is the default case of few-shot prompting but excludes chain-of-thought exemplars, which the broader node admits.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/c:answer-only-prompting",
+    "b": "llm-emergent-abilities/c:one-shot-prompting",
+    "verdict": "related",
+    "confidence": 0.6,
+    "rationale": "One-shot answer-only prompting is close to few-shot answer-only prompting but the shot count is the manipulated variable in its source paper.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/c:answer-only-prompting",
+    "b": "llm-emergent-abilities/c:zero-shot-prompting",
+    "verdict": "different",
+    "confidence": 0.9,
+    "rationale": "Few-shot exemplars versus none.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/c:base-model-without-instruction-tuning",
+    "b": "llm-emergent-abilities/c:instruction-tuned",
+    "verdict": "different",
+    "confidence": 0.98,
+    "rationale": "Opposites: lexical overlap only. One is the absence of the other.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/c:base-model-without-instruction-tuning",
+    "b": "llm-emergent-abilities/c:non-instruction-tuned",
+    "verdict": "same",
+    "confidence": 0.95,
+    "rationale": "Both mark a pretrained model with no instruction finetuning, used to separate base-model behaviour from tuned behaviour.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/c:big-bench-hard",
+    "b": "llm-emergent-abilities/c:big-bench",
+    "verdict": "narrower",
+    "confidence": 0.95,
+    "rationale": "BBH is a 23-task subset of BIG-Bench selected for difficulty; claims about BBH do not transfer to all of BIG-Bench.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/c:few-shot-cot-prompting",
+    "b": "llm-emergent-abilities/c:chain-of-thought-prompting",
+    "verdict": "narrower",
+    "confidence": 0.8,
+    "rationale": "Few-shot chain-of-thought is one form of chain-of-thought prompting (zero-shot CoT is the other).",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/c:few-shot-cot-prompting",
+    "b": "llm-emergent-abilities/c:few-shot-prompting",
+    "verdict": "narrower",
+    "confidence": 0.85,
+    "rationale": "Few-shot prompting with chain-of-thought exemplars is one kind of few-shot prompting; the emergent-abilities side uses the general sense (mostly answer-only exemplars).",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/c:few-shot-cot-prompting",
+    "b": "llm-emergent-abilities/c:one-shot-prompting",
+    "verdict": "different",
+    "confidence": 0.8,
+    "rationale": "The one-shot condition in Wei et al. 2023 is a single answer-only exemplar, contrasted there with chain-of-thought.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/c:few-shot-cot-prompting",
+    "b": "llm-emergent-abilities/c:zero-shot-prompting",
+    "verdict": "different",
+    "confidence": 0.95,
+    "rationale": "Exemplars with reasoning versus no exemplars at all.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/c:gpt3-instructgpt-models",
+    "b": "llm-emergent-abilities/c:model-family-gpt3",
+    "verdict": "same",
+    "confidence": 0.9,
+    "rationale": "Both lump GPT-3 and InstructGPT API models (ada to davinci) into one family; neither separates base from instruct.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/c:gsm8k",
+    "b": "llm-emergent-abilities/c:gsm8k",
+    "verdict": "same",
+    "confidence": 0.97,
+    "rationale": "Both are the GSM8K math word problem benchmark.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/c:inverse-scaling-prize-tasks",
+    "b": "llm-emergent-abilities/c:inverse-scaling-prize-tasks",
+    "verdict": "same",
+    "confidence": 0.98,
+    "rationale": "Both refer to the eleven Inverse Scaling Prize tasks, from the same paper.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/c:lamda-models",
+    "b": "llm-emergent-abilities/c:model-family-lamda",
+    "verdict": "same",
+    "confidence": 0.95,
+    "rationale": "Both mean 'run on LaMDA models'.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/c:mmlu",
+    "b": "llm-emergent-abilities/c:mmlu",
+    "verdict": "same",
+    "confidence": 0.97,
+    "rationale": "Both are the MMLU benchmark used as an evaluation set.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/c:original-gpt3-models",
+    "b": "llm-emergent-abilities/c:model-family-gpt3",
+    "verdict": "narrower",
+    "confidence": 0.85,
+    "rationale": "The emergent-abilities node covers GPT-3 and InstructGPT together; original GPT-3 is the untuned part of it.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/c:original-gpt3-models",
+    "b": "llm-emergent-abilities/c:non-instruction-tuned",
+    "verdict": "narrower",
+    "confidence": 0.85,
+    "rationale": "Original GPT-3 is a specific family of non-instruction-tuned models.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/c:palm-models",
+    "b": "llm-emergent-abilities/c:model-family-palm",
+    "verdict": "same",
+    "confidence": 0.95,
+    "rationale": "Both mean 'run on PaLM models'; one side lists the sizes (8B/62B/540B), the other does not.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/c:t5-models",
+    "b": "llm-emergent-abilities/c:model-family-t5",
+    "verdict": "same",
+    "confidence": 0.9,
+    "rationale": "Both are T5 / Flan-T5 models; used as students on one side and as an evaluated family on the other.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/c:zero-shot-cot-prompting",
+    "b": "llm-emergent-abilities/c:zero-shot-prompting",
+    "verdict": "narrower",
+    "confidence": 0.8,
+    "rationale": "'Let's think step by step' uses no exemplars, so it is zero-shot, but Lu et al. use plain zero-shot to exclude in-context learning; the CoT trigger is an extra ingredient.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/e:sprague-2024-cot-meta-analysis",
+    "b": "llm-emergent-abilities/e:schaeffer-2023-big-bench-meta-analysis",
+    "verdict": "different",
+    "confidence": 0.95,
+    "rationale": "Both are meta-analyses, of different literatures and questions.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/e:wei-2022-cot-across-scales",
+    "b": "llm-emergent-abilities/e:wei-2022-few-shot-scaling-survey",
+    "verdict": "related",
+    "confidence": 0.7,
+    "rationale": "Different papers by overlapping authors; the emergent-abilities survey cites chain-of-thought's scale threshold as one of its cases, so the first is an input to the second.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/e:wei-2023-inverse-scaling-with-cot",
+    "b": "llm-emergent-abilities/e:wei-2023-inverse-scaling-at-540b",
+    "verdict": "same",
+    "confidence": 0.95,
+    "rationale": "Same study in the same paper (W4389519396); each subgraph emphasised a different result from it.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/h:cot-benefit-confined-to-math-and-symbolic",
+    "b": "llm-emergent-abilities/h:emergence-is-in-context-learning",
+    "verdict": "different",
+    "confidence": 0.8,
+    "rationale": "Claims about different things; evidence for one would not count for or against the other.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/h:cot-benefit-confined-to-math-and-symbolic",
+    "b": "llm-emergent-abilities/h:emergence-loss-threshold",
+    "verdict": "different",
+    "confidence": 0.8,
+    "rationale": "Claims about different things; evidence for one would not count for or against the other.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/h:cot-benefit-confined-to-math-and-symbolic",
+    "b": "llm-emergent-abilities/h:emergence-metric-artefact",
+    "verdict": "related",
+    "confidence": 0.5,
+    "rationale": "Chain-of-thought gains concentrate on tasks with multi-token exact answers, which is also where the artefact account predicts apparent emergence.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/h:cot-benefit-confined-to-math-and-symbolic",
+    "b": "llm-emergent-abilities/h:emergence-sharp-transition",
+    "verdict": "different",
+    "confidence": 0.7,
+    "rationale": "Claims about different things; evidence for one would not count for or against the other.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/h:cot-benefit-confined-to-math-and-symbolic",
+    "b": "llm-emergent-abilities/h:emergence-unpredictable",
+    "verdict": "different",
+    "confidence": 0.8,
+    "rationale": "Claims about different things; evidence for one would not count for or against the other.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/h:cot-benefit-confined-to-math-and-symbolic",
+    "b": "llm-emergent-abilities/h:quantization-of-skills",
+    "verdict": "different",
+    "confidence": 0.8,
+    "rationale": "Claims about different things; evidence for one would not count for or against the other.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/h:cot-demonstrations-specify-format",
+    "b": "llm-emergent-abilities/h:emergence-is-in-context-learning",
+    "verdict": "related",
+    "confidence": 0.6,
+    "rationale": "Both say demonstrations elicit an ability the model already has rather than create one.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/h:cot-demonstrations-specify-format",
+    "b": "llm-emergent-abilities/h:emergence-loss-threshold",
+    "verdict": "different",
+    "confidence": 0.8,
+    "rationale": "Claims about different things; evidence for one would not count for or against the other.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/h:cot-demonstrations-specify-format",
+    "b": "llm-emergent-abilities/h:emergence-metric-artefact",
+    "verdict": "related",
+    "confidence": 0.55,
+    "rationale": "Both locate the threshold in output form rather than capability: one in whether the model emits a usable format, the other in how the output is scored.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/h:cot-demonstrations-specify-format",
+    "b": "llm-emergent-abilities/h:emergence-sharp-transition",
+    "verdict": "different",
+    "confidence": 0.6,
+    "rationale": "Claims about different things; evidence for one would not count for or against the other.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/h:cot-demonstrations-specify-format",
+    "b": "llm-emergent-abilities/h:emergence-unpredictable",
+    "verdict": "different",
+    "confidence": 0.8,
+    "rationale": "Claims about different things; evidence for one would not count for or against the other.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/h:cot-demonstrations-specify-format",
+    "b": "llm-emergent-abilities/h:quantization-of-skills",
+    "verdict": "different",
+    "confidence": 0.8,
+    "rationale": "Claims about different things; evidence for one would not count for or against the other.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/h:cot-gains-require-large-scale",
+    "b": "llm-emergent-abilities/h:emergence-is-in-context-learning",
+    "verdict": "related",
+    "confidence": 0.65,
+    "rationale": "Few-shot chain-of-thought is an in-context learning technique; if emergent abilities are in-context learning, the chain-of-thought threshold is the in-context-learning threshold. Wang's finding that invalid demonstrations still work points the same way.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/h:cot-gains-require-large-scale",
+    "b": "llm-emergent-abilities/h:emergence-loss-threshold",
+    "verdict": "related",
+    "confidence": 0.6,
+    "rationale": "Both concern GSM8K staying at floor until a threshold; Du et al. place it in pre-training loss rather than parameters, which would explain why PaLM 62B beats larger models and why base GPT-3 175B gains little.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/h:cot-gains-require-large-scale",
+    "b": "llm-emergent-abilities/h:emergence-metric-artefact",
+    "verdict": "related",
+    "confidence": 0.75,
+    "rationale": "The chain-of-thought threshold was measured by final-answer match on multi-token answers, exactly the kind of metric the artefact account says manufactures thresholds. Wei et al. note small models often produce no parseable answer. Neither claim entails the other; the artefact account predicts the threshold should soften under a graded metric, which nobody in either subgraph has tested.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/h:cot-gains-require-large-scale",
+    "b": "llm-emergent-abilities/h:emergence-sharp-transition",
+    "verdict": "narrower",
+    "confidence": 0.85,
+    "rationale": "The chain-of-thought threshold is one claimed instance of a sharp emergent ability (Wei et al. call it 'an emergent ability of model scale'); evidence for it supports the general claim, not the reverse.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/h:cot-gains-require-large-scale",
+    "b": "llm-emergent-abilities/h:emergence-unpredictable",
+    "verdict": "related",
+    "confidence": 0.6,
+    "rationale": "A threshold implies small-model results do not extrapolate, but the chain-of-thought claim does not assert unpredictability.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/h:cot-gains-require-large-scale",
+    "b": "llm-emergent-abilities/h:quantization-of-skills",
+    "verdict": "related",
+    "confidence": 0.45,
+    "rationale": "Quantised skills would give a mechanism for a threshold; no direct connection in the sources.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/h:cot-reasoning-transferable-to-small-models",
+    "b": "llm-emergent-abilities/h:emergence-is-in-context-learning",
+    "verdict": "different",
+    "confidence": 0.6,
+    "rationale": "Claims about different things; evidence for one would not count for or against the other.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/h:cot-reasoning-transferable-to-small-models",
+    "b": "llm-emergent-abilities/h:emergence-loss-threshold",
+    "verdict": "related",
+    "confidence": 0.55,
+    "rationale": "In tension: distillation lifts models that sit above the loss threshold without lowering their pre-training loss much, which the loss account does not obviously allow.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/h:cot-reasoning-transferable-to-small-models",
+    "b": "llm-emergent-abilities/h:emergence-metric-artefact",
+    "verdict": "related",
+    "confidence": 0.55,
+    "rationale": "Both deny that the ability is simply absent below the threshold, by different mechanisms (training vs measurement).",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/h:cot-reasoning-transferable-to-small-models",
+    "b": "llm-emergent-abilities/h:emergence-sharp-transition",
+    "verdict": "related",
+    "confidence": 0.65,
+    "rationale": "If finetuning gives sub-10B models the ability, the transition reflects how the ability is elicited rather than a capacity that is absent below the threshold. Snell et al. in the other subgraph find the same thing: finetuning moves the emergence point to smaller models.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/h:cot-reasoning-transferable-to-small-models",
+    "b": "llm-emergent-abilities/h:emergence-unpredictable",
+    "verdict": "related",
+    "confidence": 0.5,
+    "rationale": "Snell et al. use exactly this transferability to predict emergence ahead of scale.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/h:cot-reasoning-transferable-to-small-models",
+    "b": "llm-emergent-abilities/h:quantization-of-skills",
+    "verdict": "different",
+    "confidence": 0.6,
+    "rationale": "Claims about different things; evidence for one would not count for or against the other.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/h:cot-success-composite-of-scale-dependent-skills",
+    "b": "llm-emergent-abilities/h:emergence-is-in-context-learning",
+    "verdict": "different",
+    "confidence": 0.6,
+    "rationale": "Claims about different things; evidence for one would not count for or against the other.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/h:cot-success-composite-of-scale-dependent-skills",
+    "b": "llm-emergent-abilities/h:emergence-loss-threshold",
+    "verdict": "different",
+    "confidence": 0.6,
+    "rationale": "Claims about different things; evidence for one would not count for or against the other.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/h:cot-success-composite-of-scale-dependent-skills",
+    "b": "llm-emergent-abilities/h:emergence-metric-artefact",
+    "verdict": "related",
+    "confidence": 0.6,
+    "rationale": "A chain that needs every sub-skill to succeed is multiplicative in the same way as a metric that needs every token correct: smooth per-step gains give a sharp end-to-end curve. BIG-bench's authors make the same link ('multiple steps or components, or brittle metrics').",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/h:cot-success-composite-of-scale-dependent-skills",
+    "b": "llm-emergent-abilities/h:emergence-sharp-transition",
+    "verdict": "related",
+    "confidence": 0.6,
+    "rationale": "Offers a mechanism for a sharp transition without a single discontinuous ability.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/h:cot-success-composite-of-scale-dependent-skills",
+    "b": "llm-emergent-abilities/h:emergence-unpredictable",
+    "verdict": "different",
+    "confidence": 0.6,
+    "rationale": "Claims about different things; evidence for one would not count for or against the other.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/h:cot-success-composite-of-scale-dependent-skills",
+    "b": "llm-emergent-abilities/h:quantization-of-skills",
+    "verdict": "related",
+    "confidence": 0.6,
+    "rationale": "Both decompose a capability into discrete sub-skills each acquired at some scale.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/o:wei-2023-cot-mitigates-inverse-scaling",
+    "b": "llm-emergent-abilities/o:wei-2023-prompting-mitigates",
+    "verdict": "same",
+    "confidence": 0.95,
+    "rationale": "Same finding from the same sentence: 1-shot and chain-of-thought mitigate undesirable scaling.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/o:wei-2023-cot-mitigates-inverse-scaling",
+    "b": "llm-emergent-abilities/o:wei-2023-u-shaped-scaling",
+    "verdict": "different",
+    "confidence": 0.85,
+    "rationale": "Same experiment, different findings: mitigation by prompting versus U-shaped curves at larger scale.",
+    "judged": "2026-09-20T08:45:42+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/c:original-gpt3-models",
+    "b": "llm-emergent-abilities/c:instruction-tuned",
+    "verdict": "different",
+    "confidence": 0.98,
+    "rationale": "Opposites: the original models are the ones without instruction tuning.",
+    "judged": "2026-09-20T09:42:36+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/c:base-model-without-instruction-tuning",
+    "b": "llm-emergent-abilities/c:task-specific-finetuning",
+    "verdict": "different",
+    "confidence": 0.9,
+    "rationale": "No fine-tuning versus task fine-tuning.",
+    "judged": "2026-09-20T10:12:50+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/c:commonsense-reasoning-tasks",
+    "b": "llm-emergent-abilities/c:commonsenseqa",
+    "verdict": "broader",
+    "confidence": 0.9,
+    "rationale": "The chain-of-thought node covers CommonsenseQA and StrategyQA; the other is CommonsenseQA alone.",
+    "judged": "2026-09-20T10:12:50+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/c:math-word-problems",
+    "b": "llm-emergent-abilities/c:arithmetic-tasks",
+    "verdict": "related",
+    "confidence": 0.6,
+    "rationale": "Both need multi-digit arithmetic; word problems also need the language-to-equation step that the chain-of-thought papers single out.",
+    "judged": "2026-09-20T10:12:50+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/c:mmlu",
+    "b": "llm-emergent-abilities/c:cola",
+    "verdict": "different",
+    "confidence": 0.9,
+    "rationale": "Two different benchmarks.",
+    "judged": "2026-09-20T10:12:50+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/c:multi-hop-factual-qa",
+    "b": "llm-emergent-abilities/c:multiple-choice-benchmarks",
+    "verdict": "different",
+    "confidence": 0.85,
+    "rationale": "Free-form multi-hop question answering versus multiple-choice scoring; both merely contain 'question answering'.",
+    "judged": "2026-09-20T10:12:50+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/e:fu-2023-model-specialization",
+    "b": "llm-emergent-abilities/e:schaeffer-2023-instructgpt-arithmetic",
+    "verdict": "different",
+    "confidence": 0.9,
+    "rationale": "Both involve arithmetic and GPT models; one distils, the other re-scores outputs.",
+    "judged": "2026-09-20T10:12:50+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/e:kojima-2022-zero-shot-cot-model-size",
+    "b": "llm-emergent-abilities/e:srivastava-2022-big-bench-scaling",
+    "verdict": "different",
+    "confidence": 0.85,
+    "rationale": "Unrelated experiments on different benchmarks.",
+    "judged": "2026-09-20T10:12:50+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/e:kojima-2022-zero-shot-cot-model-size",
+    "b": "llm-emergent-abilities/e:wei-2022-few-shot-scaling-survey",
+    "verdict": "different",
+    "confidence": 0.6,
+    "rationale": "Different papers and prompting regimes; the survey concerns few-shot curves.",
+    "judged": "2026-09-20T10:12:50+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/e:suzgun-2022-bbh-cot-by-scale",
+    "b": "llm-emergent-abilities/e:srivastava-2022-big-bench-scaling",
+    "verdict": "related",
+    "confidence": 0.7,
+    "rationale": "BIG-Bench Hard was selected from the results of the BIG-bench evaluation, and re-runs a subset of its tasks with chain-of-thought. Dependent, not the same experiment.",
+    "judged": "2026-09-20T10:12:50+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/c:answer-only-prompting",
+    "b": "post-training-and-cot/c:few-shot-cot-prompting",
+    "verdict": "different",
+    "confidence": 0.95,
+    "rationale": "Opposite arms of the same contrast.",
+    "judged": "2026-09-20T13:53:58+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/c:base-model-without-instruction-tuning",
+    "b": "post-training-and-cot/c:base-model-without-instruction-tuning",
+    "verdict": "same",
+    "confidence": 0.95,
+    "rationale": "The same condition recorded under the same or an equivalent name in both subgraphs.",
+    "judged": "2026-09-20T13:53:58+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/c:base-model-without-instruction-tuning",
+    "b": "post-training-and-cot/c:instruction-tuned",
+    "verdict": "different",
+    "confidence": 0.98,
+    "rationale": "Opposites.",
+    "judged": "2026-09-20T13:53:58+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/c:big-bench-hard",
+    "b": "post-training-and-cot/c:big-bench-hard",
+    "verdict": "same",
+    "confidence": 0.95,
+    "rationale": "The same condition recorded under the same or an equivalent name in both subgraphs.",
+    "judged": "2026-09-20T13:53:58+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/c:codex-models",
+    "b": "post-training-and-cot/c:codex-code-davinci-002",
+    "verdict": "same",
+    "confidence": 0.9,
+    "rationale": "The same condition recorded under the same or an equivalent name in both subgraphs.",
+    "judged": "2026-09-20T13:53:58+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/c:few-shot-cot-prompting",
+    "b": "post-training-and-cot/c:few-shot-cot-prompting",
+    "verdict": "same",
+    "confidence": 0.95,
+    "rationale": "The same condition recorded under the same or an equivalent name in both subgraphs.",
+    "judged": "2026-09-20T13:53:58+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/c:few-shot-cot-prompting",
+    "b": "post-training-and-cot/c:zero-shot-cot-prompting",
+    "verdict": "different",
+    "confidence": 0.9,
+    "rationale": "Exemplars against none.",
+    "judged": "2026-09-20T13:53:58+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/c:gpt3-instructgpt-models",
+    "b": "post-training-and-cot/c:original-gpt3-175b",
+    "verdict": "broader",
+    "confidence": 0.85,
+    "rationale": "The family node covers base and instruct models of every size; the other is one base model.",
+    "judged": "2026-09-20T13:53:58+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/c:gsm8k",
+    "b": "post-training-and-cot/c:gsm8k",
+    "verdict": "same",
+    "confidence": 0.97,
+    "rationale": "The same condition recorded under the same or an equivalent name in both subgraphs.",
+    "judged": "2026-09-20T13:53:58+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/c:math-word-problems",
+    "b": "post-training-and-cot/c:gsm8k",
+    "verdict": "broader",
+    "confidence": 0.85,
+    "rationale": "GSM8K is one benchmark of multi-step math word problems.",
+    "judged": "2026-09-20T13:53:58+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/c:original-gpt3-models",
+    "b": "post-training-and-cot/c:original-gpt3-175b",
+    "verdict": "broader",
+    "confidence": 0.85,
+    "rationale": "All original GPT-3 sizes against the 175B model only.",
+    "judged": "2026-09-20T13:53:58+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/c:palm-models",
+    "b": "post-training-and-cot/c:palm-8b-62b-540b",
+    "verdict": "same",
+    "confidence": 0.9,
+    "rationale": "The same condition recorded under the same or an equivalent name in both subgraphs.",
+    "judged": "2026-09-20T13:53:58+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/c:small-models",
+    "b": "post-training-and-cot/c:models-under-13b",
+    "verdict": "related",
+    "confidence": 0.6,
+    "rationale": "Both scope results to small models, with different cut-offs (well below 100B; 13B or fewer).",
+    "judged": "2026-09-20T13:53:58+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/c:zero-shot-cot-prompting",
+    "b": "post-training-and-cot/c:zero-shot-cot-prompting",
+    "verdict": "same",
+    "confidence": 0.95,
+    "rationale": "The same condition recorded under the same or an equivalent name in both subgraphs.",
+    "judged": "2026-09-20T13:53:58+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/e:kojima-2022-zero-shot-cot-model-size",
+    "b": "post-training-and-cot/e:kojima-2022-zero-shot-cot-by-size",
+    "verdict": "same",
+    "confidence": 0.9,
+    "rationale": "The same study in the same paper, extracted for a different question; each subgraph emphasises a different result from it.",
+    "judged": "2026-09-20T13:53:58+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/e:suzgun-2022-bbh-cot-by-scale",
+    "b": "post-training-and-cot/e:suzgun-2022-bbh-across-model-families",
+    "verdict": "same",
+    "confidence": 0.9,
+    "rationale": "The same study in the same paper, extracted for a different question; each subgraph emphasises a different result from it.",
+    "judged": "2026-09-20T13:53:58+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/e:wang-2023-invalid-reasoning-ablation",
+    "b": "post-training-and-cot/e:wang-2023-base-gpt3-preliminary",
+    "verdict": "related",
+    "confidence": 0.7,
+    "rationale": "A preliminary run reported in a footnote of the same paper, on a different model.",
+    "judged": "2026-09-20T13:53:58+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/e:wei-2022-palm-62b-error-analysis",
+    "b": "post-training-and-cot/e:chung-2022-flan-palm-vs-palm",
+    "verdict": "different",
+    "confidence": 0.9,
+    "rationale": "Different papers; both happen to use PaLM.",
+    "judged": "2026-09-20T13:53:58+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/o:wang-2023-base-gpt3-175b-little-cot-gain",
+    "b": "post-training-and-cot/o:wang-2023-base-gpt3-gains-little-from-cot",
+    "verdict": "same",
+    "confidence": 0.95,
+    "rationale": "The same finding from the same passage of the same paper.",
+    "judged": "2026-09-20T13:53:58+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "llm-emergent-abilities/c:big-bench",
+    "b": "post-training-and-cot/c:big-bench-hard",
+    "verdict": "broader",
+    "confidence": 0.95,
+    "rationale": "BIG-Bench Hard is a 23-task subset of BIG-Bench.",
+    "judged": "2026-09-20T13:53:58+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "llm-emergent-abilities/c:chain-of-thought-prompting",
+    "b": "post-training-and-cot/c:few-shot-cot-prompting",
+    "verdict": "broader",
+    "confidence": 0.8,
+    "rationale": "Chain-of-thought prompting in any form against its few-shot form.",
+    "judged": "2026-09-20T13:53:58+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "llm-emergent-abilities/c:few-shot-prompting",
+    "b": "post-training-and-cot/c:few-shot-cot-prompting",
+    "verdict": "broader",
+    "confidence": 0.85,
+    "rationale": "Few-shot prompting in general against few-shot prompting with chain-of-thought exemplars.",
+    "judged": "2026-09-20T13:53:58+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "llm-emergent-abilities/c:gsm8k",
+    "b": "post-training-and-cot/c:gsm8k",
+    "verdict": "same",
+    "confidence": 0.97,
+    "rationale": "The same condition recorded under the same or an equivalent name in both subgraphs.",
+    "judged": "2026-09-20T13:53:58+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "llm-emergent-abilities/c:instruction-tuned",
+    "b": "post-training-and-cot/c:base-model-without-instruction-tuning",
+    "verdict": "different",
+    "confidence": 0.98,
+    "rationale": "Opposites.",
+    "judged": "2026-09-20T13:53:58+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "llm-emergent-abilities/c:instruction-tuned",
+    "b": "post-training-and-cot/c:instruction-tuned",
+    "verdict": "same",
+    "confidence": 0.95,
+    "rationale": "The same condition recorded under the same or an equivalent name in both subgraphs.",
+    "judged": "2026-09-20T13:53:58+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "llm-emergent-abilities/c:instruction-tuned",
+    "b": "post-training-and-cot/c:instruction-tuning-without-cot-data",
+    "verdict": "broader",
+    "confidence": 0.85,
+    "rationale": "Instruction tuning on a mixture without chain-of-thought data is one kind of instruction tuning.",
+    "judged": "2026-09-20T13:53:58+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "llm-emergent-abilities/c:non-instruction-tuned",
+    "b": "post-training-and-cot/c:base-model-without-instruction-tuning",
+    "verdict": "same",
+    "confidence": 0.95,
+    "rationale": "The same condition recorded under the same or an equivalent name in both subgraphs.",
+    "judged": "2026-09-20T13:53:58+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "llm-emergent-abilities/c:non-instruction-tuned",
+    "b": "post-training-and-cot/c:instruction-tuned",
+    "verdict": "different",
+    "confidence": 0.98,
+    "rationale": "Opposites.",
+    "judged": "2026-09-20T13:53:58+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "llm-emergent-abilities/c:non-instruction-tuned",
+    "b": "post-training-and-cot/c:instruction-tuning-without-cot-data",
+    "verdict": "different",
+    "confidence": 0.9,
+    "rationale": "No instruction tuning against instruction tuning of a particular kind.",
+    "judged": "2026-09-20T13:53:58+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "llm-emergent-abilities/c:one-shot-prompting",
+    "b": "post-training-and-cot/c:few-shot-cot-prompting",
+    "verdict": "different",
+    "confidence": 0.85,
+    "rationale": "A single answer-only exemplar against chain-of-thought exemplars.",
+    "judged": "2026-09-20T13:53:58+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "llm-emergent-abilities/c:zero-shot-prompting",
+    "b": "post-training-and-cot/c:few-shot-cot-prompting",
+    "verdict": "different",
+    "confidence": 0.95,
+    "rationale": "No exemplars against exemplars with reasoning.",
+    "judged": "2026-09-20T13:53:58+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "llm-emergent-abilities/e:schaeffer-2023-instructgpt-arithmetic",
+    "b": "post-training-and-cot/e:kojima-2022-zero-shot-cot-by-size",
+    "verdict": "different",
+    "confidence": 0.9,
+    "rationale": "Different papers.",
+    "judged": "2026-09-20T13:53:58+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "llm-emergent-abilities/e:srivastava-2022-big-bench-scaling",
+    "b": "post-training-and-cot/e:suzgun-2022-bbh-across-model-families",
+    "verdict": "related",
+    "confidence": 0.7,
+    "rationale": "BIG-Bench Hard was selected from the results of the BIG-bench evaluation.",
+    "judged": "2026-09-20T13:53:58+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/c:base-model-without-instruction-tuning",
+    "b": "post-training-and-cot/c:instruction-tuning-without-cot-data",
+    "verdict": "different",
+    "confidence": 0.9,
+    "rationale": "No instruction tuning against instruction tuning of a particular kind.",
+    "judged": "2026-09-20T13:55:07+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/c:invalid-reasoning-demonstrations",
+    "b": "post-training-and-cot/c:few-shot-cot-prompting",
+    "verdict": "narrower",
+    "confidence": 0.75,
+    "rationale": "Exemplars with invalid reasoning are still few-shot chain-of-thought exemplars in form.",
+    "judged": "2026-09-20T13:55:07+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/c:original-gpt3-models",
+    "b": "post-training-and-cot/c:base-model-without-instruction-tuning",
+    "verdict": "narrower",
+    "confidence": 0.85,
+    "rationale": "Original GPT-3 models are one family of base models without instruction tuning.",
+    "judged": "2026-09-20T13:55:07+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/c:svamp",
+    "b": "post-training-and-cot/c:gsm8k",
+    "verdict": "different",
+    "confidence": 0.9,
+    "rationale": "Two different benchmarks.",
+    "judged": "2026-09-20T13:55:07+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/c:zero-shot-cot-prompting",
+    "b": "post-training-and-cot/c:few-shot-cot-prompting",
+    "verdict": "different",
+    "confidence": 0.9,
+    "rationale": "No exemplars against exemplars.",
+    "judged": "2026-09-20T13:55:07+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/e:magister-2022-cot-distillation",
+    "b": "post-training-and-cot/e:kojima-2022-zero-shot-cot-by-size",
+    "verdict": "different",
+    "confidence": 0.85,
+    "rationale": "Different studies, or different experiments within one paper.",
+    "judged": "2026-09-20T13:55:07+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/e:wei-2022-palm-62b-error-analysis",
+    "b": "post-training-and-cot/e:kojima-2022-zero-shot-cot-by-size",
+    "verdict": "different",
+    "confidence": 0.85,
+    "rationale": "Different studies, or different experiments within one paper.",
+    "judged": "2026-09-20T13:55:07+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/e:wei-2022-palm-62b-error-analysis",
+    "b": "post-training-and-cot/e:suzgun-2022-bbh-across-model-families",
+    "verdict": "different",
+    "confidence": 0.85,
+    "rationale": "Different studies, or different experiments within one paper.",
+    "judged": "2026-09-20T13:55:07+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/e:wei-2023-inverse-scaling-with-cot",
+    "b": "llm-emergent-abilities/e:wei-2022-few-shot-scaling-survey",
+    "verdict": "different",
+    "confidence": 0.85,
+    "rationale": "Different studies, or different experiments within one paper.",
+    "judged": "2026-09-20T13:55:07+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/o:kojima-2022-flat-without-cot-steep-with",
+    "b": "post-training-and-cot/o:kojima-2022-original-gpt3-gains-with-scale",
+    "verdict": "broader",
+    "confidence": 0.8,
+    "rationale": "The same passage: one node records the result for all model families, the other the part of it about original GPT-3.",
+    "judged": "2026-09-20T13:55:07+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/o:kojima-2022-no-gain-on-commonsense",
+    "b": "post-training-and-cot/o:chung-2022-cot-finetuning-unlocks-zero-shot-cot",
+    "verdict": "different",
+    "confidence": 0.85,
+    "rationale": "Different findings.",
+    "judged": "2026-09-20T13:55:07+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/o:suzgun-2022-cot-unlocks-flat-tasks",
+    "b": "post-training-and-cot/o:chung-2022-cot-finetuning-unlocks-zero-shot-cot",
+    "verdict": "different",
+    "confidence": 0.85,
+    "rationale": "Different findings.",
+    "judged": "2026-09-20T13:55:07+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/o:wang-2023-base-gpt3-175b-little-cot-gain",
+    "b": "post-training-and-cot/o:chung-2022-base-palm-540b-gains-from-cot",
+    "verdict": "different",
+    "confidence": 0.9,
+    "rationale": "Different models and opposite results; the conflict between them is recorded as a contradiction inside post-training-and-cot.",
+    "judged": "2026-09-20T13:55:07+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/o:wei-2023-cot-mitigates-inverse-scaling",
+    "b": "post-training-and-cot/o:chung-2022-cot-finetuning-unlocks-zero-shot-cot",
+    "verdict": "different",
+    "confidence": 0.85,
+    "rationale": "Different findings.",
+    "judged": "2026-09-20T13:55:07+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "llm-emergent-abilities/c:chain-of-thought-prompting",
+    "b": "post-training-and-cot/c:zero-shot-cot-prompting",
+    "verdict": "broader",
+    "confidence": 0.8,
+    "rationale": "Chain-of-thought prompting in any form against its zero-shot form.",
+    "judged": "2026-09-20T13:55:07+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "llm-emergent-abilities/c:fixed-corpus-tokenizer-architecture",
+    "b": "post-training-and-cot/c:matched-text-only-baseline",
+    "verdict": "different",
+    "confidence": 0.7,
+    "rationale": "Both are experimental controls, for different comparisons.",
+    "judged": "2026-09-20T13:55:07+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "llm-emergent-abilities/c:instruction-tuned",
+    "b": "post-training-and-cot/c:code-in-instruction-tuning",
+    "verdict": "broader",
+    "confidence": 0.75,
+    "rationale": "Instruction tuning with code data is one kind of instruction tuning.",
+    "judged": "2026-09-20T13:55:07+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "llm-emergent-abilities/c:instruction-tuned",
+    "b": "post-training-and-cot/c:cot-data-in-finetuning-mixture",
+    "verdict": "broader",
+    "confidence": 0.8,
+    "rationale": "Instruction tuning with chain-of-thought data in the mixture is one kind of instruction tuning.",
+    "judged": "2026-09-20T13:55:07+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "llm-emergent-abilities/c:model-family-palm",
+    "b": "post-training-and-cot/c:palm-8b-62b-540b",
+    "verdict": "same",
+    "confidence": 0.9,
+    "rationale": "Both mean 'run on PaLM models'; one lists the sizes.",
+    "judged": "2026-09-20T13:55:07+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "llm-emergent-abilities/c:task-specific-finetuning",
+    "b": "post-training-and-cot/c:base-model-without-instruction-tuning",
+    "verdict": "different",
+    "confidence": 0.9,
+    "rationale": "Task fine-tuning against no fine-tuning.",
+    "judged": "2026-09-20T13:55:07+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "llm-emergent-abilities/c:zero-shot-prompting",
+    "b": "post-training-and-cot/c:zero-shot-cot-prompting",
+    "verdict": "broader",
+    "confidence": 0.75,
+    "rationale": "Zero-shot chain-of-thought uses no exemplars, so it is zero-shot with an added reasoning trigger; consistent with the earlier verdict against the chain-of-thought subgraph.",
+    "judged": "2026-09-20T13:55:07+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/h:cot-benefit-confined-to-math-and-symbolic",
+    "b": "post-training-and-cot/h:code-training-gives-models-multi-step-reasoning",
+    "verdict": "related",
+    "confidence": 0.55,
+    "rationale": "If chain-of-thought gains come from symbolic execution, as Sprague et al. argue, training on code is a plausible source of that skill. Neither source makes the link.",
+    "judged": "2026-09-20T13:55:57+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/h:cot-benefit-confined-to-math-and-symbolic",
+    "b": "post-training-and-cot/h:instruction-tuning-is-what-makes-cot-work",
+    "verdict": "different",
+    "confidence": 0.7,
+    "rationale": "Claims about different things; evidence for one would not count for or against the other.",
+    "judged": "2026-09-20T13:55:57+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/h:cot-demonstrations-specify-format",
+    "b": "post-training-and-cot/h:instruction-tuning-is-what-makes-cot-work",
+    "verdict": "related",
+    "confidence": 0.5,
+    "rationale": "Both locate chain-of-thought's effect in shaping output form, by demonstrations in one and by tuning in the other.",
+    "judged": "2026-09-20T13:55:57+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/h:cot-gains-require-large-scale",
+    "b": "post-training-and-cot/h:code-training-gives-models-multi-step-reasoning",
+    "verdict": "related",
+    "confidence": 0.6,
+    "rationale": "The code account would explain why some large base models gain from chain-of-thought and others do not, which the scale account cannot.",
+    "judged": "2026-09-20T13:55:57+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/h:cot-gains-require-large-scale",
+    "b": "post-training-and-cot/h:lead-training-recipe-gates-cot-and-emergence",
+    "verdict": "related",
+    "confidence": 0.7,
+    "rationale": "The derived claim qualifies the threshold claim: how the model was trained, not parameter count alone, decides whether chain-of-thought helps. Evidence for it is evidence that the threshold is not a fact about size.",
+    "judged": "2026-09-20T13:55:57+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/h:cot-reasoning-transferable-to-small-models",
+    "b": "post-training-and-cot/h:cot-data-in-finetuning-matters-not-instruction-tuning-as-such",
+    "verdict": "related",
+    "confidence": 0.65,
+    "rationale": "Both say training on chain-of-thought data is what makes step-by-step reasoning work: by distillation into small models in one, within an instruction-tuning mixture in the other.",
+    "judged": "2026-09-20T13:55:57+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/h:cot-success-composite-of-scale-dependent-skills",
+    "b": "post-training-and-cot/h:rl-sharpens-reasoning-already-present",
+    "verdict": "different",
+    "confidence": 0.7,
+    "rationale": "Claims about different things; evidence for one would not count for or against the other.",
+    "judged": "2026-09-20T13:55:57+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "llm-emergent-abilities/h:emergence-is-in-context-learning",
+    "b": "post-training-and-cot/h:instruction-tuning-is-what-makes-cot-work",
+    "verdict": "related",
+    "confidence": 0.6,
+    "rationale": "Lu et al. treat instruction tuning as implicit in-context learning and credit apparent abilities to it; the instruction-tuning account of chain-of-thought is the same move for one ability.",
+    "judged": "2026-09-20T13:55:57+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "llm-emergent-abilities/h:emergence-loss-threshold",
+    "b": "post-training-and-cot/h:lead-training-recipe-gates-cot-and-emergence",
+    "verdict": "related",
+    "confidence": 0.55,
+    "rationale": "Both deny that parameter count is the right variable: one puts pre-training loss in its place, the other the training recipe. A rival reading of the same base-model difference.",
+    "judged": "2026-09-20T13:55:57+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "llm-emergent-abilities/h:emergence-metric-artefact",
+    "b": "post-training-and-cot/h:code-training-gives-models-multi-step-reasoning",
+    "verdict": "different",
+    "confidence": 0.7,
+    "rationale": "Claims about different things; evidence for one would not count for or against the other.",
+    "judged": "2026-09-20T13:55:57+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "llm-emergent-abilities/h:emergence-metric-artefact",
+    "b": "post-training-and-cot/h:instruction-tuning-is-what-makes-cot-work",
+    "verdict": "different",
+    "confidence": 0.7,
+    "rationale": "Claims about different things; evidence for one would not count for or against the other.",
+    "judged": "2026-09-20T13:55:57+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "llm-emergent-abilities/h:emergence-sharp-transition",
+    "b": "post-training-and-cot/h:code-training-gives-models-multi-step-reasoning",
+    "verdict": "related",
+    "confidence": 0.45,
+    "rationale": "If reasoning ability depends on code in the training mix, 'emergence at scale' partly reflects which large models happened to include code.",
+    "judged": "2026-09-20T13:55:57+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "llm-emergent-abilities/h:emergence-unpredictable",
+    "b": "post-training-and-cot/h:code-training-gives-models-multi-step-reasoning",
+    "verdict": "different",
+    "confidence": 0.7,
+    "rationale": "Claims about different things; evidence for one would not count for or against the other.",
+    "judged": "2026-09-20T13:55:57+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "llm-emergent-abilities/h:emergence-unpredictable",
+    "b": "post-training-and-cot/h:rl-sharpens-reasoning-already-present",
+    "verdict": "different",
+    "confidence": 0.7,
+    "rationale": "Claims about different things; evidence for one would not count for or against the other.",
+    "judged": "2026-09-20T13:55:57+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "llm-emergent-abilities/h:quantization-of-skills",
+    "b": "post-training-and-cot/h:code-training-gives-models-multi-step-reasoning",
+    "verdict": "different",
+    "confidence": 0.7,
+    "rationale": "Claims about different things; evidence for one would not count for or against the other.",
+    "judged": "2026-09-20T13:55:57+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "cot-scale-threshold/e:magister-2022-cot-distillation",
+    "b": "post-training-and-cot/e:chung-2022-flan-palm-vs-palm",
+    "verdict": "different",
+    "confidence": 0.95,
+    "rationale": "Different studies.",
+    "judged": "2026-09-20T18:14:08+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  },
+  {
+    "a": "llm-emergent-abilities/o:wei-2023-prompting-mitigates",
+    "b": "post-training-and-cot/o:chung-2022-cot-finetuning-unlocks-zero-shot-cot",
+    "verdict": "different",
+    "confidence": 0.85,
+    "rationale": "Different papers and different findings: prompting mitigating inverse scaling, against finetuning enabling zero-shot chain-of-thought.",
+    "judged": "2026-09-20T18:14:08+00:00",
+    "judge": {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  }
+]

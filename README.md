@@ -2,7 +2,7 @@
 
 scibraid is a multi-agentic approach to literature review: agents build traceable evidence graphs from the scientific literature. Given a research question, they identify hypotheses, experiments, conditions and results, grounding each relationship in evidence from the original papers. Independent reviews can then be braided together to discover connections and contradictions that emerge only when different questions bring different parts of the literature into contact.
 
-![A subgraph in the viewer, with the evidence for and against each hypothesis listed beside it](docs/viewer-overview.png)
+![A subgraph in the viewer, with the evidence for and against each hypothesis listed beside it](https://raw.githubusercontent.com/phelps-sg/scibraid/main/docs/viewer-overview.png)
 
 ## Why?
 
@@ -108,6 +108,24 @@ The third pass checked the observation and related candidates against the source
 
 The important result is not that every candidate is an insight. Most are not. The point is to create a **searchable space of cross-literature hypotheses**, then spend expensive agent reasoning and source checking on the connections where the structure suggests it may pay off.
 
+This pool ships with scibraid, so you can look at it before building anything. It is the two reviews above and the third that one of their leads prompted, with the alignment judgements and the checked leads, one of each of `known`, `refuted` and `open`. It costs no model time and needs no OpenAlex key:
+
+```bash
+scibraid view --example
+```
+
+To run the other commands on it, write it to a data directory of its own and point scibraid there:
+
+```bash
+scibraid example ~/scibraid-example
+export SCIBRAID_HOME=~/scibraid-example
+scibraid observe --new
+scibraid lead list
+scibraid agenda
+```
+
+The example holds each paper's metadata and abstract and the passages the graphs quote, with the result of checking them. It does not hold the papers' full text, which is not ours to redistribute. `scripts/export_example.py` regenerates it from a working data directory.
+
 ## Install
 
 Requires [uv](https://docs.astral.sh/uv/) and Claude Code. Install scibraid as a plugin:
@@ -128,6 +146,8 @@ Reading PDFs uses `pdftotext` from poppler if it is installed, and otherwise nee
 
 Each agent names the model it runs on. Where your plan does not include that model, Claude Code runs the agent on the newest available model of the same family, or on the session's model, and warns you which. See Which model does what.
 
+Run `scibraid doctor` to see what is missing on your machine and how to fix it (`scibraid healthcheck` does the same). It checks that OpenAlex answers and that a key is set, and whether a PDF reader, LaTeX and the embedding model are present, and it exits non-zero only when something the tool cannot work without is missing. `--offline` skips the network check.
+
 Literature search uses [OpenAlex](https://openalex.org/), which needs no account. Requests without a key share one free daily budget per IP address, and a day of building subgraphs can exhaust it, so get a free key and either set `OPENALEX_API_KEY` or put the key in `~/.openalex-tok` (another path can be named in `OPENALEX_API_KEY_FILE`). A file is the easier of the two, because every session and subagent on the machine finds it.
 
 The `embeddings` extra adds a small local embedding model (fastembed, about 70 MB on first use, no API key) to help the alignment stage find matching conditions that share no words. Leave it off and the system still works using word overlap. The clone install above includes it. Under the plugin it is off unless you set `SCIBRAID_EXTRAS=embeddings` in the environment Claude Code starts from.
@@ -135,6 +155,8 @@ The `embeddings` extra adds a small local embedding model (fastembed, about 70 M
 To develop the skills or agents without installing the plugin, start Claude Code inside a clone (it finds them through `.claude/skills` and `.claude/agents`), or point it at the clone with `claude --plugin-dir /path/to/scibraid`.
 
 ## Use
+
+Installed as a plugin, the skills are namespaced: type `/scibraid:evidence-subgraph`, `/scibraid:align-subgraphs`, `/scibraid:pursue-leads` and `/scibraid:write-up`. Inside a clone they are `/evidence-subgraph` and so on, which is the form the examples below use.
 
 Ask a question. The agent frames the hypotheses in contention, searches, fetches open full text, hands each paper to an extractor subagent, and hands the extracted graph to a synthesiser that draws the links spanning papers. It checks the result with `scibraid lint`, reports what the evidence shows, and can pool it with other reviews.
 
@@ -241,7 +263,9 @@ Graphs can be filtered by node type, who asserted a relationship and confidence.
 | `duplicates <slug>` | List conditions and hypotheses within a subgraph that may be one thing under two ids |
 | `merge <slug> <keep> <drop>` | Fold one node into another, moving its links and passages |
 | `retract <slug> --edge <source> <relation> <target> \| --node <id> --reason "..."` | Take out a wrong link, or a node with its links, keeping a record of what it was and why |
-| `view [slug ...]` | Browse a graph in the browser |
+| `view [slug ...] [--example]` | Browse a graph in the browser, or the bundled example |
+| `example [dir]` | Write the bundled example pool to a data directory of its own, to try the other commands on it |
+| `doctor` (or `healthcheck`) `[--offline]` | Check that this machine is set up for scibraid, and say how to fix what is not |
 | `pool <slug>` | Add a subgraph to the pool |
 | `candidates [--budget N] [--type T] [--lexical]` | Rank unjudged cross-graph pairs |
 | `hypotheses` | Show hypothesis lists for pooled subgraphs |

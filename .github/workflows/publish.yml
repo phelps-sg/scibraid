@@ -1,0 +1,22 @@
+# Publishes to PyPI when a GitHub release is published, using PyPI trusted
+# publishing (no token). One-time setup on PyPI: add a publisher for project
+# `scibraid`, owner `phelps-sg`, repository `scibraid`, workflow `publish.yml`,
+# environment `pypi`.
+name: Publish to PyPI
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv run pytest
+      - run: uv build
+      - run: uv publish

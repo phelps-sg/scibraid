@@ -1,0 +1,4030 @@
+{
+  "slug": "llm-emergent-abilities",
+  "question": "Are emergent abilities in large language models real, or an artefact of how performance is measured?",
+  "brief": "",
+  "prompted_by": null,
+  "builders": [
+    {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  ],
+  "created": "2026-09-20T07:37:42+00:00",
+  "updated": "2026-09-20T16:13:58+00:00",
+  "papers": {
+    "W4283026156": {
+      "id": "W4283026156",
+      "title": "Emergent Abilities of Large Language Models",
+      "doi": "10.48550/arxiv.2206.07682",
+      "year": 2022,
+      "authors": [
+        "Wei, Jason",
+        "Yi Tay",
+        "Rishi Bommasani",
+        "Colin Raffel",
+        "Barret Zoph",
+        "Sebastian Borgeaud",
+        "Dani Yogatama",
+        "Maarten Bosma"
+      ],
+      "author_ids": [],
+      "author_orcids": [],
+      "venue": "arXiv (Cornell University)",
+      "url": "http://arxiv.org/abs/2206.07682",
+      "cited_by_count": 1047,
+      "source_tier": "grey",
+      "abstract": "Scaling up language models has been shown to predictably improve performance and sample efficiency on a wide range of downstream tasks. This paper instead discusses an unpredictable phenomenon that we refer to as emergent abilities of large language models. We consider an ability to be emergent if it is not present in smaller models but is present in larger models. Thus, emergent abilities cannot be predicted simply by extrapolating the performance of smaller models. The existence of such emergence implies that additional scaling could further expand the range of capabilities of language models.",
+      "oa_status": null,
+      "oa_url": null,
+      "arxiv_id": null,
+      "pmcid": null,
+      "text_source": null
+    },
+    "W4367628401": {
+      "id": "W4367628401",
+      "title": "Are Emergent Abilities of Large Language Models a Mirage?",
+      "doi": "10.48550/arxiv.2304.15004",
+      "year": 2023,
+      "authors": [
+        "Rylan Schaeffer",
+        "Brando Miranda",
+        "Sanmi Koyejo"
+      ],
+      "author_ids": [],
+      "author_orcids": [],
+      "venue": "arXiv (Cornell University)",
+      "url": "http://arxiv.org/abs/2304.15004",
+      "cited_by_count": 133,
+      "source_tier": "grey",
+      "abstract": "Recent work claims that large language models display emergent abilities, abilities not present in smaller-scale models that are present in larger-scale models. What makes emergent abilities intriguing is two-fold: their sharpness, transitioning seemingly instantaneously from not present to present, and their unpredictability, appearing at seemingly unforeseeable model scales. Here, we present an alternative explanation for emergent abilities: that for a particular task and model family, when analyzing fixed model outputs, emergent abilities appear due to the researcher's choice of metric rather than due to fundamental changes in model behavior with scale. Specifically, nonlinear or discontinuous metrics produce apparent emergent abilities, whereas linear or continuous metrics produce smooth, continuous predictable changes in model performance. We present our alternative explanation in a simple mathematical model, then test it in three complementary ways: we (1) make, test and confirm three predictions on the effect of metric choice using the InstructGPT/GPT-3 family on tasks with claimed emergent abilities; (2) make, test and confirm two predictions about metric choices in a meta-analysis of emergent abilities on BIG-Bench; and (3) show to choose metrics to produce never-before-seen seemingly emergent abilities in multiple vision tasks across diverse deep networks. Via all three analyses, we provide evidence that alleged emergent abilities evaporate with different metrics or with better statistics, and may not be a fundamental property of scaling AI models.",
+      "oa_status": null,
+      "oa_url": null,
+      "arxiv_id": null,
+      "pmcid": null,
+      "text_source": null
+    },
+    "W4402671818": {
+      "id": "W4402671818",
+      "title": "Are Emergent Abilities in Large Language Models just In-Context Learning?",
+      "doi": "10.18653/v1/2024.acl-long.279",
+      "year": 2024,
+      "authors": [
+        "Sheng Lu",
+        "Irina Bigoulaeva",
+        "Rachneet Sachdeva",
+        "Harish Tayyar Madabushi",
+        "Iryna Gurevych"
+      ],
+      "author_ids": [],
+      "author_orcids": [],
+      "venue": null,
+      "url": "https://doi.org/10.18653/v1/2024.acl-long.279",
+      "cited_by_count": 35,
+      "source_tier": "published",
+      "abstract": "Sheng Lu, Irina Bigoulaeva, Rachneet Sachdeva, Harish Tayyar Madabushi, Iryna Gurevych. Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers). 2024.",
+      "oa_status": null,
+      "oa_url": null,
+      "arxiv_id": null,
+      "pmcid": null,
+      "text_source": null
+    },
+    "W4281690148": {
+      "id": "W4281690148",
+      "title": "Beyond the Imitation Game: Quantifying and extrapolating the capabilities of language models",
+      "doi": "10.48550/arxiv.2206.04615",
+      "year": 2022,
+      "authors": [
+        "Aarohi Srivastava",
+        "Abhinav Rastogi",
+        "Abhishek S. Rao",
+        "Abu Awal Shoeb",
+        "Abubakar Abid",
+        "Adam Fisch",
+        "Adam R. Brown",
+        "Adam Santoro"
+      ],
+      "author_ids": [],
+      "author_orcids": [],
+      "venue": "arXiv (Cornell University)",
+      "url": "http://arxiv.org/abs/2206.04615",
+      "cited_by_count": 565,
+      "source_tier": "grey",
+      "abstract": "Language models demonstrate both quantitative improvement and new qualitative capabilities with increasing scale. Despite their potentially transformative impact, these new capabilities are as yet poorly characterized. In order to inform future research, prepare for disruptive new model capabilities, and ameliorate socially harmful effects, it is vital that we understand the present and near-future capabilities and limitations of language models. To address this challenge, we introduce the Beyond the Imitation Game benchmark (BIG-bench). BIG-bench currently consists of 204 tasks, contributed by 450 authors across 132 institutions. Task topics are diverse, drawing problems from linguistics, childhood development, math, common-sense reasoning, biology, physics, social bias, software development, and beyond. BIG-bench focuses on tasks that are believed to be beyond the capabilities of current language models. We evaluate the behavior of OpenAI's GPT models, Google-internal dense transformer architectures, and Switch-style sparse transformers on BIG-bench, across model sizes spanning millions to hundreds of billions of parameters. In addition, a team of human expert raters performed all tasks in order to provide a strong baseline. Findings include: model performance and calibration both improve with scale, but are poor in absolute terms (and when compared with rater performance); performance is remarkably similar across model classes, though with benefits from sparsity; tasks that improve gradually and predictably commonly involve a large knowledge or memorization component, whereas tasks that exhibit \"breakthrough\" behavior at a critical scale often involve multiple steps or components, or brittle metrics; social bias typically increases with scale in settings with ambiguous context, but this can be improved with prompting.",
+      "oa_status": null,
+      "oa_url": null,
+      "arxiv_id": null,
+      "pmcid": null,
+      "text_source": null
+    },
+    "W4387432280": {
+      "id": "W4387432280",
+      "title": "Predicting Emergent Abilities with Infinite Resolution Evaluation",
+      "doi": "10.48550/arxiv.2310.03262",
+      "year": 2023,
+      "authors": [
+        "Shengding Hu",
+        "Xin Liu",
+        "Xu Han",
+        "Xinrong Zhang",
+        "Chaoqun He",
+        "Weilin Zhao",
+        "Yankai Lin",
+        "Ning Ding"
+      ],
+      "author_ids": [],
+      "author_orcids": [],
+      "venue": "arXiv (Cornell University)",
+      "url": "http://arxiv.org/abs/2310.03262",
+      "cited_by_count": 1,
+      "source_tier": "grey",
+      "abstract": "The scientific scale-up of large language models (LLMs) necessitates a comprehensive understanding of their scaling properties. However, the existing literature on the scaling properties only yields an incomplete answer: optimization loss decreases predictably as the model size increases, in line with established scaling law; yet no scaling law for task has been established and the task performances are far from predictable during scaling. Task performances typically show minor gains on small models until they improve dramatically once models exceed a size threshold, exemplifying the ``emergent abilities''. In this study, we discover that small models, although they exhibit minor performance, demonstrate critical and consistent task performance improvements that are not captured by conventional evaluation strategies due to insufficient measurement resolution. To measure such improvements, we introduce PassUntil, an evaluation strategy with theoretically infinite resolution, through massive sampling in the decoding phase. With PassUntil, we conduct a quantitative investigation into the scaling law of task performance. The investigation contains two parts. Firstly, a strict task scaling law that is not conventionally known to exist, is identified, enhancing the predictability of task performances. Remarkably, we are able to predict the performance of the 2.4B model on code generation with merely 0.05\\% deviation before training starts, which is the first systematic attempt to verify predictable scaling proposed by GPT-4's report. Secondly, we are able to study emergent abilities quantitatively. We identify a kind of accelerated emergence whose scaling curve cannot be fitted by standard scaling law function and has a increasing speed. We then examine two hypothesis and imply that the ``multiple circuits hypothesis'' might be responsible for the accelerated emergence.",
+      "oa_status": null,
+      "oa_url": null,
+      "arxiv_id": null,
+      "pmcid": null,
+      "text_source": null
+    },
+    "W4399510412": {
+      "id": "W4399510412",
+      "title": "Why Has Predicting Downstream Capabilities of Frontier AI Models with Scale Remained Elusive?",
+      "doi": "10.48550/arxiv.2406.04391",
+      "year": 2024,
+      "authors": [
+        "Rylan Schaeffer",
+        "Hailey Schoelkopf",
+        "Brando Miranda",
+        "Gabriel Mukobi",
+        "Varun Madan",
+        "Adam Ibrahim",
+        "Herbie Bradley",
+        "Stella Biderman"
+      ],
+      "author_ids": [],
+      "author_orcids": [],
+      "venue": "arXiv (Cornell University)",
+      "url": "http://arxiv.org/abs/2406.04391",
+      "cited_by_count": 2,
+      "source_tier": "grey",
+      "abstract": "Predicting changes from scaling advanced AI systems is a desirable property for engineers, economists, governments and industry alike, and, while a well-established literature exists on how pretraining performance scales, predictable scaling behavior on downstream capabilities remains elusive. While many factors are certainly responsible, this paper identifies a significant factor that makes predicting scaling behavior on widely used multiple-choice question answering benchmarks challenging and illuminates a path towards making such downstream evaluations predictable with scale. Using five model families and twelve well-established multiple-choice benchmarks, we demonstrate that downstream performance is computed from negative log likelihoods via a sequence of transformations that progressively degrades the statistical relationship between performance and scale. We then pinpoint the mechanism causing this degradation: downstream metrics require comparing the correct choice against a small number of specific incorrect choices, meaning accurately predicting downstream capabilities requires predicting not just how probability mass concentrates on the correct choice with scale, but also how probability mass fluctuates on the alternative incorrect choices with scale. We empirically study how probability mass on the correct choice co-varies with probability mass on incorrect choices with increasing compute, suggesting that scaling laws for \\textit{incorrect} choices might be achievable. Our work also explains why pretraining scaling laws are commonly regarded as more predictable than downstream capabilities and contributes towards establishing scaling-predictable evaluations of frontier AI models.",
+      "oa_status": null,
+      "oa_url": null,
+      "arxiv_id": null,
+      "pmcid": null,
+      "text_source": null
+    },
+    "W4360892090": {
+      "id": "W4360892090",
+      "title": "The Quantization Model of Neural Scaling",
+      "doi": "10.48550/arxiv.2303.13506",
+      "year": 2023,
+      "authors": [
+        "Eric J. Michaud",
+        "Ziming Liu",
+        "Uzay Girit",
+        "Max Tegmark"
+      ],
+      "author_ids": [],
+      "author_orcids": [],
+      "venue": "arXiv (Cornell University)",
+      "url": "http://arxiv.org/abs/2303.13506",
+      "cited_by_count": 8,
+      "source_tier": "grey",
+      "abstract": "We propose the Quantization Model of neural scaling laws, explaining both the observed power law dropoff of loss with model and data size, and also the sudden emergence of new capabilities with scale. We derive this model from what we call the Quantization Hypothesis, where network knowledge and skills are \"quantized\" into discrete chunks ($\\textbf{quanta}$). We show that when quanta are learned in order of decreasing use frequency, then a power law in use frequencies explains observed power law scaling of loss. We validate this prediction on toy datasets, then study how scaling curves decompose for large language models. Using language model gradients, we automatically decompose model behavior into a diverse set of skills (quanta). We tentatively find that the frequency at which these quanta are used in the training distribution roughly follows a power law corresponding with the empirical scaling exponent for language models, a prediction of our theory.",
+      "oa_status": null,
+      "oa_url": null,
+      "arxiv_id": null,
+      "pmcid": null,
+      "text_source": null
+    },
+    "W4297412003": {
+      "id": "W4297412003",
+      "title": "In-context Learning and Induction Heads",
+      "doi": "10.48550/arxiv.2209.11895",
+      "year": 2022,
+      "authors": [
+        "Catherine Olsson",
+        "Nelson Elhage",
+        "Neel Nanda",
+        "Nicholas Joseph",
+        "Nova DasSarma",
+        "Tom Henighan",
+        "Ben Mann",
+        "Amanda Askell"
+      ],
+      "author_ids": [],
+      "author_orcids": [],
+      "venue": "arXiv (Cornell University)",
+      "url": "http://arxiv.org/abs/2209.11895",
+      "cited_by_count": 87,
+      "source_tier": "grey",
+      "abstract": "\"Induction heads\" are attention heads that implement a simple algorithm to complete token sequences like [A][B] ... [A] -> [B]. In this work, we present preliminary and indirect evidence for a hypothesis that induction heads might constitute the mechanism for the majority of all \"in-context learning\" in large transformer models (i.e. decreasing loss at increasing token indices). We find that induction heads develop at precisely the same point as a sudden sharp increase in in-context learning ability, visible as a bump in the training loss. We present six complementary lines of evidence, arguing that induction heads may be the mechanistic source of general in-context learning in transformer models of any size. For small attention-only models, we present strong, causal evidence; for larger models with MLPs, we present correlational evidence.",
+      "oa_status": null,
+      "oa_url": null,
+      "arxiv_id": null,
+      "pmcid": null,
+      "text_source": null
+    },
+    "W4386794314": {
+      "id": "W4386794314",
+      "title": "Sudden Drops in the Loss: Syntax Acquisition, Phase Transitions, and Simplicity Bias in MLMs",
+      "doi": "10.48550/arxiv.2309.07311",
+      "year": 2023,
+      "authors": [
+        "Angelica Chen",
+        "Shwartz-Ziv, Ravid",
+        "Kyunghyun Cho",
+        "Matthew L. Leavitt",
+        "Naomi Saphra"
+      ],
+      "author_ids": [],
+      "author_orcids": [],
+      "venue": "arXiv (Cornell University)",
+      "url": "http://arxiv.org/abs/2309.07311",
+      "cited_by_count": 4,
+      "source_tier": "grey",
+      "abstract": "Most interpretability research in NLP focuses on understanding the behavior and features of a fully trained model. However, certain insights into model behavior may only be accessible by observing the trajectory of the training process. We present a case study of syntax acquisition in masked language models (MLMs) that demonstrates how analyzing the evolution of interpretable artifacts throughout training deepens our understanding of emergent behavior. In particular, we study Syntactic Attention Structure (SAS), a naturally emerging property of MLMs wherein specific Transformer heads tend to focus on specific syntactic relations. We identify a brief window in pretraining when models abruptly acquire SAS, concurrent with a steep drop in loss. This breakthrough precipitates the subsequent acquisition of linguistic capabilities. We then examine the causal role of SAS by manipulating SAS during training, and demonstrate that SAS is necessary for the development of grammatical capabilities. We further find that SAS competes with other beneficial traits during training, and that briefly suppressing SAS improves model quality. These findings offer an interpretation of a real-world example of both simplicity bias and breakthrough training dynamics.",
+      "oa_status": null,
+      "oa_url": null,
+      "arxiv_id": null,
+      "pmcid": null,
+      "text_source": null
+    },
+    "W4389519396": {
+      "id": "W4389519396",
+      "title": "Inverse Scaling Can Become U-Shaped",
+      "doi": "10.18653/v1/2023.emnlp-main.963",
+      "year": 2023,
+      "authors": [
+        "Jason Wei",
+        "Najoung Kim",
+        "Yi Tay",
+        "Quoc V. Le"
+      ],
+      "author_ids": [],
+      "author_orcids": [],
+      "venue": null,
+      "url": "https://doi.org/10.18653/v1/2023.emnlp-main.963",
+      "cited_by_count": 21,
+      "source_tier": "published",
+      "abstract": "Scaling up language models has been empirically shown to improve performance on a wide range of downstream tasks.However, if we were to observe worse performance as a function of scale (inverse scaling) on certain tasks, this would indicate that scaling can also encourage behaviors that are misaligned with human preferences.The Inverse Scaling Prize (McKenzie et al., 2023) identified eleven such inverse scaling tasks, evaluated on models of up to 280B parameters and up to 500 zettaFLOPs of training compute.In this paper, we evaluate models of up to 540B parameters, trained on five times more compute than those evaluated in the Inverse Scaling Prize.With this increased range of model sizes and compute, only four out of the eleven tasks remain inverse scaling.Six tasks exhibit Ushaped scaling, where performance decreases up to a certain size, and then increases again up to the largest model evaluated (the one remaining task displays positive scaling).In addition, 1-shot examples and chain-of-thought can help mitigate undesirable scaling patterns even further.U-shaped scaling suggests that the inverse scaling trend observed in McKenzie et al. (2023) may not continue to hold for larger models, which we attribute to the presence of distractor tasks that only sufficiently large models can avoid.",
+      "oa_status": null,
+      "oa_url": null,
+      "arxiv_id": null,
+      "pmcid": null,
+      "text_source": null
+    },
+    "W4393212671": {
+      "id": "W4393212671",
+      "title": "Understanding Emergent Abilities of Language Models from the Loss Perspective",
+      "doi": "10.48550/arxiv.2403.15796",
+      "year": 2024,
+      "authors": [
+        "Zhengxiao Du",
+        "Aohan Zeng",
+        "Yuxiao Dong",
+        "Jie Tang"
+      ],
+      "author_ids": [],
+      "author_orcids": [],
+      "venue": "arXiv (Cornell University)",
+      "url": "http://arxiv.org/abs/2403.15796",
+      "cited_by_count": 1,
+      "source_tier": "grey",
+      "abstract": "Recent studies have put into question the belief that emergent abilities in language models are exclusive to large models. This skepticism arises from two observations: 1) smaller models can also exhibit high performance on emergent abilities and 2) there is doubt on the discontinuous metrics used to measure these abilities. In this paper, we propose to study emergent abilities in the lens of pre-training loss, instead of model size or training compute. We demonstrate that the Transformer models with the same pre-training loss, but different model and data sizes, generate the same performance on various downstream tasks, with a fixed data corpus, tokenization, and model architecture. We also discover that a model exhibits emergent abilities on certain tasks -- regardless of the continuity of metrics -- when its pre-training loss falls below a specific threshold. Before reaching this threshold, its performance remains at the level of random guessing. This inspires us to redefine emergent abilities as those that manifest in models with lower pre-training losses, highlighting that these abilities cannot be predicted by merely extrapolating the performance trends of models with higher pre-training losses.",
+      "oa_status": "green",
+      "oa_url": "https://arxiv.org/pdf/2403.15796",
+      "arxiv_id": "2403.15796",
+      "pmcid": null,
+      "text_source": null
+    },
+    "W4404987046": {
+      "id": "W4404987046",
+      "title": "Predicting Emergent Capabilities by Finetuning",
+      "doi": "10.48550/arxiv.2411.16035",
+      "year": 2024,
+      "authors": [
+        "Charlie Snell",
+        "Eric Wallace",
+        "Dan Klein",
+        "Sergey Levine"
+      ],
+      "author_ids": [],
+      "author_orcids": [],
+      "venue": "arXiv (Cornell University)",
+      "url": "http://arxiv.org/abs/2411.16035",
+      "cited_by_count": 0,
+      "source_tier": "grey",
+      "abstract": "A fundamental open challenge in modern LLM scaling is the lack of understanding around emergent capabilities. In particular, language model pretraining loss is known to be highly predictable as a function of compute. However, downstream capabilities are far less predictable -- sometimes even exhibiting emergent jumps -- which makes it challenging to anticipate the capabilities of future models. In this work, we first pose the task of emergence prediction: given access to current LLMs that have random few-shot accuracy on a task, can we predict whether future models (GPT-N+1) will have non-trivial accuracy on that task? We then discover a simple insight for this problem: finetuning LLMs on a given task can shift the point in scaling at which emergence occurs towards less capable models. To operationalize this insight, we can finetune LLMs with varying amounts of data and fit a parametric function that predicts when emergence will occur (i.e., \"emergence laws\"). We validate this approach using four standard NLP benchmarks where large-scale open-source LLMs already demonstrate emergence (MMLU, GSM8K, CommonsenseQA, and CoLA). Using only small-scale LLMs, we find that, in some cases, we can accurately predict whether models trained with up to 4x more compute have emerged. Finally, we present a case study of two realistic uses for emergence prediction.",
+      "oa_status": "green",
+      "oa_url": "https://arxiv.org/pdf/2411.16035",
+      "arxiv_id": "2411.16035",
+      "pmcid": null,
+      "text_source": "https://arxiv.org/html/2411.16035"
+    }
+  },
+  "nodes": {
+    "h:emergence-sharp-transition": {
+      "id": "h:emergence-sharp-transition",
+      "type": "hypothesis",
+      "label": "Some LLM abilities go from near-random to well above random over a narrow range of scale, reflecting a real change in model behaviour",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [
+        {
+          "paper_id": "W4283026156",
+          "passage": "We consider an ability to be emergent if it is not present in smaller models but is present in larger models.",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "derived_from": null,
+      "framed": false
+    },
+    "h:emergence-unpredictable": {
+      "id": "h:emergence-unpredictable",
+      "type": "hypothesis",
+      "label": "Emergent abilities cannot be predicted by extrapolating the performance of smaller models",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [
+        {
+          "paper_id": "W4283026156",
+          "passage": "emergent abilities cannot be predicted simply by extrapolating the performance of smaller models",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "derived_from": null,
+      "framed": false
+    },
+    "h:emergence-metric-artefact": {
+      "id": "h:emergence-metric-artefact",
+      "type": "hypothesis",
+      "label": "Apparent emergent abilities are produced by nonlinear or discontinuous metrics and low measurement resolution, not by changes in model behaviour with scale",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [
+        {
+          "paper_id": "W4367628401",
+          "passage": "emergent abilities appear due to the researcher's choice of metric rather than due to fundamental changes in model behavior with scale",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:few-shot-prompting": {
+      "id": "c:few-shot-prompting",
+      "type": "condition",
+      "label": "Few-shot prompting (in-context examples)",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:big-bench": {
+      "id": "c:big-bench",
+      "type": "condition",
+      "label": "BIG-Bench tasks",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:model-family-lamda": {
+      "id": "c:model-family-lamda",
+      "type": "condition",
+      "label": "LaMDA model family",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:model-family-palm": {
+      "id": "c:model-family-palm",
+      "type": "condition",
+      "label": "PaLM model family",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:model-family-gpt3": {
+      "id": "c:model-family-gpt3",
+      "type": "condition",
+      "label": "GPT-3 / InstructGPT model family",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:cross-entropy-loss-metric": {
+      "id": "c:cross-entropy-loss-metric",
+      "type": "condition",
+      "label": "Performance measured by cross-entropy loss / log-likelihood of the target",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:exact-match-metric": {
+      "id": "c:exact-match-metric",
+      "type": "condition",
+      "label": "Exact string match / sequence-level accuracy metric",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "e:wei-2022-few-shot-scaling-survey": {
+      "id": "e:wei-2022-few-shot-scaling-survey",
+      "type": "experiment",
+      "label": "Wei et al. 2022 survey of few-shot prompted scaling curves across model families",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [
+        {
+          "paper_id": "W4283026156",
+          "passage": "The ability to perform a task via few-shot prompting is emergent when a language model achieves random performance until a certain scale, after which performance significantly increases to well-above random.",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:wei-2022-random-then-well-above-random": {
+      "id": "o:wei-2022-random-then-well-above-random",
+      "type": "observation",
+      "label": "Few-shot task performance is random until a critical scale, then rises well above random",
+      "description": "",
+      "outcome": "positive",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:wei-2022-palm-62b-beats-larger-models": {
+      "id": "o:wei-2022-palm-62b-beats-larger-models",
+      "type": "observation",
+      "label": "PaLM 62B is above random on tasks where LaMDA 137B and GPT-3 175B are near random, despite fewer parameters and FLOPs",
+      "description": "",
+      "outcome": "mixed",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "e:wei-2022-cross-entropy-analysis": {
+      "id": "e:wei-2022-cross-entropy-analysis",
+      "type": "experiment",
+      "label": "Wei et al. 2022 Appendix A: cross-entropy loss vs downstream metric on six emergent BIG-Bench tasks",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:wei-2022-loss-improves-while-metric-random": {
+      "id": "o:wei-2022-loss-improves-while-metric-random",
+      "type": "observation",
+      "label": "Cross-entropy loss improves at small scales where exact match, BLEU and accuracy stay near random",
+      "description": "",
+      "outcome": "mixed",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:wei-2022-elbow-in-loss-at-emergence": {
+      "id": "o:wei-2022-elbow-in-loss-at-emergence",
+      "type": "observation",
+      "label": "Cross-entropy loss shows an elbow at the scale where the downstream metric emerges",
+      "description": "",
+      "outcome": "positive",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "i:wei-2022-metrics-incomplete-explanation": {
+      "id": "i:wei-2022-metrics-incomplete-explanation",
+      "type": "interpretation",
+      "label": "Metrics without partial credit are at best an incomplete explanation, since emergence also appears on classification tasks",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:multiple-choice-grade-metric": {
+      "id": "c:multiple-choice-grade-metric",
+      "type": "condition",
+      "label": "Multiple-choice accuracy (Multiple Choice Grade) metric",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:token-edit-distance-metric": {
+      "id": "c:token-edit-distance-metric",
+      "type": "condition",
+      "label": "Token / string edit distance metric",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:brier-score-metric": {
+      "id": "c:brier-score-metric",
+      "type": "condition",
+      "label": "Brier score metric",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:arithmetic-tasks": {
+      "id": "c:arithmetic-tasks",
+      "type": "condition",
+      "label": "Multi-digit integer arithmetic tasks",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:increased-test-set-resolution": {
+      "id": "c:increased-test-set-resolution",
+      "type": "condition",
+      "label": "Test set enlarged to raise measurement resolution",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:vision-tasks": {
+      "id": "c:vision-tasks",
+      "type": "condition",
+      "label": "Vision tasks with non-language deep networks",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "e:schaeffer-2023-instructgpt-arithmetic": {
+      "id": "e:schaeffer-2023-instructgpt-arithmetic",
+      "type": "experiment",
+      "label": "Schaeffer et al. 2023: InstructGPT/GPT-3 arithmetic, fixed outputs rescored under different metrics",
+      "description": "",
+      "outcome": null,
+      "attrs": {
+        "shots": 2,
+        "tasks": [
+          "2-digit multiplication",
+          "4-digit addition"
+        ]
+      },
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:schaeffer-2023-sharp-under-accuracy": {
+      "id": "o:schaeffer-2023-sharp-under-accuracy",
+      "type": "observation",
+      "label": "Arithmetic performance looks sharp and unpredictable with scale when scored by accuracy on 4-5 digit targets",
+      "description": "",
+      "outcome": "positive",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:schaeffer-2023-smooth-under-edit-distance": {
+      "id": "o:schaeffer-2023-smooth-under-edit-distance",
+      "type": "observation",
+      "label": "Same outputs scored by token edit distance improve smoothly and predictably with scale",
+      "description": "",
+      "outcome": "negative",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:schaeffer-2023-above-chance-at-high-resolution": {
+      "id": "o:schaeffer-2023-above-chance-at-high-resolution",
+      "type": "observation",
+      "label": "With more test data, all GPT-3 family models show above-chance accuracy on arithmetic",
+      "description": "",
+      "outcome": "negative",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "e:schaeffer-2023-big-bench-meta-analysis": {
+      "id": "e:schaeffer-2023-big-bench-meta-analysis",
+      "type": "experiment",
+      "label": "Schaeffer et al. 2023: meta-analysis of emergence across BIG-Bench metrics",
+      "description": "",
+      "outcome": null,
+      "attrs": {
+        "preferred_metrics": 39
+      },
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:schaeffer-2023-emergence-confined-to-few-metrics": {
+      "id": "o:schaeffer-2023-emergence-confined-to-few-metrics",
+      "type": "observation",
+      "label": "At most 5 of 39 BIG-Bench preferred metrics show any emergence, mostly Multiple Choice Grade and Exact String Match",
+      "description": "",
+      "outcome": "negative",
+      "attrs": {
+        "metrics_with_emergence_max": 5,
+        "metrics_total": 39
+      },
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:schaeffer-2023-lamda-smooth-under-brier": {
+      "id": "o:schaeffer-2023-lamda-smooth-under-brier",
+      "type": "observation",
+      "label": "LaMDA's emergent abilities under Multiple Choice Grade disappear under Brier score",
+      "description": "",
+      "outcome": "negative",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "e:schaeffer-2023-induced-vision-emergence": {
+      "id": "e:schaeffer-2023-induced-vision-emergence",
+      "type": "experiment",
+      "label": "Schaeffer et al. 2023: inducing apparent emergence in vision networks by metric choice",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:schaeffer-2023-emergence-induced-by-metric": {
+      "id": "o:schaeffer-2023-emergence-induced-by-metric",
+      "type": "observation",
+      "label": "Redefining the metric produces seemingly emergent abilities in autoencoders (CIFAR100) and transformers (Omniglot)",
+      "description": "",
+      "outcome": "positive",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "i:schaeffer-2023-metric-wholly-responsible": {
+      "id": "i:schaeffer-2023-metric-wholly-responsible",
+      "type": "interpretation",
+      "label": "Metric choice is likely wholly responsible for emergent abilities",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "h:emergence-loss-threshold": {
+      "id": "h:emergence-loss-threshold",
+      "type": "hypothesis",
+      "label": "Abilities emerge when pre-training loss falls below a task-specific threshold, regardless of metric continuity, model size or data size",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [
+        {
+          "paper_id": "W4393212671",
+          "passage": "a model exhibits emergent abilities on certain tasks -- regardless of the continuity of metrics -- when its pre-training loss falls below a specific threshold",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:intermediate-checkpoints": {
+      "id": "c:intermediate-checkpoints",
+      "type": "condition",
+      "label": "Performance tracked across intermediate pre-training checkpoints",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:pre-training-loss-as-x-axis": {
+      "id": "c:pre-training-loss-as-x-axis",
+      "type": "condition",
+      "label": "Performance analysed against pre-training loss rather than parameters or compute",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:fixed-corpus-tokenizer-architecture": {
+      "id": "c:fixed-corpus-tokenizer-architecture",
+      "type": "condition",
+      "label": "Fixed data corpus, tokenization and model architecture across runs",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:mmlu": {
+      "id": "c:mmlu",
+      "type": "condition",
+      "label": "MMLU benchmark",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:c-eval": {
+      "id": "c:c-eval",
+      "type": "condition",
+      "label": "C-Eval benchmark",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:gsm8k": {
+      "id": "c:gsm8k",
+      "type": "condition",
+      "label": "GSM8K benchmark",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "e:du-2024-loss-vs-performance": {
+      "id": "e:du-2024-loss-vs-performance",
+      "type": "experiment",
+      "label": "Du et al. 2024: downstream performance vs pre-training loss across checkpoints of 1.5B, 6B and 32B models",
+      "description": "",
+      "outcome": null,
+      "attrs": {
+        "model_sizes": [
+          "1.5B",
+          "6B",
+          "32B"
+        ],
+        "tokens": [
+          "3T",
+          "3T",
+          "2.5T"
+        ],
+        "downstream_tasks": 12
+      },
+      "provenance": [
+        {
+          "paper_id": "W4393212671",
+          "passage": "we train three models with 1.5B, 6B, and 32B parameters and observe their behaviors until trained on 3T, 3T, and 2.5T tokens, respectively",
+          "location": "methods",
+          "verified": true
+        }
+      ],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:du-2024-random-until-loss-threshold": {
+      "id": "o:du-2024-random-until-loss-threshold",
+      "type": "observation",
+      "label": "On MMLU, C-Eval, GSM8K and GSM8K-Chinese all model sizes stay at random until pre-training loss reaches about 2.2, then climb",
+      "description": "",
+      "outcome": "positive",
+      "attrs": {
+        "loss_threshold": 2.2
+      },
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:du-2024-threshold-persists-under-continuous-metrics": {
+      "id": "o:du-2024-threshold-persists-under-continuous-metrics",
+      "type": "observation",
+      "label": "On MMLU and C-Eval, accuracy, correct-choice probability and Brier score all show emergent improvement below the loss threshold",
+      "description": "",
+      "outcome": "positive",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:du-2024-other-tasks-track-loss-smoothly": {
+      "id": "o:du-2024-other-tasks-track-loss-smoothly",
+      "type": "observation",
+      "label": "On TriviaQA, HellaSwag, RACE, WinoGrande etc. performance tracks pre-training loss from the outset with no threshold",
+      "description": "",
+      "outcome": "negative",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "i:du-2024-brier-includes-incorrect-choices": {
+      "id": "i:du-2024-brier-includes-incorrect-choices",
+      "type": "interpretation",
+      "label": "A falling Brier score need not mean task improvement, because it also depends on probability assigned to incorrect answers",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "h:emergence-is-in-context-learning": {
+      "id": "h:emergence-is-in-context-learning",
+      "type": "hypothesis",
+      "label": "Purported emergent abilities result from in-context learning combined with model memory and linguistic knowledge",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [
+        {
+          "paper_id": "W4402671818",
+          "passage": "purported emergent abilities are not truly emergent, but result from a combination of in-context learning, model memory, and linguistic knowledge",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:zero-shot-prompting": {
+      "id": "c:zero-shot-prompting",
+      "type": "condition",
+      "label": "Zero-shot prompting (no in-context examples)",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:non-instruction-tuned": {
+      "id": "c:non-instruction-tuned",
+      "type": "condition",
+      "label": "Base models without instruction tuning",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:instruction-tuned": {
+      "id": "c:instruction-tuned",
+      "type": "condition",
+      "label": "Instruction-tuned models",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:model-family-llama": {
+      "id": "c:model-family-llama",
+      "type": "condition",
+      "label": "LLaMA model family",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:model-family-falcon": {
+      "id": "c:model-family-falcon",
+      "type": "condition",
+      "label": "Falcon model family",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:model-family-t5": {
+      "id": "c:model-family-t5",
+      "type": "condition",
+      "label": "T5 / Flan-T5 model family",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:bertscore-accuracy-metric": {
+      "id": "c:bertscore-accuracy-metric",
+      "type": "condition",
+      "label": "BERTScore accuracy: answer choice picked by semantic similarity to generated text",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "e:lu-2024-emergence-without-icl": {
+      "id": "e:lu-2024-emergence-without-icl",
+      "type": "experiment",
+      "label": "Lu et al. 2024: 20 models x 22 tasks, base models prompted zero-shot to exclude in-context learning",
+      "description": "",
+      "outcome": null,
+      "attrs": {
+        "models": 20,
+        "tasks": 22,
+        "few_shot_examples": 5
+      },
+      "provenance": [
+        {
+          "paper_id": "W4402671818",
+          "passage": "We experiment with 20 models across 22 tasks using two different settings.",
+          "location": "methods",
+          "verified": true
+        }
+      ],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:lu-2024-two-tasks-emergent-without-icl": {
+      "id": "o:lu-2024-two-tasks-emergent-without-icl",
+      "type": "observation",
+      "label": "In davinci (175B base GPT), zero-shot, only two tasks are emergent, and neither involves reasoning",
+      "description": "",
+      "outcome": "negative",
+      "attrs": {
+        "emergent_tasks": [
+          "nonsense words grammar",
+          "hindu knowledge"
+        ]
+      },
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:lu-2024-no-emergence-across-metrics": {
+      "id": "o:lu-2024-no-emergence-across-metrics",
+      "type": "observation",
+      "label": "Lack of emergence without ICL is consistent across exact match, BERTScore accuracy and string edit distance",
+      "description": "",
+      "outcome": "negative",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:lu-2024-other-families-predictable-or-below-baseline": {
+      "id": "o:lu-2024-other-families-predictable-or-below-baseline",
+      "type": "observation",
+      "label": "For LLaMA, Falcon and T5, performance is either predictable from smaller models or below baseline",
+      "description": "",
+      "outcome": "negative",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "e:lu-2024-few-shot-validity-check": {
+      "id": "e:lu-2024-few-shot-validity-check",
+      "type": "experiment",
+      "label": "Lu et al. 2024 validity test: instruction-tuned models with in-context examples",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:lu-2024-emergence-replicates-with-icl": {
+      "id": "o:lu-2024-emergence-replicates-with-icl",
+      "type": "observation",
+      "label": "With instruction tuning and few-shot prompts, previously reported emergence is replicated",
+      "description": "",
+      "outcome": "positive",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:sparse-transformers": {
+      "id": "c:sparse-transformers",
+      "type": "condition",
+      "label": "Switch-style sparse transformer models",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "e:srivastava-2022-big-bench-scaling": {
+      "id": "e:srivastava-2022-big-bench-scaling",
+      "type": "experiment",
+      "label": "Srivastava et al. 2022: BIG-bench evaluation across model classes and sizes",
+      "description": "",
+      "outcome": null,
+      "attrs": {
+        "tasks": 204
+      },
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:srivastava-2022-breakthrough-tasks": {
+      "id": "o:srivastava-2022-breakthrough-tasks",
+      "type": "observation",
+      "label": "Some tasks improve gradually and predictably; others show breakthrough behaviour at a critical scale, often multi-step tasks or brittle metrics",
+      "description": "",
+      "outcome": "mixed",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:massive-sampling-evaluation": {
+      "id": "c:massive-sampling-evaluation",
+      "type": "condition",
+      "label": "Pass rate estimated by massive sampling at decoding time (PassUntil)",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:code-generation-tasks": {
+      "id": "c:code-generation-tasks",
+      "type": "condition",
+      "label": "Code generation tasks",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "e:hu-2023-passuntil": {
+      "id": "e:hu-2023-passuntil",
+      "type": "experiment",
+      "label": "Hu et al. 2023: PassUntil high-resolution evaluation of task scaling in small models",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:hu-2023-small-models-improve-below-resolution": {
+      "id": "o:hu-2023-small-models-improve-below-resolution",
+      "type": "observation",
+      "label": "Small models show consistent task improvements that conventional evaluation misses for lack of resolution",
+      "description": "",
+      "outcome": "negative",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:hu-2023-task-performance-predicted": {
+      "id": "o:hu-2023-task-performance-predicted",
+      "type": "observation",
+      "label": "Code-generation performance of a 2.4B model predicted before training with 0.05% deviation",
+      "description": "",
+      "outcome": "negative",
+      "attrs": {
+        "target_params": "2.4B",
+        "deviation_pct": 0.05
+      },
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:hu-2023-accelerated-emergence": {
+      "id": "o:hu-2023-accelerated-emergence",
+      "type": "observation",
+      "label": "Some tasks show accelerated emergence that a standard scaling-law function cannot fit",
+      "description": "",
+      "outcome": "positive",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "i:hu-2023-multiple-circuits": {
+      "id": "i:hu-2023-multiple-circuits",
+      "type": "interpretation",
+      "label": "Multiple circuits hypothesis may account for accelerated emergence",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:multiple-choice-benchmarks": {
+      "id": "c:multiple-choice-benchmarks",
+      "type": "condition",
+      "label": "Multiple-choice question-answering benchmarks",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "e:schaeffer-2024-mcq-predictability": {
+      "id": "e:schaeffer-2024-mcq-predictability",
+      "type": "experiment",
+      "label": "Schaeffer et al. 2024: how metric transformations degrade predictability on multiple-choice benchmarks",
+      "description": "",
+      "outcome": null,
+      "attrs": {
+        "model_families": 5,
+        "benchmarks": 12
+      },
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:schaeffer-2024-transformations-degrade-scaling-relationship": {
+      "id": "o:schaeffer-2024-transformations-degrade-scaling-relationship",
+      "type": "observation",
+      "label": "Each transformation from negative log-likelihood to downstream metric weakens the statistical relationship between performance and scale",
+      "description": "",
+      "outcome": "positive",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "i:schaeffer-2024-incorrect-choice-mass": {
+      "id": "i:schaeffer-2024-incorrect-choice-mass",
+      "type": "interpretation",
+      "label": "Downstream metrics depend on how probability mass fluctuates on specific incorrect choices, not only on mass on the correct one",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:task-specific-finetuning": {
+      "id": "c:task-specific-finetuning",
+      "type": "condition",
+      "label": "Models finetuned on the target task",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:commonsenseqa": {
+      "id": "c:commonsenseqa",
+      "type": "condition",
+      "label": "CommonsenseQA benchmark",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:cola": {
+      "id": "c:cola",
+      "type": "condition",
+      "label": "CoLA benchmark",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "e:snell-2024-emergence-prediction-by-finetuning": {
+      "id": "e:snell-2024-emergence-prediction-by-finetuning",
+      "type": "experiment",
+      "label": "Snell et al. 2024: predicting the point of emergence from finetuned small models",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:snell-2024-finetuning-shifts-emergence-point": {
+      "id": "o:snell-2024-finetuning-shifts-emergence-point",
+      "type": "observation",
+      "label": "Finetuning on a task shifts the point of emergence towards less capable models",
+      "description": "",
+      "outcome": "positive",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:snell-2024-emergence-predicted-4x-ahead": {
+      "id": "o:snell-2024-emergence-predicted-4x-ahead",
+      "type": "observation",
+      "label": "In some cases emergence in models trained with up to 4x more compute is predicted from small models",
+      "description": "",
+      "outcome": "mixed",
+      "attrs": {
+        "compute_multiple": 4
+      },
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "h:quantization-of-skills": {
+      "id": "h:quantization-of-skills",
+      "type": "hypothesis",
+      "label": "Network skills are quantized into discrete chunks learned in order of use frequency, giving both smooth power-law loss and sudden emergence of individual capabilities",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [
+        {
+          "paper_id": "W4360892090",
+          "passage": "explaining both the observed power law dropoff of loss with model and data size, and also the sudden emergence of new capabilities with scale",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "derived_from": null,
+      "framed": false
+    },
+    "e:michaud-2023-quanta-decomposition": {
+      "id": "e:michaud-2023-quanta-decomposition",
+      "type": "experiment",
+      "label": "Michaud et al. 2023: gradient-based decomposition of LLM behaviour into skills (quanta)",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:michaud-2023-quanta-frequency-power-law": {
+      "id": "o:michaud-2023-quanta-frequency-power-law",
+      "type": "observation",
+      "label": "Quanta use frequencies roughly follow a power law matching the empirical LLM scaling exponent (tentative)",
+      "description": "",
+      "outcome": "inconclusive",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:training-trajectory-analysis": {
+      "id": "c:training-trajectory-analysis",
+      "type": "condition",
+      "label": "Behaviour tracked over the course of training within a model, rather than across model sizes",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:small-attention-only-models": {
+      "id": "c:small-attention-only-models",
+      "type": "condition",
+      "label": "Small attention-only transformer models",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:masked-language-models": {
+      "id": "c:masked-language-models",
+      "type": "condition",
+      "label": "Masked language models (BERT-style)",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "e:olsson-2022-induction-heads": {
+      "id": "e:olsson-2022-induction-heads",
+      "type": "experiment",
+      "label": "Olsson et al. 2022: induction head formation and in-context learning during training",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:olsson-2022-icl-phase-change": {
+      "id": "o:olsson-2022-icl-phase-change",
+      "type": "observation",
+      "label": "Induction heads form at the same point as a sudden sharp increase in in-context learning, visible as a bump in training loss",
+      "description": "",
+      "outcome": "positive",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "e:chen-2023-syntactic-attention-structure": {
+      "id": "e:chen-2023-syntactic-attention-structure",
+      "type": "experiment",
+      "label": "Chen et al. 2023: acquisition of syntactic attention structure in MLM pretraining",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:chen-2023-abrupt-sas-with-loss-drop": {
+      "id": "o:chen-2023-abrupt-sas-with-loss-drop",
+      "type": "observation",
+      "label": "Models abruptly acquire syntactic attention structure in a brief window, concurrent with a steep drop in loss",
+      "description": "",
+      "outcome": "positive",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:inverse-scaling-prize-tasks": {
+      "id": "c:inverse-scaling-prize-tasks",
+      "type": "condition",
+      "label": "Inverse Scaling Prize tasks",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:chain-of-thought-prompting": {
+      "id": "c:chain-of-thought-prompting",
+      "type": "condition",
+      "label": "Chain-of-thought prompting",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:one-shot-prompting": {
+      "id": "c:one-shot-prompting",
+      "type": "condition",
+      "label": "One-shot prompting",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "e:wei-2023-inverse-scaling-at-540b": {
+      "id": "e:wei-2023-inverse-scaling-at-540b",
+      "type": "experiment",
+      "label": "Wei et al. 2023: Inverse Scaling Prize tasks re-evaluated on models up to 540B parameters",
+      "description": "",
+      "outcome": null,
+      "attrs": {
+        "max_params": "540B",
+        "tasks": 11
+      },
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:wei-2023-u-shaped-scaling": {
+      "id": "o:wei-2023-u-shaped-scaling",
+      "type": "observation",
+      "label": "Six of eleven inverse-scaling tasks become U-shaped at larger scale; four remain inverse; one scales positively",
+      "description": "",
+      "outcome": "mixed",
+      "attrs": {
+        "u_shaped": 6,
+        "inverse": 4,
+        "positive": 1
+      },
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:wei-2023-prompting-mitigates": {
+      "id": "o:wei-2023-prompting-mitigates",
+      "type": "observation",
+      "label": "1-shot examples and chain-of-thought further mitigate undesirable scaling patterns",
+      "description": "",
+      "outcome": "positive",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "i:wei-2023-distractor-tasks": {
+      "id": "i:wei-2023-distractor-tasks",
+      "type": "interpretation",
+      "label": "Inverse scaling comes from distractor tasks that only sufficiently large models can avoid",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    }
+  },
+  "edges": [
+    {
+      "source": "e:wei-2022-few-shot-scaling-survey",
+      "target": "h:emergence-sharp-transition",
+      "relation": "tests",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4283026156",
+          "passage": "This paper instead discusses an unpredictable phenomenon that we refer to as emergent abilities of large language models.",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:wei-2022-few-shot-scaling-survey",
+      "target": "c:few-shot-prompting",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4283026156",
+          "passage": "The ability to perform a task via few-shot prompting is emergent when a model has random performance until a certain scale",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:wei-2022-few-shot-scaling-survey",
+      "target": "c:big-bench",
+      "relation": "performed_under",
+      "confidence": 0.85,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4283026156",
+          "passage": "there are dozens of tasks in BIG-Bench for which even the largest GPT-3 and PaLM models do not achieve above-random performance",
+          "location": "discussion",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:wei-2022-few-shot-scaling-survey",
+      "target": "c:model-family-palm",
+      "relation": "performed_under",
+      "confidence": 0.85,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4283026156",
+          "passage": "LaMDA 137B and GPT-3 175B models perform at near-random, but PaLM 62B in fact achieves above-random performance",
+          "location": "discussion",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:wei-2022-few-shot-scaling-survey",
+      "target": "c:model-family-gpt3",
+      "relation": "performed_under",
+      "confidence": 0.85,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4283026156",
+          "passage": "LaMDA 137B and GPT-3 175B models perform at near-random, but PaLM 62B in fact achieves above-random performance",
+          "location": "discussion",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:wei-2022-few-shot-scaling-survey",
+      "target": "c:model-family-lamda",
+      "relation": "performed_under",
+      "confidence": 0.85,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4283026156",
+          "passage": "LaMDA 137B and GPT-3 175B models perform at near-random, but PaLM 62B in fact achieves above-random performance",
+          "location": "discussion",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:wei-2022-few-shot-scaling-survey",
+      "target": "o:wei-2022-random-then-well-above-random",
+      "relation": "yields",
+      "confidence": 0.85,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4283026156",
+          "passage": "a language model achieves random performance until a certain scale, after which performance significantly increases to well-above random",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:wei-2022-random-then-well-above-random",
+      "target": "h:emergence-sharp-transition",
+      "relation": "supports",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4283026156",
+          "passage": "We consider an ability to be emergent if it is not present in smaller models but is present in larger models.",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:wei-2022-random-then-well-above-random",
+      "target": "h:emergence-unpredictable",
+      "relation": "supports",
+      "confidence": 0.85,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4283026156",
+          "passage": "Thus, emergent abilities cannot be predicted simply by extrapolating the performance of smaller models.",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:wei-2022-few-shot-scaling-survey",
+      "target": "o:wei-2022-palm-62b-beats-larger-models",
+      "relation": "yields",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4283026156",
+          "passage": "LaMDA 137B and GPT-3 175B models perform at near-random, but PaLM 62B in fact achieves above-random performance, despite having fewer model parameters and training FLOPs",
+          "location": "discussion",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:wei-2022-cross-entropy-analysis",
+      "target": "h:emergence-metric-artefact",
+      "relation": "tests",
+      "confidence": 0.75,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4283026156",
+          "passage": "As an alternative evaluation, we measure cross-entropy loss, which is used in scaling laws for pre-training, for the six emergent BIG-Bench tasks",
+          "location": "discussion",
+          "verified": true
+        }
+      ],
+      "note": "Predates Schaeffer et al.; the authors frame it as checking whether no-partial-credit metrics explain emergence."
+    },
+    {
+      "source": "e:wei-2022-cross-entropy-analysis",
+      "target": "c:cross-entropy-loss-metric",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4283026156",
+          "passage": "Cross-entropy loss differs from EM/BLEU/acc in that it captures improvements in performance (the predicted distribution getting closer to ground truth) even when the EM/BLEU/acc is random.",
+          "location": "appendix",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:wei-2022-cross-entropy-analysis",
+      "target": "c:big-bench",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4283026156",
+          "passage": "Adjacent plots for error rate and cross-entropy loss on three emergent generative tasks in BIG-Bench for LaMDA.",
+          "location": "appendix",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:wei-2022-cross-entropy-analysis",
+      "target": "c:model-family-lamda",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4283026156",
+          "passage": "Adjacent plots for error rate and cross-entropy loss on three emergent generative tasks in BIG-Bench for LaMDA.",
+          "location": "appendix",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:wei-2022-cross-entropy-analysis",
+      "target": "c:exact-match-metric",
+      "relation": "performed_under",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4283026156",
+          "passage": "Three of these tasks are generative and use Exact Match (EM) or BLEU (Papineni et al., 2002) as the evaluation metric.",
+          "location": "appendix",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:wei-2022-cross-entropy-analysis",
+      "target": "o:wei-2022-loss-improves-while-metric-random",
+      "relation": "yields",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4283026156",
+          "passage": "cross-entropy loss improves even for small model scales where the downstream metrics (exact match, BLEU, and accuracy) are close to random and do not improve",
+          "location": "discussion",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:wei-2022-loss-improves-while-metric-random",
+      "target": "h:emergence-metric-artefact",
+      "relation": "supports",
+      "confidence": 0.7,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4283026156",
+          "passage": "which shows that improvements in the log-likelihood of the target sequence can be masked by such downstream metrics",
+          "location": "discussion",
+          "verified": true
+        }
+      ],
+      "note": "The original emergence paper's own appendix shows smooth underlying improvement; the authors do not draw the artefact conclusion."
+    },
+    {
+      "source": "e:wei-2022-cross-entropy-analysis",
+      "target": "o:wei-2022-elbow-in-loss-at-emergence",
+      "relation": "yields",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4283026156",
+          "passage": "At the point of emergence as measured by error rate, we also see an “elbow” in performance improvement for cross-entropy loss.",
+          "location": "appendix",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:wei-2022-elbow-in-loss-at-emergence",
+      "target": "h:emergence-sharp-transition",
+      "relation": "supports",
+      "confidence": 0.55,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4283026156",
+          "passage": "At the point of emergence as measured by error rate, we also see an “elbow” in performance improvement for cross-entropy loss.",
+          "location": "appendix",
+          "verified": true
+        }
+      ],
+      "note": "A change of slope in a continuous metric at the emergence point is not what a pure metric artefact predicts."
+    },
+    {
+      "source": "i:wei-2022-metrics-incomplete-explanation",
+      "target": "o:wei-2022-loss-improves-while-metric-random",
+      "relation": "explains",
+      "confidence": 0.85,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4283026156",
+          "passage": "using evaluation metrics that do not give partial credit are at best an incomplete explanation, because emergent abilities are still observed on many classification tasks",
+          "location": "discussion",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:schaeffer-2023-instructgpt-arithmetic",
+      "target": "h:emergence-metric-artefact",
+      "relation": "tests",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4367628401",
+          "passage": "make, test and confirm three predictions on the effect of metric choice using the InstructGPT/GPT-3 family on tasks with claimed emergent abilities",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:schaeffer-2023-instructgpt-arithmetic",
+      "target": "c:model-family-gpt3",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4367628401",
+          "passage": "we collected outputs from the InstructGPT/GPT-3 family on two tasks",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:schaeffer-2023-instructgpt-arithmetic",
+      "target": "c:arithmetic-tasks",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4367628401",
+          "passage": "2-shot multiplication between two 2-digit integers and 2-shot addition between two 4-digit integers",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:schaeffer-2023-instructgpt-arithmetic",
+      "target": "c:few-shot-prompting",
+      "relation": "performed_under",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4367628401",
+          "passage": "2-shot multiplication between two 2-digit integers and 2-shot addition between two 4-digit integers",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:schaeffer-2023-instructgpt-arithmetic",
+      "target": "o:schaeffer-2023-sharp-under-accuracy",
+      "relation": "yields",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4367628401",
+          "passage": "On both arithmetic tasks, the GPT family displays emergent abilities if the target has 4 or 5 digits and if the metric is Accuracy",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:schaeffer-2023-sharp-under-accuracy",
+      "target": "c:exact-match-metric",
+      "relation": "observed_under",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4367628401",
+          "passage": "a nonlinear metric such as Accuracy (which requires a sequence of tokens to all be correct)",
+          "location": "methods",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:schaeffer-2023-instructgpt-arithmetic",
+      "target": "o:schaeffer-2023-smooth-under-edit-distance",
+      "relation": "yields",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4367628401",
+          "passage": "if one changes from nonlinear Accuracy to linear Token Edit Distance while keeping the models’ outputs fixed, the family’s performance smoothly, continuously and predictably improves with increasing scale",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:schaeffer-2023-smooth-under-edit-distance",
+      "target": "c:token-edit-distance-metric",
+      "relation": "observed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4367628401",
+          "passage": "if one changes from nonlinear Accuracy to linear Token Edit Distance while keeping the models’ outputs fixed",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:schaeffer-2023-smooth-under-edit-distance",
+      "target": "h:emergence-metric-artefact",
+      "relation": "supports",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4367628401",
+          "passage": "This confirms our first prediction and supports our alternative explanation that the source of emergent abilities is the researcher’s choice of metric, not changes in the model family’s outputs.",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:schaeffer-2023-smooth-under-edit-distance",
+      "target": "h:emergence-sharp-transition",
+      "relation": "contradicts",
+      "confidence": 0.85,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4367628401",
+          "passage": "alleged emergent abilities evaporate with different metrics or with better statistics, and may not be a fundamental property of scaling AI models",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:schaeffer-2023-smooth-under-edit-distance",
+      "target": "h:emergence-unpredictable",
+      "relation": "contradicts",
+      "confidence": 0.8,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4367628401",
+          "passage": "linear or continuous metrics produce smooth, continuous predictable changes in model performance",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:schaeffer-2023-instructgpt-arithmetic",
+      "target": "o:schaeffer-2023-above-chance-at-high-resolution",
+      "relation": "yields",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4367628401",
+          "passage": "we increased the resolution by generating additional test data, and found that on both arithmetic tasks, all models in the InstructGPT/GPT-3 family achieve above-chance accuracy",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:schaeffer-2023-above-chance-at-high-resolution",
+      "target": "c:increased-test-set-resolution",
+      "relation": "observed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4367628401",
+          "passage": "we increased the resolution by generating additional test data",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:schaeffer-2023-above-chance-at-high-resolution",
+      "target": "h:emergence-metric-artefact",
+      "relation": "supports",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4367628401",
+          "passage": "smaller models do not have zero accuracy, but rather have non-zero above-chance accuracy commensurate with choosing to use accuracy as the metric",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:schaeffer-2023-big-bench-meta-analysis",
+      "target": "h:emergence-metric-artefact",
+      "relation": "tests",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4367628401",
+          "passage": "make, test and confirm two predictions about metric choices in a meta-analysis of emergent abilities on BIG-Bench",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:schaeffer-2023-big-bench-meta-analysis",
+      "target": "c:big-bench",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4367628401",
+          "passage": "a meta-analysis of emergent abilities on BIG-Bench",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:schaeffer-2023-big-bench-meta-analysis",
+      "target": "c:model-family-lamda",
+      "relation": "performed_under",
+      "confidence": 0.85,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4367628401",
+          "passage": "we focused on the LaMDA family [30] because its outputs are available through BIG-Bench",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": "LaMDA applies to the metric-swap part of the analysis."
+    },
+    {
+      "source": "e:schaeffer-2023-big-bench-meta-analysis",
+      "target": "o:schaeffer-2023-emergence-confined-to-few-metrics",
+      "relation": "yields",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4367628401",
+          "passage": "of the 39 preferred metrics in BIG-Bench, at most 5 display emergence",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:schaeffer-2023-emergence-confined-to-few-metrics",
+      "target": "h:emergence-metric-artefact",
+      "relation": "supports",
+      "confidence": 0.85,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4367628401",
+          "passage": "the lack of emergent abilities under other metrics suggests that emergent abilities do not appear when model outputs are scored using other metrics.",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:schaeffer-2023-big-bench-meta-analysis",
+      "target": "o:schaeffer-2023-lamda-smooth-under-brier",
+      "relation": "yields",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4367628401",
+          "passage": "LaMDA’s emergent abilities on the discontinuous Multiple Choice Grade disappeared when we changed the metric to the continuous Brier Score",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:schaeffer-2023-lamda-smooth-under-brier",
+      "target": "c:brier-score-metric",
+      "relation": "observed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4367628401",
+          "passage": "asked whether LaMDA still displays emergent abilities on the same tasks with a different BIG-Bench metric: Brier Score",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:schaeffer-2023-lamda-smooth-under-brier",
+      "target": "h:emergence-metric-artefact",
+      "relation": "supports",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4367628401",
+          "passage": "Changing the metric when evaluating task-model family pairs causes emergent abilities to disappear.",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:schaeffer-2023-lamda-smooth-under-brier",
+      "target": "h:emergence-sharp-transition",
+      "relation": "contradicts",
+      "confidence": 0.8,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4367628401",
+          "passage": "LaMDA’s emergent abilities on the discontinuous Multiple Choice Grade disappeared when we changed the metric to the continuous Brier Score",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:schaeffer-2023-induced-vision-emergence",
+      "target": "h:emergence-metric-artefact",
+      "relation": "tests",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4367628401",
+          "passage": "show to choose metrics to produce never-before-seen seemingly emergent abilities in multiple vision tasks across diverse deep networks",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:schaeffer-2023-induced-vision-emergence",
+      "target": "c:vision-tasks",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4367628401",
+          "passage": "We first induce an emergent ability to reconstruct images in shallow (i.e., single hidden layer) nonlinear autoencoders trained on CIFAR100 natural images",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:schaeffer-2023-induced-vision-emergence",
+      "target": "o:schaeffer-2023-emergence-induced-by-metric",
+      "relation": "yields",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4367628401",
+          "passage": "When accuracy is redefined as classifying all images correctly, a seemingly emergent ability appears.",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:schaeffer-2023-emergence-induced-by-metric",
+      "target": "h:emergence-metric-artefact",
+      "relation": "supports",
+      "confidence": 0.75,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4367628401",
+          "passage": "metric choice can be used to induce emergent abilities in a novel domain",
+          "location": "discussion",
+          "verified": true
+        }
+      ],
+      "note": "Shows metrics can manufacture emergence, not that LLM emergence was so manufactured."
+    },
+    {
+      "source": "i:schaeffer-2023-metric-wholly-responsible",
+      "target": "o:schaeffer-2023-sharp-under-accuracy",
+      "relation": "explains",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4367628401",
+          "passage": "metric choice is likely wholly responsible for emergent abilities",
+          "location": "discussion",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "i:schaeffer-2023-metric-wholly-responsible",
+      "target": "h:emergence-metric-artefact",
+      "relation": "proposes",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4367628401",
+          "passage": "we present an alternative explanation for emergent abilities",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "h:emergence-metric-artefact",
+      "target": "h:emergence-sharp-transition",
+      "relation": "competes_with",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4367628401",
+          "passage": "emergent abilities appear due to the researcher's choice of metric rather than due to fundamental changes in model behavior with scale",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:du-2024-loss-vs-performance",
+      "target": "h:emergence-loss-threshold",
+      "relation": "tests",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4393212671",
+          "passage": "we propose to study emergent abilities in the lens of pre-training loss, instead of model size or training compute",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:du-2024-loss-vs-performance",
+      "target": "h:emergence-metric-artefact",
+      "relation": "tests",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4393212671",
+          "passage": "To exclude the impact of discontinuous metrics [46, 61], we evaluate the emergent performance increase using continuous metrics",
+          "location": "introduction",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:du-2024-loss-vs-performance",
+      "target": "c:intermediate-checkpoints",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4393212671",
+          "passage": "Each data point is the loss (-axis) and performance (-axis) of the intermediate checkpoint of one of the three models.",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:du-2024-loss-vs-performance",
+      "target": "c:pre-training-loss-as-x-axis",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4393212671",
+          "passage": "we propose to study emergent abilities in the lens of pre-training loss, instead of model size or training compute",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:du-2024-loss-vs-performance",
+      "target": "c:fixed-corpus-tokenizer-architecture",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4393212671",
+          "passage": "with a fixed data corpus, tokenization, and model architecture",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:du-2024-loss-vs-performance",
+      "target": "c:mmlu",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4393212671",
+          "passage": "For English, we use MMLU [21], which includes mathematics, US history, computer science, law, and more.",
+          "location": "methods",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:du-2024-loss-vs-performance",
+      "target": "c:c-eval",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4393212671",
+          "passage": "For Chinese, we use C-Eval [25] which ranges from humanities to science and engineering.",
+          "location": "methods",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:du-2024-loss-vs-performance",
+      "target": "c:gsm8k",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4393212671",
+          "passage": "For English we use the GSM8K [12] dataset.",
+          "location": "methods",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:du-2024-loss-vs-performance",
+      "target": "o:du-2024-random-until-loss-threshold",
+      "relation": "yields",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4393212671",
+          "passage": "On MMLU, C-Eval, GSM8K, and GSM8K-Chinese, all models of three sizes perform at the random level until the pre-training loss decreases to about 2.2, after which the performance gradually climbs as the loss decreases.",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:du-2024-random-until-loss-threshold",
+      "target": "h:emergence-loss-threshold",
+      "relation": "supports",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4393212671",
+          "passage": "performance on certain downstream tasks only improves beyond the level of random guessing when the pre-training loss falls below a specific threshold, i.e., emergent abilities",
+          "location": "introduction",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:du-2024-random-until-loss-threshold",
+      "target": "h:emergence-unpredictable",
+      "relation": "supports",
+      "confidence": 0.8,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4393212671",
+          "passage": "these abilities cannot be predicted by merely extrapolating the performance trends of models with higher pre-training losses",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:du-2024-random-until-loss-threshold",
+      "target": "h:emergence-sharp-transition",
+      "relation": "supports",
+      "confidence": 0.6,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4393212671",
+          "passage": "Before reaching this threshold, its performance remains at the level of random guessing.",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": "A threshold in loss, after which performance 'gradually climbs': a kink rather than a jump, and in loss rather than scale."
+    },
+    {
+      "source": "e:du-2024-loss-vs-performance",
+      "target": "o:du-2024-threshold-persists-under-continuous-metrics",
+      "relation": "yields",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4393212671",
+          "passage": "All three metrics—accuracy, correct choice probability, and Brier Score—show emergent performance improvements (value increase for the first two and decrease for the third) when the pre-training loss drops below a certain threshold.",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:du-2024-threshold-persists-under-continuous-metrics",
+      "target": "c:brier-score-metric",
+      "relation": "observed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4393212671",
+          "passage": "The second one is the Brier Score [5] used in Schaeffer et al. [46]",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:du-2024-threshold-persists-under-continuous-metrics",
+      "target": "c:multiple-choice-grade-metric",
+      "relation": "observed_under",
+      "confidence": 0.85,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4393212671",
+          "passage": "Accuracy: discontinuous; CorrectChoiceProb and BrierScore: continuous.",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:du-2024-threshold-persists-under-continuous-metrics",
+      "target": "h:emergence-metric-artefact",
+      "relation": "contradicts",
+      "confidence": 0.85,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4393212671",
+          "passage": "show that the emergent abilities persist across both discontinuous and continuous metrics",
+          "location": "introduction",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:du-2024-threshold-persists-under-continuous-metrics",
+      "target": "o:schaeffer-2023-lamda-smooth-under-brier",
+      "relation": "contradicts",
+      "confidence": 0.55,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4393212671",
+          "passage": "All three metrics—accuracy, correct choice probability, and Brier Score—show emergent performance improvements",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": "Same metric (Brier), opposite result. Regimes differ: MMLU/C-Eval vs BIG-Bench tasks, in-house LLaMA-like checkpoints vs LaMDA, loss vs parameter count on the x-axis. May not be a true contradiction."
+    },
+    {
+      "source": "e:du-2024-loss-vs-performance",
+      "target": "o:du-2024-other-tasks-track-loss-smoothly",
+      "relation": "yields",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4393212671",
+          "passage": "Both spearman and pearson correlation coefficients show that performance is strongly related to pre-training loss on TriviaQA, HellaSwag, RACE, WinoGrande, etc.",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "i:du-2024-brier-includes-incorrect-choices",
+      "target": "o:du-2024-threshold-persists-under-continuous-metrics",
+      "relation": "explains",
+      "confidence": 0.85,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4393212671",
+          "passage": "the decrease of Brier Score does not always represent improvements on the task, since the Brier Score is related to not only the predicted probability of the correct answer but also the predicted probabilities of the incorrect answers",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "i:du-2024-brier-includes-incorrect-choices",
+      "target": "o:schaeffer-2023-lamda-smooth-under-brier",
+      "relation": "explains",
+      "confidence": 0.5,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4393212671",
+          "passage": "The Brier Score also decreases when the pre-training loss is above the threshold. However, the decrease of Brier Score does not always represent improvements on the task",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": "Du et al. offer this about their own curves; applying it to Schaeffer's LaMDA result is my inference."
+    },
+    {
+      "source": "h:emergence-loss-threshold",
+      "target": "h:emergence-metric-artefact",
+      "relation": "competes_with",
+      "confidence": 0.85,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4393212671",
+          "passage": "Schaeffer et al. [46] claim that emergent abilities appear due to the nonlinear or discontinuous metrics selected to evaluate certain datasets, rather than from a fundamental change in larger models.",
+          "location": "introduction",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:lu-2024-emergence-without-icl",
+      "target": "h:emergence-is-in-context-learning",
+      "relation": "tests",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4402671818",
+          "passage": "which abilities are truly emergent in the absence of ICL, including instructional tuning?",
+          "location": "introduction",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:lu-2024-emergence-without-icl",
+      "target": "h:emergence-sharp-transition",
+      "relation": "tests",
+      "confidence": 0.8,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4402671818",
+          "passage": "Recall that the definition of emergence Wei et al. (2022b) requires LLMs to perform a task above the baseline and do so in a manner that cannot be predicted based on the performance of smaller models.",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:lu-2024-emergence-without-icl",
+      "target": "c:zero-shot-prompting",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4402671818",
+          "passage": "they are prompted without the use of in-context examples (zero-shot). This approach guarantees the exclusion of ICL",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:lu-2024-emergence-without-icl",
+      "target": "c:non-instruction-tuned",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4402671818",
+          "passage": "Figure 1 illustrates the performance of non-instruction-tuned models from the GPT family",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:lu-2024-emergence-without-icl",
+      "target": "c:model-family-gpt3",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4402671818",
+          "passage": "Figure 1 illustrates the performance of non-instruction-tuned models from the GPT family",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:lu-2024-emergence-without-icl",
+      "target": "c:big-bench",
+      "relation": "performed_under",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4402671818",
+          "passage": "Out of 17 such tasks in the BIG-bench dataset Srivastava et al. (2023), we incorporate 14 into our study.",
+          "location": "methods",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:lu-2024-emergence-without-icl",
+      "target": "c:bertscore-accuracy-metric",
+      "relation": "performed_under",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4402671818",
+          "passage": "The majority of the results we present in our analysis are based on this evaluation metric.",
+          "location": "methods",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:lu-2024-emergence-without-icl",
+      "target": "o:lu-2024-two-tasks-emergent-without-icl",
+      "relation": "yields",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4402671818",
+          "passage": "just two tasks are “emergent” when we control for ICL",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:lu-2024-two-tasks-emergent-without-icl",
+      "target": "h:emergence-is-in-context-learning",
+      "relation": "supports",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4402671818",
+          "passage": "we find no functional linguistic abilities emergent in davinci, the non-instruction-tuned 175B GPT model in the absence of ICL",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:lu-2024-two-tasks-emergent-without-icl",
+      "target": "h:emergence-unpredictable",
+      "relation": "contradicts",
+      "confidence": 0.75,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4402671818",
+          "passage": "Our findings suggest that purported emergent abilities are not truly emergent",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": "Two tasks do remain emergent by Wei's definition; the authors discount them as formal-linguistic or recall."
+    },
+    {
+      "source": "e:lu-2024-emergence-without-icl",
+      "target": "o:lu-2024-no-emergence-across-metrics",
+      "relation": "yields",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4402671818",
+          "passage": "Our investigation reveals that the the lack of emergence is consistent across the metrics we use",
+          "location": "methods",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:lu-2024-no-emergence-across-metrics",
+      "target": "c:token-edit-distance-metric",
+      "relation": "observed_under",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4402671818",
+          "passage": "given that recent work has indicated that emergence might be a result of discrete evaluation metrics Schaeffer et al. (2023), we also include string edit distance",
+          "location": "methods",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:lu-2024-no-emergence-across-metrics",
+      "target": "c:exact-match-metric",
+      "relation": "observed_under",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4402671818",
+          "passage": "we evaluate using exact match accuracy, BERTScore accuracy, and string edit distance",
+          "location": "methods",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:lu-2024-no-emergence-across-metrics",
+      "target": "h:emergence-metric-artefact",
+      "relation": "contradicts",
+      "confidence": 0.45,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4402671818",
+          "passage": "Our investigation reveals that the the lack of emergence is consistent across the metrics we use",
+          "location": "methods",
+          "verified": true
+        }
+      ],
+      "note": "If metric choice alone produced emergence, exact match should still show it zero-shot. Weak: the artefact account needs above-floor per-token accuracy first."
+    },
+    {
+      "source": "e:lu-2024-emergence-without-icl",
+      "target": "o:lu-2024-other-families-predictable-or-below-baseline",
+      "relation": "yields",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4402671818",
+          "passage": "we extend our analysis to the LLaMA, Falcon, and T5 model families. Across each of these cases, a consistent pattern emerges: either task performance is predictable based on smaller model performance, or the performance is below the baseline.",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:lu-2024-other-families-predictable-or-below-baseline",
+      "target": "c:model-family-llama",
+      "relation": "observed_under",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4402671818",
+          "passage": "we extend our analysis to the LLaMA, Falcon, and T5 model families",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:lu-2024-other-families-predictable-or-below-baseline",
+      "target": "c:model-family-falcon",
+      "relation": "observed_under",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4402671818",
+          "passage": "we extend our analysis to the LLaMA, Falcon, and T5 model families",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:lu-2024-other-families-predictable-or-below-baseline",
+      "target": "c:model-family-t5",
+      "relation": "observed_under",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4402671818",
+          "passage": "we extend our analysis to the LLaMA, Falcon, and T5 model families",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:lu-2024-other-families-predictable-or-below-baseline",
+      "target": "h:emergence-unpredictable",
+      "relation": "contradicts",
+      "confidence": 0.8,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4402671818",
+          "passage": "either task performance is predictable based on smaller model performance, or the performance is below the baseline",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:lu-2024-few-shot-validity-check",
+      "target": "h:emergence-is-in-context-learning",
+      "relation": "tests",
+      "confidence": 0.7,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4402671818",
+          "passage": "These involve the evaluation of instruction-tuned models with in-context examples included in the prompts, referred to as the few-shot setting, thereby enabling ICL in line with the experimental designs of prior work.",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": "Framed by the authors as a validity check, but it is the positive arm of the ICL contrast."
+    },
+    {
+      "source": "e:lu-2024-few-shot-validity-check",
+      "target": "c:few-shot-prompting",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4402671818",
+          "passage": "When using the few-shot setting, we use 5 in-context examples.",
+          "location": "methods",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:lu-2024-few-shot-validity-check",
+      "target": "c:instruction-tuned",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4402671818",
+          "passage": "These involve the evaluation of instruction-tuned models with in-context examples included in the prompts",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:lu-2024-few-shot-validity-check",
+      "target": "o:lu-2024-emergence-replicates-with-icl",
+      "relation": "yields",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4402671818",
+          "passage": "The results of these tests replicated previous findings, confirming that our experimental framework does not hinder the potential for detecting emergent abilities.",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:lu-2024-emergence-replicates-with-icl",
+      "target": "h:emergence-is-in-context-learning",
+      "relation": "supports",
+      "confidence": 0.7,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4402671818",
+          "passage": "The results of these tests replicated previous findings",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": "Emergence present with ICL and absent without it is the contrast the ICL hypothesis predicts."
+    },
+    {
+      "source": "h:emergence-is-in-context-learning",
+      "target": "h:emergence-sharp-transition",
+      "relation": "competes_with",
+      "confidence": 0.8,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4402671818",
+          "passage": "purported emergent abilities are not truly emergent, but result from a combination of in-context learning, model memory, and linguistic knowledge",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:srivastava-2022-big-bench-scaling",
+      "target": "h:emergence-sharp-transition",
+      "relation": "tests",
+      "confidence": 0.6,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4281690148",
+          "passage": "Language models demonstrate both quantitative improvement and new qualitative capabilities with increasing scale.",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:srivastava-2022-big-bench-scaling",
+      "target": "c:big-bench",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4281690148",
+          "passage": "we introduce the Beyond the Imitation Game benchmark (BIG-bench)",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:srivastava-2022-big-bench-scaling",
+      "target": "c:model-family-gpt3",
+      "relation": "performed_under",
+      "confidence": 0.85,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4281690148",
+          "passage": "We evaluate the behavior of OpenAI's GPT models, Google-internal dense transformer architectures, and Switch-style sparse transformers on BIG-bench",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:srivastava-2022-big-bench-scaling",
+      "target": "c:sparse-transformers",
+      "relation": "performed_under",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4281690148",
+          "passage": "We evaluate the behavior of OpenAI's GPT models, Google-internal dense transformer architectures, and Switch-style sparse transformers on BIG-bench",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:srivastava-2022-big-bench-scaling",
+      "target": "o:srivastava-2022-breakthrough-tasks",
+      "relation": "yields",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4281690148",
+          "passage": "tasks that improve gradually and predictably commonly involve a large knowledge or memorization component, whereas tasks that exhibit \"breakthrough\" behavior at a critical scale often involve multiple steps or components, or brittle metrics",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:srivastava-2022-breakthrough-tasks",
+      "target": "h:emergence-sharp-transition",
+      "relation": "supports",
+      "confidence": 0.65,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4281690148",
+          "passage": "tasks that exhibit \"breakthrough\" behavior at a critical scale often involve multiple steps or components, or brittle metrics",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:srivastava-2022-breakthrough-tasks",
+      "target": "h:emergence-metric-artefact",
+      "relation": "supports",
+      "confidence": 0.6,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4281690148",
+          "passage": "tasks that exhibit \"breakthrough\" behavior at a critical scale often involve multiple steps or components, or brittle metrics",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": "The benchmark's own authors name brittle metrics as one source of breakthroughs, a year before Schaeffer et al."
+    },
+    {
+      "source": "e:hu-2023-passuntil",
+      "target": "h:emergence-unpredictable",
+      "relation": "tests",
+      "confidence": 0.85,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4387432280",
+          "passage": "no scaling law for task has been established and the task performances are far from predictable during scaling",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:hu-2023-passuntil",
+      "target": "h:emergence-metric-artefact",
+      "relation": "tests",
+      "confidence": 0.7,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4387432280",
+          "passage": "not captured by conventional evaluation strategies due to insufficient measurement resolution",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": "Targets the resolution half of the artefact account without citing it in the abstract."
+    },
+    {
+      "source": "e:hu-2023-passuntil",
+      "target": "c:massive-sampling-evaluation",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4387432280",
+          "passage": "we introduce PassUntil, an evaluation strategy with theoretically infinite resolution, through massive sampling in the decoding phase",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:hu-2023-passuntil",
+      "target": "c:code-generation-tasks",
+      "relation": "performed_under",
+      "confidence": 0.85,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4387432280",
+          "passage": "we are able to predict the performance of the 2.4B model on code generation",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:hu-2023-passuntil",
+      "target": "o:hu-2023-small-models-improve-below-resolution",
+      "relation": "yields",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4387432280",
+          "passage": "small models, although they exhibit minor performance, demonstrate critical and consistent task performance improvements that are not captured by conventional evaluation strategies due to insufficient measurement resolution",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:hu-2023-small-models-improve-below-resolution",
+      "target": "h:emergence-metric-artefact",
+      "relation": "supports",
+      "confidence": 0.75,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4387432280",
+          "passage": "critical and consistent task performance improvements that are not captured by conventional evaluation strategies due to insufficient measurement resolution",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:hu-2023-passuntil",
+      "target": "o:hu-2023-task-performance-predicted",
+      "relation": "yields",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4387432280",
+          "passage": "we are able to predict the performance of the 2.4B model on code generation with merely 0.05\\% deviation before training starts",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:hu-2023-task-performance-predicted",
+      "target": "h:emergence-unpredictable",
+      "relation": "contradicts",
+      "confidence": 0.75,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4387432280",
+          "passage": "a strict task scaling law that is not conventionally known to exist, is identified, enhancing the predictability of task performances",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:hu-2023-passuntil",
+      "target": "o:hu-2023-accelerated-emergence",
+      "relation": "yields",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4387432280",
+          "passage": "We identify a kind of accelerated emergence whose scaling curve cannot be fitted by standard scaling law function and has a increasing speed.",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:hu-2023-accelerated-emergence",
+      "target": "h:emergence-sharp-transition",
+      "relation": "supports",
+      "confidence": 0.6,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4387432280",
+          "passage": "We identify a kind of accelerated emergence whose scaling curve cannot be fitted by standard scaling law function and has a increasing speed.",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": "Survives a high-resolution continuous measure, so not a resolution artefact; 'accelerated' is weaker than discontinuous."
+    },
+    {
+      "source": "o:hu-2023-accelerated-emergence",
+      "target": "h:emergence-metric-artefact",
+      "relation": "contradicts",
+      "confidence": 0.5,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4387432280",
+          "passage": "We identify a kind of accelerated emergence whose scaling curve cannot be fitted by standard scaling law function and has a increasing speed.",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "i:hu-2023-multiple-circuits",
+      "target": "o:hu-2023-accelerated-emergence",
+      "relation": "explains",
+      "confidence": 0.8,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4387432280",
+          "passage": "We then examine two hypothesis and imply that the ``multiple circuits hypothesis'' might be responsible for the accelerated emergence.",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:schaeffer-2024-mcq-predictability",
+      "target": "h:emergence-unpredictable",
+      "relation": "tests",
+      "confidence": 0.85,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4399510412",
+          "passage": "predictable scaling behavior on downstream capabilities remains elusive",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:schaeffer-2024-mcq-predictability",
+      "target": "c:multiple-choice-benchmarks",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4399510412",
+          "passage": "Using five model families and twelve well-established multiple-choice benchmarks",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:schaeffer-2024-mcq-predictability",
+      "target": "c:multiple-choice-grade-metric",
+      "relation": "performed_under",
+      "confidence": 0.8,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4399510412",
+          "passage": "downstream metrics require comparing the correct choice against a small number of specific incorrect choices",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:schaeffer-2024-mcq-predictability",
+      "target": "o:schaeffer-2024-transformations-degrade-scaling-relationship",
+      "relation": "yields",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4399510412",
+          "passage": "downstream performance is computed from negative log likelihoods via a sequence of transformations that progressively degrades the statistical relationship between performance and scale",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:schaeffer-2024-transformations-degrade-scaling-relationship",
+      "target": "h:emergence-metric-artefact",
+      "relation": "supports",
+      "confidence": 0.7,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4399510412",
+          "passage": "a sequence of transformations that progressively degrades the statistical relationship between performance and scale",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": "Locates unpredictability in the metric pipeline rather than the model; about predictability more than sharpness."
+    },
+    {
+      "source": "i:schaeffer-2024-incorrect-choice-mass",
+      "target": "o:schaeffer-2024-transformations-degrade-scaling-relationship",
+      "relation": "explains",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4399510412",
+          "passage": "We then pinpoint the mechanism causing this degradation: downstream metrics require comparing the correct choice against a small number of specific incorrect choices",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:snell-2024-emergence-prediction-by-finetuning",
+      "target": "h:emergence-unpredictable",
+      "relation": "tests",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4404987046",
+          "passage": "given access to current LLMs that have random few-shot accuracy on a task, can we predict whether future models (GPT-N+1) will have non-trivial accuracy on that task?",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:snell-2024-emergence-prediction-by-finetuning",
+      "target": "c:task-specific-finetuning",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4404987046",
+          "passage": "we can finetune LLMs with varying amounts of data and fit a parametric function that predicts when emergence will occur",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:snell-2024-emergence-prediction-by-finetuning",
+      "target": "c:few-shot-prompting",
+      "relation": "performed_under",
+      "confidence": 0.8,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4404987046",
+          "passage": "current LLMs that have random few-shot accuracy on a task",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:snell-2024-emergence-prediction-by-finetuning",
+      "target": "c:mmlu",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4404987046",
+          "passage": "four standard NLP benchmarks where large-scale open-source LLMs already demonstrate emergence (MMLU, GSM8K, CommonsenseQA, and CoLA)",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:snell-2024-emergence-prediction-by-finetuning",
+      "target": "c:gsm8k",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4404987046",
+          "passage": "four standard NLP benchmarks where large-scale open-source LLMs already demonstrate emergence (MMLU, GSM8K, CommonsenseQA, and CoLA)",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:snell-2024-emergence-prediction-by-finetuning",
+      "target": "c:commonsenseqa",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4404987046",
+          "passage": "four standard NLP benchmarks where large-scale open-source LLMs already demonstrate emergence (MMLU, GSM8K, CommonsenseQA, and CoLA)",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:snell-2024-emergence-prediction-by-finetuning",
+      "target": "c:cola",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4404987046",
+          "passage": "four standard NLP benchmarks where large-scale open-source LLMs already demonstrate emergence (MMLU, GSM8K, CommonsenseQA, and CoLA)",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:snell-2024-emergence-prediction-by-finetuning",
+      "target": "o:snell-2024-finetuning-shifts-emergence-point",
+      "relation": "yields",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4404987046",
+          "passage": "finetuning LLMs on a given task can shift the point in scaling at which emergence occurs towards less capable models",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:snell-2024-finetuning-shifts-emergence-point",
+      "target": "h:emergence-sharp-transition",
+      "relation": "supports",
+      "confidence": 0.5,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4404987046",
+          "passage": "downstream capabilities are far less predictable -- sometimes even exhibiting emergent jumps",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": "Treats the emergence point as a real, movable quantity; does not test the metric account."
+    },
+    {
+      "source": "e:snell-2024-emergence-prediction-by-finetuning",
+      "target": "o:snell-2024-emergence-predicted-4x-ahead",
+      "relation": "yields",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4404987046",
+          "passage": "Using only small-scale LLMs, we find that, in some cases, we can accurately predict whether models trained with up to 4x more compute have emerged.",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:snell-2024-emergence-predicted-4x-ahead",
+      "target": "h:emergence-unpredictable",
+      "relation": "contradicts",
+      "confidence": 0.6,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4404987046",
+          "passage": "in some cases, we can accurately predict whether models trained with up to 4x more compute have emerged",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": "'In some cases' and only 4x: partial predictability."
+    },
+    {
+      "source": "e:michaud-2023-quanta-decomposition",
+      "target": "h:quantization-of-skills",
+      "relation": "tests",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4360892090",
+          "passage": "Using language model gradients, we automatically decompose model behavior into a diverse set of skills (quanta).",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:michaud-2023-quanta-decomposition",
+      "target": "o:michaud-2023-quanta-frequency-power-law",
+      "relation": "yields",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4360892090",
+          "passage": "We tentatively find that the frequency at which these quanta are used in the training distribution roughly follows a power law corresponding with the empirical scaling exponent for language models, a prediction of our theory.",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:michaud-2023-quanta-frequency-power-law",
+      "target": "h:quantization-of-skills",
+      "relation": "supports",
+      "confidence": 0.6,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4360892090",
+          "passage": "We tentatively find that the frequency at which these quanta are used in the training distribution roughly follows a power law corresponding with the empirical scaling exponent for language models, a prediction of our theory.",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "h:quantization-of-skills",
+      "target": "h:emergence-metric-artefact",
+      "relation": "competes_with",
+      "confidence": 0.5,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4360892090",
+          "passage": "explaining both the observed power law dropoff of loss with model and data size, and also the sudden emergence of new capabilities with scale",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": "Takes sudden emergence as real and reconciles it with smooth aggregate loss; the artefact account denies the explanandum."
+    },
+    {
+      "source": "e:olsson-2022-induction-heads",
+      "target": "h:emergence-sharp-transition",
+      "relation": "tests",
+      "confidence": 0.5,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4297412003",
+          "passage": "We find that induction heads develop at precisely the same point as a sudden sharp increase in in-context learning ability",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": "Bears on abrupt capability acquisition over training time, not across scale."
+    },
+    {
+      "source": "e:olsson-2022-induction-heads",
+      "target": "c:training-trajectory-analysis",
+      "relation": "performed_under",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4297412003",
+          "passage": "induction heads develop at precisely the same point as a sudden sharp increase in in-context learning ability, visible as a bump in the training loss",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:olsson-2022-induction-heads",
+      "target": "c:cross-entropy-loss-metric",
+      "relation": "performed_under",
+      "confidence": 0.8,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4297412003",
+          "passage": "\"in-context learning\" in large transformer models (i.e. decreasing loss at increasing token indices)",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:olsson-2022-induction-heads",
+      "target": "o:olsson-2022-icl-phase-change",
+      "relation": "yields",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4297412003",
+          "passage": "We find that induction heads develop at precisely the same point as a sudden sharp increase in in-context learning ability, visible as a bump in the training loss.",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:olsson-2022-icl-phase-change",
+      "target": "c:small-attention-only-models",
+      "relation": "observed_under",
+      "confidence": 0.7,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4297412003",
+          "passage": "For small attention-only models, we present strong, causal evidence; for larger models with MLPs, we present correlational evidence.",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": "The phase change is seen in all sizes; only the causal evidence is confined to small models."
+    },
+    {
+      "source": "o:olsson-2022-icl-phase-change",
+      "target": "h:emergence-sharp-transition",
+      "relation": "supports",
+      "confidence": 0.5,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4297412003",
+          "passage": "a sudden sharp increase in in-context learning ability, visible as a bump in the training loss",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:olsson-2022-icl-phase-change",
+      "target": "h:emergence-metric-artefact",
+      "relation": "contradicts",
+      "confidence": 0.5,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4297412003",
+          "passage": "a sudden sharp increase in in-context learning ability, visible as a bump in the training loss",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": "An abrupt transition measured in loss itself, a continuous metric. Over training steps, not scale."
+    },
+    {
+      "source": "e:chen-2023-syntactic-attention-structure",
+      "target": "h:emergence-sharp-transition",
+      "relation": "tests",
+      "confidence": 0.5,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4386794314",
+          "passage": "demonstrates how analyzing the evolution of interpretable artifacts throughout training deepens our understanding of emergent behavior",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:chen-2023-syntactic-attention-structure",
+      "target": "c:training-trajectory-analysis",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4386794314",
+          "passage": "certain insights into model behavior may only be accessible by observing the trajectory of the training process",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:chen-2023-syntactic-attention-structure",
+      "target": "c:masked-language-models",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4386794314",
+          "passage": "We present a case study of syntax acquisition in masked language models (MLMs)",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:chen-2023-syntactic-attention-structure",
+      "target": "c:cross-entropy-loss-metric",
+      "relation": "performed_under",
+      "confidence": 0.75,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4386794314",
+          "passage": "concurrent with a steep drop in loss",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:chen-2023-syntactic-attention-structure",
+      "target": "o:chen-2023-abrupt-sas-with-loss-drop",
+      "relation": "yields",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4386794314",
+          "passage": "We identify a brief window in pretraining when models abruptly acquire SAS, concurrent with a steep drop in loss.",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:chen-2023-abrupt-sas-with-loss-drop",
+      "target": "h:emergence-sharp-transition",
+      "relation": "supports",
+      "confidence": 0.5,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4386794314",
+          "passage": "We identify a brief window in pretraining when models abruptly acquire SAS, concurrent with a steep drop in loss.",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:chen-2023-abrupt-sas-with-loss-drop",
+      "target": "h:emergence-metric-artefact",
+      "relation": "contradicts",
+      "confidence": 0.45,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4386794314",
+          "passage": "This breakthrough precipitates the subsequent acquisition of linguistic capabilities.",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": "Abrupt change visible in loss; MLMs and training time, so a different regime from the scale claims."
+    },
+    {
+      "source": "e:wei-2023-inverse-scaling-at-540b",
+      "target": "h:emergence-unpredictable",
+      "relation": "tests",
+      "confidence": 0.6,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4389519396",
+          "passage": "U-shaped scaling suggests that the inverse scaling trend observed in McKenzie et al. (2023) may not continue to hold for larger models",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:wei-2023-inverse-scaling-at-540b",
+      "target": "c:inverse-scaling-prize-tasks",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4389519396",
+          "passage": "The Inverse Scaling Prize (McKenzie et al., 2023) identified eleven such inverse scaling tasks",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:wei-2023-inverse-scaling-at-540b",
+      "target": "o:wei-2023-u-shaped-scaling",
+      "relation": "yields",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4389519396",
+          "passage": "only four out of the eleven tasks remain inverse scaling.Six tasks exhibit Ushaped scaling, where performance decreases up to a certain size, and then increases again up to the largest model evaluated",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:wei-2023-u-shaped-scaling",
+      "target": "h:emergence-unpredictable",
+      "relation": "supports",
+      "confidence": 0.65,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4389519396",
+          "passage": "the inverse scaling trend observed in McKenzie et al. (2023) may not continue to hold for larger models",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": "A trend fitted on smaller models reversed at larger scale: extrapolation failed."
+    },
+    {
+      "source": "e:wei-2023-inverse-scaling-at-540b",
+      "target": "o:wei-2023-prompting-mitigates",
+      "relation": "yields",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4389519396",
+          "passage": "1-shot examples and chain-of-thought can help mitigate undesirable scaling patterns even further",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:wei-2023-prompting-mitigates",
+      "target": "c:chain-of-thought-prompting",
+      "relation": "observed_under",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4389519396",
+          "passage": "1-shot examples and chain-of-thought can help mitigate undesirable scaling patterns even further",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:wei-2023-prompting-mitigates",
+      "target": "c:one-shot-prompting",
+      "relation": "observed_under",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4389519396",
+          "passage": "1-shot examples and chain-of-thought can help mitigate undesirable scaling patterns even further",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "i:wei-2023-distractor-tasks",
+      "target": "o:wei-2023-u-shaped-scaling",
+      "relation": "explains",
+      "confidence": 0.85,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4389519396",
+          "passage": "which we attribute to the presence of distractor tasks that only sufficiently large models can avoid",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    }
+  ],
+  "retracted": []
+}

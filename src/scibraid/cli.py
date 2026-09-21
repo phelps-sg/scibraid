@@ -10,6 +10,7 @@ import argparse
 import json
 import re
 import sys
+import tempfile
 import time
 import webbrowser
 from datetime import datetime, timezone
@@ -20,7 +21,7 @@ from pathlib import Path
 import httpx
 from pydantic import ValidationError
 
-from . import align, bibtex, draft, embed, fulltext, identity, openalex, store
+from . import align, bibtex, doctor, draft, embed, example, fulltext, identity, openalex, store
 from .lint import lint
 from .models import Alignment, Batch, Builder, Lead, Paper, Subgraph
 from .pool import get_pool
@@ -599,6 +600,16 @@ def make_server(slugs: list[str], port: int) -> ThreadingHTTPServer:
 
 
 def cmd_view(args: argparse.Namespace) -> int:
+    if not args.example:
+        return _view(args)
+    # The example is written to a directory of its own, so it never touches the user's data.
+    with tempfile.TemporaryDirectory(prefix="scibraid-example-") as tmp:
+        example.install(Path(tmp))
+        with example.using(Path(tmp)):
+            return _view(args)
+
+
+def _view(args: argparse.Namespace) -> int:
     for slug in args.slugs:
         store.load_subgraph(slug)
     if args.output:
@@ -620,6 +631,24 @@ def cmd_view(args: argparse.Namespace) -> int:
     finally:
         server.server_close()
     return 0
+
+
+def cmd_example(args: argparse.Namespace) -> int:
+    dest = Path(args.dir).expanduser()
+    if reason := example.refusal(dest):
+        print(reason, file=sys.stderr)
+        return 1
+    example.install(dest)
+    print(f"wrote the example to {dest}")
+    print(f"use it with:  export SCIBRAID_HOME={dest}")
+    print("then try:  scibraid list | scibraid observe | scibraid lead list | scibraid agenda | scibraid view")
+    return 0
+
+
+def cmd_doctor(args: argparse.Namespace) -> int:
+    findings = doctor.check(offline=args.offline)
+    print(doctor.report(findings))
+    return 0 if doctor.ok(findings) else 1
 
 
 def cmd_bibtex(args: argparse.Namespace) -> int:
@@ -1075,7 +1104,16 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("-o", "--output", help="write a self-contained HTML file instead of serving")
     p.add_argument("--port", type=int, default=8765, help="localhost port (falls back to a free one)")
     p.add_argument("--no-open", action="store_true", help="serve without opening a browser")
+    p.add_argument("--example", action="store_true", help="browse the bundled example instead of your own subgraphs")
     p.set_defaults(func=cmd_view)
+
+    p = sub.add_parser("example", help="write the bundled example pool to a directory, to try the other commands on it")
+    p.add_argument("dir", nargs="?", default="~/.local/share/scibraid-example")
+    p.set_defaults(func=cmd_example)
+
+    p = sub.add_parser("doctor", aliases=["healthcheck"], help="check that this machine is set up for scibraid, and say how to fix what is not")
+    p.add_argument("--offline", action="store_true", help="skip the check that OpenAlex is reachable")
+    p.set_defaults(func=cmd_doctor)
 
     p = sub.add_parser("pool", help="push a subgraph to the pool, or list the pool")
     p.add_argument("slug", nargs="?")

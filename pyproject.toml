@@ -3,6 +3,15 @@ name = "scibraid"
 version = "0.1.0"
 description = "Deterministic tools for building and pooling evidence subgraphs of the scientific literature"
 readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+keywords = ["literature-review", "evidence-synthesis", "knowledge-graph", "provenance", "openalex", "claude-code"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+]
 authors = [
     { name = "Steve Phelps", email = "phelps.sg@gmail.com" }
 ]
@@ -11,6 +20,11 @@ dependencies = [
     "httpx>=0.28.1",
     "pydantic>=2.13.5",
 ]
+
+[project.urls]
+Homepage = "https://github.com/phelps-sg/scibraid"
+Repository = "https://github.com/phelps-sg/scibraid"
+Issues = "https://github.com/phelps-sg/scibraid/issues"
 
 [project.scripts]
 scibraid = "scibraid:main"

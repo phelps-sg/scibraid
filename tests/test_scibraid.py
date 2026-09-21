@@ -1269,3 +1269,124 @@ def test_the_attached_full_text_can_be_printed(capsys):
     capsys.readouterr()
     assert main(["paper", "show", "W1", "--text"]) == 0
     assert capsys.readouterr().out.strip() == "Methods. Mice were kept at 1% oxygen."
+
+
+def test_the_plugin_and_the_package_carry_the_same_version():
+    import tomllib
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parent.parent
+    package = tomllib.loads((root / "pyproject.toml").read_text())["project"]["version"]
+    plugin = json.loads((root / ".claude-plugin" / "plugin.json").read_text())["version"]
+    assert plugin == package
+
+
+# --- doctor -----------------------------------------------------------------
+
+
+def _openalex_client(status: int | None):
+    def handler(request):
+        if status is None:
+            raise httpx.ConnectError("no route", request=request)
+        return httpx.Response(status, json={"results": []})
+
+    return httpx.Client(transport=httpx.MockTransport(handler))
+
+
+def _bare_machine(monkeypatch):
+    """A machine with none of the optional tools and no OpenAlex key."""
+    from scibraid import doctor
+
+    monkeypatch.setattr(doctor.shutil, "which", lambda name: None)
+    monkeypatch.setattr(doctor.importlib.util, "find_spec", lambda name: None)
+    monkeypatch.setenv("OPENALEX_API_KEY_FILE", "/nonexistent")
+
+
+def test_doctor_on_a_bare_machine_says_how_to_fix_each_gap_but_fails_only_on_required_ones(monkeypatch, capsys):
+    from scibraid import doctor
+
+    _bare_machine(monkeypatch)
+    findings = doctor.check(client=_openalex_client(200))
+    assert doctor.ok(findings)
+    missing = {f.name: f for f in findings if not f.ok}
+    assert set(missing) == {"OpenAlex key", "PDF text", "LaTeX", "embeddings", "uv"}
+    assert all(f.fix for f in missing.values())
+    text = doctor.report(findings)
+    assert "[warn] OpenAlex key" in text and "[note] LaTeX" in text and "Nothing required is missing." in text
+
+
+@pytest.mark.parametrize(
+    "status, needle",
+    [(429, "daily budget"), (403, "key may be wrong"), (500, "error (500)"), (None, "could not be reached")],
+)
+def test_doctor_fails_when_openalex_cannot_be_used(monkeypatch, status, needle):
+    from scibraid import doctor
+
+    _bare_machine(monkeypatch)
+    findings = doctor.check(client=_openalex_client(status))
+    failed = [f for f in findings if not f.ok and f.level == doctor.REQUIRED]
+    assert [f.name for f in failed] == ["OpenAlex"] and needle in failed[0].detail
+    assert not doctor.ok(findings)
+
+
+def test_doctor_offline_skips_the_network_and_healthcheck_is_the_same_command(monkeypatch, capsys):
+    from scibraid import doctor
+
+    _bare_machine(monkeypatch)
+    monkeypatch.setattr(doctor.openalex, "_get", lambda *a, **k: pytest.fail("touched the network"))
+    assert main(["doctor", "--offline"]) == 0
+    first = capsys.readouterr().out
+    assert main(["healthcheck", "--offline"]) == 0
+    assert capsys.readouterr().out == first and "OpenAlex " not in first.replace("OpenAlex key", "")
+
+
+# --- bundled example --------------------------------------------------------
+
+
+def test_the_example_installs_as_a_data_directory_of_its_own_and_runs_the_pool_commands(tmp_path, capsys):
+    dest = tmp_path / "ex"
+    assert main(["example", str(dest)]) == 0
+    from scibraid import example
+
+    with example.using(dest):
+        assert [sg.slug for sg in store.list_subgraphs()] == ["cot-scale-threshold", "llm-emergent-abilities", "post-training-and-cot"]
+        pool = LocalPool()
+        assert len(pool.alignments()) > 100
+        assert {lead.status.value for lead in pool.leads()} == {"open", "refuted", "known"}
+        capsys.readouterr()
+        assert main(["observe", "--new"]) == 0
+        assert main(["agenda"]) == 0
+    assert store.list_subgraphs() == []  # the fixture's own data directory was never touched
+
+
+def test_the_example_is_self_contained():
+    import re
+
+    from scibraid import example
+
+    subgraphs = {p.stem for p in (example.DATA / "subgraphs").glob("*.json")}
+    for name in ("alignments.json", "leads.json"):
+        referenced = set(re.findall(r'"([a-z0-9-]+)/[a-z]:', (example.DATA / name).read_text()))
+        assert referenced and referenced <= subgraphs
+
+
+def test_the_example_is_not_written_over_a_directory_that_holds_something_else(tmp_path, capsys):
+    (tmp_path / "mine").mkdir()
+    (tmp_path / "mine" / "notes.txt").write_text("keep")
+    assert main(["example", str(tmp_path / "mine")]) == 1
+    assert (tmp_path / "mine" / "notes.txt").read_text() == "keep" and "not made by" in capsys.readouterr().err
+    assert main(["example", str(tmp_path / "again")]) == 0
+    assert main(["example", str(tmp_path / "again")]) == 0  # its own output can be refreshed
+
+
+def test_view_example_renders_the_example_and_leaves_the_environment_and_your_data_alone(tmp_path, monkeypatch):
+    import os
+
+    monkeypatch.setenv("SCIBRAID_POOL_URL", "http://pool.invalid")
+    out = tmp_path / "view.html"
+    home_before = os.environ["SCIBRAID_HOME"]
+    assert main(["view", "--example", "-o", str(out)]) == 0
+    html = out.read_text()
+    assert "training-recipe-gates-cot-and-emergence" in html and "llm-emergent-abilities" in html
+    assert os.environ["SCIBRAID_HOME"] == home_before and os.environ["SCIBRAID_POOL_URL"] == "http://pool.invalid"
+    assert store.list_subgraphs() == []

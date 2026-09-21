@@ -1,0 +1,1958 @@
+{
+  "slug": "post-training-and-cot",
+  "question": "Which part of post-training is responsible for chain-of-thought gains in large models: instruction tuning, training on code, or RLHF, and what is the evidence from base-versus-tuned comparisons at matched scale?",
+  "brief": "",
+  "prompted_by": "training-recipe-gates-cot-and-emergence",
+  "builders": [
+    {
+      "person": "Steve Phelps",
+      "agent": "claude-code",
+      "model": "claude-fable-5-1",
+      "session": "27c01c99-2906-4ea7-9c9d-62881835e470"
+    }
+  ],
+  "created": "2026-09-20T13:15:31+00:00",
+  "updated": "2026-09-20T16:13:31+00:00",
+  "papers": {
+    "W4307079201": {
+      "id": "W4307079201",
+      "title": "Scaling Instruction-Finetuned Language Models",
+      "doi": "10.48550/arxiv.2210.11416",
+      "year": 2022,
+      "authors": [
+        "Hyung Won Chung",
+        "Le Hou",
+        "Shayne Longpre",
+        "Barret Zoph",
+        "Yi Tay",
+        "William Fedus",
+        "Eric Li",
+        "Xuezhi Wang"
+      ],
+      "author_ids": [],
+      "author_orcids": [],
+      "venue": "arXiv (Cornell University)",
+      "url": "http://arxiv.org/abs/2210.11416",
+      "cited_by_count": 1201,
+      "source_tier": "grey",
+      "abstract": "Finetuning language models on a collection of datasets phrased as instructions has been shown to improve model performance and generalization to unseen tasks. In this paper we explore instruction finetuning with a particular focus on (1) scaling the number of tasks, (2) scaling the model size, and (3) finetuning on chain-of-thought data. We find that instruction finetuning with the above aspects dramatically improves performance on a variety of model classes (PaLM, T5, U-PaLM), prompting setups (zero-shot, few-shot, CoT), and evaluation benchmarks (MMLU, BBH, TyDiQA, MGSM, open-ended generation). For instance, Flan-PaLM 540B instruction-finetuned on 1.8K tasks outperforms PALM 540B by a large margin (+9.4% on average). Flan-PaLM 540B achieves state-of-the-art performance on several benchmarks, such as 75.2% on five-shot MMLU. We also publicly release Flan-T5 checkpoints, which achieve strong few-shot performance even compared to much larger models, such as PaLM 62B. Overall, instruction finetuning is a general method for improving the performance and usability of pretrained language models.",
+      "oa_status": null,
+      "oa_url": null,
+      "arxiv_id": null,
+      "pmcid": null,
+      "text_source": null
+    },
+    "W4224308101": {
+      "id": "W4224308101",
+      "title": "PaLM: Scaling Language Modeling with Pathways",
+      "doi": "10.48550/arxiv.2204.02311",
+      "year": 2022,
+      "authors": [
+        "Aakanksha Chowdhery",
+        "Sharan Narang",
+        "Jacob Devlin",
+        "Maarten Bosma",
+        "Gaurav Mishra",
+        "Adam Roberts",
+        "Paul Barham",
+        "Hyung Won Chung"
+      ],
+      "author_ids": [],
+      "author_orcids": [],
+      "venue": "arXiv (Cornell University)",
+      "url": "http://arxiv.org/abs/2204.02311",
+      "cited_by_count": 2136,
+      "source_tier": "grey",
+      "abstract": "Large language models have been shown to achieve remarkable performance across a variety of natural language tasks using few-shot learning, which drastically reduces the number of task-specific training examples needed to adapt the model to a particular application. To further our understanding of the impact of scale on few-shot learning, we trained a 540-billion parameter, densely activated, Transformer language model, which we call Pathways Language Model PaLM. We trained PaLM on 6144 TPU v4 chips using Pathways, a new ML system which enables highly efficient training across multiple TPU Pods. We demonstrate continued benefits of scaling by achieving state-of-the-art few-shot learning results on hundreds of language understanding and generation benchmarks. On a number of these tasks, PaLM 540B achieves breakthrough performance, outperforming the finetuned state-of-the-art on a suite of multi-step reasoning tasks, and outperforming average human performance on the recently released BIG-bench benchmark. A significant number of BIG-bench tasks showed discontinuous improvements from model scale, meaning that performance steeply increased as we scaled to our largest model. PaLM also has strong capabilities in multilingual tasks and source code generation, which we demonstrate on a wide array of benchmarks. We additionally provide a comprehensive analysis on bias and toxicity, and study the extent of training data memorization with respect to model scale. Finally, we discuss the ethical considerations related to large language models and discuss potential mitigation strategies.",
+      "oa_status": null,
+      "oa_url": null,
+      "arxiv_id": null,
+      "pmcid": null,
+      "text_source": null
+    },
+    "arxiv:2402.03300": {
+      "id": "arxiv:2402.03300",
+      "title": "DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models",
+      "doi": null,
+      "year": 2024,
+      "authors": [
+        "Zhihong Shao",
+        "Peiyi Wang",
+        "Qihao Zhu",
+        "Runxin Xu",
+        "Junxiao Song",
+        "Xiao Bi",
+        "Haowei Zhang",
+        "Mingchuan Zhang"
+      ],
+      "author_ids": [],
+      "author_orcids": [],
+      "venue": "arXiv",
+      "url": "http://arxiv.org/abs/2402.03300",
+      "cited_by_count": null,
+      "source_tier": "grey",
+      "abstract": "Mathematical reasoning poses a significant challenge for language models due to its complex and structured nature. In this paper, we introduce DeepSeekMath 7B, which continues pre-training DeepSeek-Coder-Base-v1.5 7B with 120B math-related tokens sourced from Common Crawl, together with natural language and code data. DeepSeekMath 7B has achieved an impressive score of 51.7% on the competition-level MATH benchmark without relying on external toolkits and voting techniques, approaching the performance level of Gemini-Ultra and GPT-4. Self-consistency over 64 samples from DeepSeekMath 7B achieves 60.9% on MATH. The mathematical reasoning capability of DeepSeekMath is attributed to two key factors: First, we harness the significant potential of publicly available web data through a meticulously engineered data selection pipeline. Second, we introduce Group Relative Policy Optimization (GRPO), a variant of Proximal Policy Optimization (PPO), that enhances mathematical reasoning abilities while concurrently optimizing the memory usage of PPO.",
+      "oa_status": null,
+      "oa_url": null,
+      "arxiv_id": null,
+      "pmcid": null,
+      "text_source": null
+    },
+    "W4385571157": {
+      "id": "W4385571157",
+      "title": "Challenging BIG-Bench Tasks and Whether Chain-of-Thought Can Solve Them",
+      "doi": "10.18653/v1/2023.findings-acl.824",
+      "year": 2023,
+      "authors": [
+        "Mirac Süzgün",
+        "Nathan Scales",
+        "Nathanael Schärli",
+        "Sebastian Gehrmann",
+        "Yi Tay",
+        "Hyung Won Chung",
+        "Aakanksha Chowdhery",
+        "Quoc V. Le"
+      ],
+      "author_ids": [],
+      "author_orcids": [],
+      "venue": null,
+      "url": "https://doi.org/10.18653/v1/2023.findings-acl.824",
+      "cited_by_count": 244,
+      "source_tier": "published",
+      "abstract": "Mirac Suzgun, Nathan Scales, Nathanael Schärli, Sebastian Gehrmann, Yi Tay, Hyung Won Chung, Aakanksha Chowdhery, Quoc Le, Ed Chi, Denny Zhou, Jason Wei. Findings of the Association for Computational Linguistics: ACL 2023. 2023.",
+      "oa_status": null,
+      "oa_url": null,
+      "arxiv_id": null,
+      "pmcid": null,
+      "text_source": null
+    },
+    "W4385571045": {
+      "id": "W4385571045",
+      "title": "Towards Understanding Chain-of-Thought Prompting: An Empirical Study of What Matters",
+      "doi": "10.18653/v1/2023.acl-long.153",
+      "year": 2023,
+      "authors": [
+        "Boshi Wang",
+        "Sewon Min",
+        "Xiang Deng",
+        "Jiaming Shen",
+        "You Wu",
+        "Luke Zettlemoyer",
+        "Huan Sun"
+      ],
+      "author_ids": [],
+      "author_orcids": [],
+      "venue": null,
+      "url": "https://doi.org/10.18653/v1/2023.acl-long.153",
+      "cited_by_count": 113,
+      "source_tier": "published",
+      "abstract": "Boshi Wang, Sewon Min, Xiang Deng, Jiaming Shen, You Wu, Luke Zettlemoyer, Huan Sun. Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers). 2023.",
+      "oa_status": null,
+      "oa_url": null,
+      "arxiv_id": null,
+      "pmcid": null,
+      "text_source": null
+    },
+    "W4281557260": {
+      "id": "W4281557260",
+      "title": "Large Language Models are Zero-Shot Reasoners",
+      "doi": "10.48550/arxiv.2205.11916",
+      "year": 2022,
+      "authors": [
+        "Takeshi Kojima",
+        "Shixiang Gu",
+        "Machel Reid",
+        "Yutaka Matsuo",
+        "Yusuke Iwasawa"
+      ],
+      "author_ids": [],
+      "author_orcids": [],
+      "venue": "arXiv (Cornell University)",
+      "url": "http://arxiv.org/abs/2205.11916",
+      "cited_by_count": 1120,
+      "source_tier": "grey",
+      "abstract": "Pretrained large language models (LLMs) are widely used in many sub-fields of natural language processing (NLP) and generally known as excellent few-shot learners with task-specific exemplars. Notably, chain of thought (CoT) prompting, a recent technique for eliciting complex multi-step reasoning through step-by-step answer examples, achieved the state-of-the-art performances in arithmetics and symbolic reasoning, difficult system-2 tasks that do not follow the standard scaling laws for LLMs. While these successes are often attributed to LLMs' ability for few-shot learning, we show that LLMs are decent zero-shot reasoners by simply adding \"Let's think step by step\" before each answer. Experimental results demonstrate that our Zero-shot-CoT, using the same single prompt template, significantly outperforms zero-shot LLM performances on diverse benchmark reasoning tasks including arithmetics (MultiArith, GSM8K, AQUA-RAT, SVAMP), symbolic reasoning (Last Letter, Coin Flip), and other logical reasoning tasks (Date Understanding, Tracking Shuffled Objects), without any hand-crafted few-shot examples, e.g. increasing the accuracy on MultiArith from 17.7% to 78.7% and GSM8K from 10.4% to 40.7% with large InstructGPT model (text-davinci-002), as well as similar magnitudes of improvements with another off-the-shelf large model, 540B parameter PaLM. The versatility of this single prompt across very diverse reasoning tasks hints at untapped and understudied fundamental zero-shot capabilities of LLMs, suggesting high-level, multi-task broad cognitive capabilities may be extracted by simple prompting. We hope our work not only serves as the minimal strongest zero-shot baseline for the challenging reasoning benchmarks, but also highlights the importance of carefully exploring and analyzing the enormous zero-shot knowledge hidden inside LLMs before crafting finetuning datasets or few-shot exemplars.",
+      "oa_status": null,
+      "oa_url": null,
+      "arxiv_id": null,
+      "pmcid": null,
+      "text_source": null
+    },
+    "W4318908031": {
+      "id": "W4318908031",
+      "title": "The Flan Collection: Designing Data and Methods for Effective Instruction Tuning",
+      "doi": "10.48550/arxiv.2301.13688",
+      "year": 2023,
+      "authors": [
+        "Shayne Longpre",
+        "Le Hou",
+        "Tu Vu",
+        "Albert Webson",
+        "Hyung Won Chung",
+        "Yi Tay",
+        "Denny Zhou",
+        "Quoc V. Le"
+      ],
+      "author_ids": [],
+      "author_orcids": [],
+      "venue": "arXiv (Cornell University)",
+      "url": "http://arxiv.org/abs/2301.13688",
+      "cited_by_count": 113,
+      "source_tier": "grey",
+      "abstract": "We study the design decisions of publicly available instruction tuning methods, and break down the development of Flan 2022 (Chung et al., 2022). Through careful ablation studies on the Flan Collection of tasks and methods, we tease apart the effect of design decisions which enable Flan-T5 to outperform prior work by 3-17%+ across evaluation settings. We find task balancing and enrichment techniques are overlooked but critical to effective instruction tuning, and in particular, training with mixed prompt settings (zero-shot, few-shot, and chain-of-thought) actually yields stronger (2%+) performance in all settings. In further experiments, we show Flan-T5 requires less finetuning to converge higher and faster than T5 on single downstream tasks, motivating instruction-tuned models as more computationally-efficient starting checkpoints for new tasks. Finally, to accelerate research on instruction tuning, we make the Flan 2022 collection of datasets, templates, and methods publicly available at https://github.com/google-research/FLAN/tree/main/flan/v2.",
+      "oa_status": "green",
+      "oa_url": "https://arxiv.org/pdf/2301.13688",
+      "arxiv_id": "2301.13688",
+      "pmcid": null,
+      "text_source": null
+    },
+    "W4387221974": {
+      "id": "W4387221974",
+      "title": "At Which Training Stage Does Code Data Help LLMs Reasoning?",
+      "doi": "10.48550/arxiv.2309.16298",
+      "year": 2023,
+      "authors": [
+        "Yingwei Ma",
+        "Yue Liu",
+        "Yue Yu",
+        "Yuanliang Zhang",
+        "Yu Jiang",
+        "Changjian Wang",
+        "Shanshan Li"
+      ],
+      "author_ids": [],
+      "author_orcids": [],
+      "venue": "arXiv (Cornell University)",
+      "url": "http://arxiv.org/abs/2309.16298",
+      "cited_by_count": 3,
+      "source_tier": "grey",
+      "abstract": "Large Language Models (LLMs) have exhibited remarkable reasoning capabilities and become the foundation of language technologies. Inspired by the great success of code data in training LLMs, we naturally wonder at which training stage introducing code data can really help LLMs reasoning. To this end, this paper systematically explores the impact of code data on LLMs at different stages. Concretely, we introduce the code data at the pre-training stage, instruction-tuning stage, and both of them, respectively. Then, the reasoning capability of LLMs is comprehensively and fairly evaluated via six reasoning tasks in five domains. We critically analyze the experimental results and provide conclusions with insights. First, pre-training LLMs with the mixture of code and text can significantly enhance LLMs' general reasoning capability almost without negative transfer on other tasks. Besides, at the instruction-tuning stage, code data endows LLMs the task-specific reasoning capability. Moreover, the dynamic mixing strategy of code and text data assists LLMs to learn reasoning capability step-by-step during training. These insights deepen the understanding of LLMs regarding reasoning ability for their application, such as scientific question answering, legal support, etc. The source code and model parameters are released at the link:~\\url{https://github.com/yingweima2022/CodeLLM}.",
+      "oa_status": "green",
+      "oa_url": "https://arxiv.org/pdf/2309.16298",
+      "arxiv_id": "2309.16298",
+      "pmcid": null,
+      "text_source": null
+    },
+    "W4403011998": {
+      "id": "W4403011998",
+      "title": "To Code, or Not To Code? Exploring Impact of Code in Pre-training",
+      "doi": "10.48550/arxiv.2408.10914",
+      "year": 2024,
+      "authors": [
+        "Viraat Aryabumi",
+        "Yixuan Su",
+        "Raymond Ma",
+        "Adrien Morisot",
+        "Zhang, Ivan",
+        "Acyr Locatelli",
+        "Marzieh Fadaee",
+        "Ahmet Üstün"
+      ],
+      "author_ids": [],
+      "author_orcids": [],
+      "venue": "arXiv (Cornell University)",
+      "url": "http://arxiv.org/abs/2408.10914",
+      "cited_by_count": 3,
+      "source_tier": "grey",
+      "abstract": "Including code in the pre-training data mixture, even for models not specifically designed for code, has become a common practice in LLMs pre-training. While there has been anecdotal consensus among practitioners that code data plays a vital role in general LLMs' performance, there is only limited work analyzing the precise impact of code on non-code tasks. In this work, we systematically investigate the impact of code data on general performance. We ask \"what is the impact of code data used in pre-training on a large variety of downstream tasks beyond code generation\". We conduct extensive ablations and evaluate across a broad range of natural language reasoning tasks, world knowledge tasks, code benchmarks, and LLM-as-a-judge win-rates for models with sizes ranging from 470M to 2.8B parameters. Across settings, we find a consistent results that code is a critical building block for generalization far beyond coding tasks and improvements to code quality have an outsized impact across all tasks. In particular, compared to text-only pre-training, the addition of code results in up to relative increase of 8.2% in natural language (NL) reasoning, 4.2% in world knowledge, 6.6% improvement in generative win-rates, and a 12x boost in code performance respectively. Our work suggests investments in code quality and preserving code during pre-training have positive impacts.",
+      "oa_status": "green",
+      "oa_url": "https://arxiv.org/pdf/2408.10914",
+      "arxiv_id": "2408.10914",
+      "pmcid": null,
+      "text_source": null
+    }
+  },
+  "nodes": {
+    "h:lead-training-recipe-gates-cot-and-emergence": {
+      "id": "h:lead-training-recipe-gates-cot-and-emergence",
+      "type": "hypothesis",
+      "label": "How a model was trained after pre-training, and not its parameter count alone, decides whether chain-of-thought helps and whether 'emergent' abilities appear: the 175B base GPT-3 shows neither.",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": {
+        "lead": "training-recipe-gates-cot-and-emergence",
+        "confidence": 0.5,
+        "nodes": [
+          "cot-scale-threshold/o:wang-2023-base-gpt3-175b-little-cot-gain",
+          "llm-emergent-abilities/o:lu-2024-two-tasks-emergent-without-icl",
+          "cot-scale-threshold/c:base-model-without-instruction-tuning",
+          "llm-emergent-abilities/c:non-instruction-tuned",
+          "cot-scale-threshold/o:kojima-2022-flat-without-cot-steep-with"
+        ],
+        "alignments": [
+          [
+            "cot-scale-threshold/c:base-model-without-instruction-tuning",
+            "llm-emergent-abilities/c:non-instruction-tuned"
+          ]
+        ]
+      },
+      "framed": false
+    },
+    "h:code-training-gives-models-multi-step-reasoning": {
+      "id": "h:code-training-gives-models-multi-step-reasoning",
+      "type": "hypothesis",
+      "label": "Training on source code, in pre-training or continued training, is what gives a language model multi-step reasoning ability",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "h:instruction-tuning-is-what-makes-cot-work": {
+      "id": "h:instruction-tuning-is-what-makes-cot-work",
+      "type": "hypothesis",
+      "label": "Instruction tuning is what makes chain-of-thought prompting effective",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "h:cot-data-in-finetuning-matters-not-instruction-tuning-as-such": {
+      "id": "h:cot-data-in-finetuning-matters-not-instruction-tuning-as-such",
+      "type": "hypothesis",
+      "label": "What helps in instruction tuning is chain-of-thought data in the mixture; instruction tuning without it harms reasoning",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "h:rl-sharpens-reasoning-already-present": {
+      "id": "h:rl-sharpens-reasoning-already-present",
+      "type": "hypothesis",
+      "label": "Reinforcement-learning post-training makes correct reasoning more reliable without adding reasoning the model could not already produce",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:base-model-without-instruction-tuning": {
+      "id": "c:base-model-without-instruction-tuning",
+      "type": "condition",
+      "label": "Pretrained model without instruction finetuning",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:instruction-tuned": {
+      "id": "c:instruction-tuned",
+      "type": "condition",
+      "label": "Instruction-tuned model",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:matched-scale-base-vs-tuned": {
+      "id": "c:matched-scale-base-vs-tuned",
+      "type": "condition",
+      "label": "Same base model compared before and after post-training",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:cot-data-in-finetuning-mixture": {
+      "id": "c:cot-data-in-finetuning-mixture",
+      "type": "condition",
+      "label": "Chain-of-thought annotated datasets included in the instruction-tuning mixture",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:instruction-tuning-without-cot-data": {
+      "id": "c:instruction-tuning-without-cot-data",
+      "type": "condition",
+      "label": "Instruction tuning on a mixture with no chain-of-thought data",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:code-in-pre-training": {
+      "id": "c:code-in-pre-training",
+      "type": "condition",
+      "label": "Source code included in the pre-training data",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:matched-text-only-baseline": {
+      "id": "c:matched-text-only-baseline",
+      "type": "condition",
+      "label": "Compared with a text-only model matched for data scale and architecture",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:code-in-instruction-tuning": {
+      "id": "c:code-in-instruction-tuning",
+      "type": "condition",
+      "label": "Code data included at the instruction-tuning stage",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:palm-8b-62b-540b": {
+      "id": "c:palm-8b-62b-540b",
+      "type": "condition",
+      "label": "Model: PaLM 8B, 62B and 540B",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:models-under-13b": {
+      "id": "c:models-under-13b",
+      "type": "condition",
+      "label": "Models of 13B parameters or fewer",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:codex-code-davinci-002": {
+      "id": "c:codex-code-davinci-002",
+      "type": "condition",
+      "label": "Model: Codex (code-davinci-002)",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:original-gpt3-175b": {
+      "id": "c:original-gpt3-175b",
+      "type": "condition",
+      "label": "Model: original GPT-3 175B (davinci)",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:zero-shot-cot-prompting": {
+      "id": "c:zero-shot-cot-prompting",
+      "type": "condition",
+      "label": "Zero-shot chain-of-thought ('Let's think step by step')",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:few-shot-cot-prompting": {
+      "id": "c:few-shot-cot-prompting",
+      "type": "condition",
+      "label": "Few-shot prompting with chain-of-thought exemplars",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:big-bench-hard": {
+      "id": "c:big-bench-hard",
+      "type": "condition",
+      "label": "BIG-Bench Hard",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:gsm8k": {
+      "id": "c:gsm8k",
+      "type": "condition",
+      "label": "GSM8K math word problems",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:rl-post-training": {
+      "id": "c:rl-post-training",
+      "type": "condition",
+      "label": "Reinforcement-learning post-training (GRPO)",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "c:sampling-k-responses": {
+      "id": "c:sampling-k-responses",
+      "type": "condition",
+      "label": "Scored over K sampled responses (Maj@K, Pass@K)",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "e:chung-2022-flan-palm-vs-palm": {
+      "id": "e:chung-2022-flan-palm-vs-palm",
+      "type": "experiment",
+      "label": "Chung et al. 2022: PaLM against Flan-PaLM at 8B, 62B and 540B, with and without chain-of-thought data in the finetuning mixture",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:chung-2022-base-palm-540b-gains-from-cot": {
+      "id": "o:chung-2022-base-palm-540b-gains-from-cot",
+      "type": "observation",
+      "label": "Base PaLM 540B, with no instruction tuning, gains from chain-of-thought prompting: BBH-alg 38.3 to 57.6, MGSM 18.3 to 45.9",
+      "description": "",
+      "outcome": "positive",
+      "attrs": {
+        "bbh_alg": [
+          38.3,
+          57.6
+        ],
+        "mgsm": [
+          18.3,
+          45.9
+        ]
+      },
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:chung-2022-instruction-tuning-without-cot-degrades-reasoning": {
+      "id": "o:chung-2022-instruction-tuning-without-cot-degrades-reasoning",
+      "type": "observation",
+      "label": "Instruction finetuning without chain-of-thought data degrades performance on chain-of-thought evaluations; adding nine chain-of-thought datasets improves all evaluations",
+      "description": "",
+      "outcome": "negative",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:chung-2022-cot-finetuning-unlocks-zero-shot-cot": {
+      "id": "o:chung-2022-cot-finetuning-unlocks-zero-shot-cot",
+      "type": "observation",
+      "label": "Chain-of-thought finetuning unlocks zero-shot 'let's think step-by-step' reasoning on BIG-Bench tasks",
+      "description": "",
+      "outcome": "positive",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "e:ma-2023-code-at-each-training-stage": {
+      "id": "e:ma-2023-code-at-each-training-stage",
+      "type": "experiment",
+      "label": "Ma et al. 2023: code data introduced at pre-training, at instruction tuning, or both, against a matched text-only PanGu model",
+      "description": "",
+      "outcome": null,
+      "attrs": {
+        "sizes": [
+          "2.6B",
+          "13B"
+        ]
+      },
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:ma-2023-code-in-pretraining-improves-general-reasoning": {
+      "id": "o:ma-2023-code-in-pretraining-improves-general-reasoning",
+      "type": "observation",
+      "label": "Pre-training on a mixture of code and text significantly improves general reasoning, almost without negative transfer",
+      "description": "",
+      "outcome": "positive",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:ma-2023-code-at-instruction-tuning-is-task-specific": {
+      "id": "o:ma-2023-code-at-instruction-tuning-is-task-specific",
+      "type": "observation",
+      "label": "Code at the instruction-tuning stage gives task-specific reasoning capability only",
+      "description": "",
+      "outcome": "mixed",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "e:aryabumi-2024-code-in-pretraining-ablations": {
+      "id": "e:aryabumi-2024-code-in-pretraining-ablations",
+      "type": "experiment",
+      "label": "Aryabumi et al. 2024: ablations of code in pre-training for 470M to 2.8B models, evaluated on non-code tasks",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:aryabumi-2024-code-raises-nl-reasoning": {
+      "id": "o:aryabumi-2024-code-raises-nl-reasoning",
+      "type": "observation",
+      "label": "Against text-only pre-training, adding code gives up to an 8.2% relative increase in natural-language reasoning",
+      "description": "",
+      "outcome": "positive",
+      "attrs": {
+        "nl_reasoning_relative_gain_pct": 8.2
+      },
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "e:shao-2024-code-before-math": {
+      "id": "e:shao-2024-code-before-math",
+      "type": "experiment",
+      "label": "Shao et al. 2024 (DeepSeekMath): code training before math training, 7B models",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:shao-2024-code-training-improves-math-reasoning": {
+      "id": "o:shao-2024-code-training-improves-math-reasoning",
+      "type": "observation",
+      "label": "Code training before math training improves mathematical problem solving both with and without tool use",
+      "description": "",
+      "outcome": "positive",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "e:shao-2024-rl-maj-vs-pass": {
+      "id": "e:shao-2024-rl-maj-vs-pass",
+      "type": "experiment",
+      "label": "Shao et al. 2024 (DeepSeekMath): Maj@K and Pass@K of the instruction-tuned and RL models on GSM8K and MATH",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:shao-2024-rl-raises-maj-not-pass": {
+      "id": "o:shao-2024-rl-raises-maj-not-pass",
+      "type": "observation",
+      "label": "RL raises Maj@K but not Pass@K",
+      "description": "",
+      "outcome": "mixed",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "e:suzgun-2022-bbh-across-model-families": {
+      "id": "e:suzgun-2022-bbh-across-model-families",
+      "type": "experiment",
+      "label": "Suzgun et al. 2022: chain-of-thought on BIG-Bench Hard for Codex, InstructGPT and PaLM",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:suzgun-2022-codex-gains-most-from-cot": {
+      "id": "o:suzgun-2022-codex-gains-most-from-cot",
+      "type": "observation",
+      "label": "With chain-of-thought, Codex beats the average human rater on 17 of 23 tasks, against 10 for PaLM",
+      "description": "",
+      "outcome": "positive",
+      "attrs": {
+        "codex_tasks": 17,
+        "palm_tasks": 10,
+        "of": 23
+      },
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "e:wang-2023-base-gpt3-preliminary": {
+      "id": "e:wang-2023-base-gpt3-preliminary",
+      "type": "experiment",
+      "label": "Wang et al. 2023: preliminary chain-of-thought runs on original GPT-3 175B",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:wang-2023-base-gpt3-gains-little-from-cot": {
+      "id": "o:wang-2023-base-gpt3-gains-little-from-cot",
+      "type": "observation",
+      "label": "Original GPT-3 175B without instruction finetuning gains little from chain-of-thought over standard prompting",
+      "description": "",
+      "outcome": "null",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "e:kojima-2022-zero-shot-cot-by-size": {
+      "id": "e:kojima-2022-zero-shot-cot-by-size",
+      "type": "experiment",
+      "label": "Kojima et al. 2022: zero-shot chain-of-thought across sizes of original GPT-3, InstructGPT and PaLM",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:kojima-2022-original-gpt3-gains-with-scale": {
+      "id": "o:kojima-2022-original-gpt3-gains-with-scale",
+      "type": "observation",
+      "label": "With zero-shot chain-of-thought, performance rises drastically with size for original GPT-3 as well as InstructGPT and PaLM",
+      "description": "",
+      "outcome": "positive",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "e:longpre-2023-flan-collection-ablations": {
+      "id": "e:longpre-2023-flan-collection-ablations",
+      "type": "experiment",
+      "label": "Longpre et al. 2023: ablations of the Flan 2022 instruction-tuning mixture",
+      "description": "",
+      "outcome": null,
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    },
+    "o:longpre-2023-mixed-prompt-settings-help-everywhere": {
+      "id": "o:longpre-2023-mixed-prompt-settings-help-everywhere",
+      "type": "observation",
+      "label": "Training with mixed zero-shot, few-shot and chain-of-thought prompts gives stronger (2%+) performance in all settings",
+      "description": "",
+      "outcome": "positive",
+      "attrs": {},
+      "provenance": [],
+      "derived_from": null,
+      "framed": false
+    }
+  },
+  "edges": [
+    {
+      "source": "e:chung-2022-flan-palm-vs-palm",
+      "target": "h:cot-data-in-finetuning-matters-not-instruction-tuning-as-such",
+      "relation": "tests",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4307079201",
+          "passage": "we ablate CoT finetuning data and show that whereas instruction finetuning without CoT actually degrades reasoning ability, including just nine CoT datasets improves performance on all evaluations",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:chung-2022-flan-palm-vs-palm",
+      "target": "h:instruction-tuning-is-what-makes-cot-work",
+      "relation": "tests",
+      "confidence": 0.8,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4307079201",
+          "passage": "In this paper we explore instruction finetuning with a particular focus on (1) scaling the number of tasks, (2) scaling the model size, and (3) finetuning on chain-of-thought data.",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:chung-2022-flan-palm-vs-palm",
+      "target": "h:lead-training-recipe-gates-cot-and-emergence",
+      "relation": "tests",
+      "confidence": 0.6,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4307079201",
+          "passage": "Flan-PaLM 540B instruction-finetuned on 1.8K tasks outperforms PALM 540B by a large margin (+9.4% on average)",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": "A base-versus-tuned comparison at matched scale, which is what the derived claim needs."
+    },
+    {
+      "source": "e:chung-2022-flan-palm-vs-palm",
+      "target": "c:matched-scale-base-vs-tuned",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4307079201",
+          "passage": "We scale the model size by performing experiments on three PaLM model sizes: 8B, 62B, and 540B.",
+          "location": "methods",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:chung-2022-flan-palm-vs-palm",
+      "target": "c:palm-8b-62b-540b",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4307079201",
+          "passage": "We scale the model size by performing experiments on three PaLM model sizes: 8B, 62B, and 540B.",
+          "location": "methods",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:chung-2022-flan-palm-vs-palm",
+      "target": "c:big-bench-hard",
+      "relation": "performed_under",
+      "confidence": 0.85,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4307079201",
+          "passage": "evaluation benchmarks (MMLU, BBH, TyDiQA, MGSM, open-ended generation)",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:chung-2022-flan-palm-vs-palm",
+      "target": "o:chung-2022-base-palm-540b-gains-from-cot",
+      "relation": "yields",
+      "confidence": 0.85,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4307079201",
+          "passage": "PaLM 540B - direct prompting 69.3 62.7 38.3 52.9 18.3 - CoT prompting 64.5 71.2 57.6 - 45.9",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": "Read from Table 4; the authors do not remark on the base model's gain. On MMLU chain-of-thought lowers base PaLM's score (69.3 to 64.5)."
+    },
+    {
+      "source": "o:chung-2022-base-palm-540b-gains-from-cot",
+      "target": "c:base-model-without-instruction-tuning",
+      "relation": "observed_under",
+      "confidence": 0.85,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4307079201",
+          "passage": "PaLM 540B - direct prompting 69.3 62.7 38.3 52.9 18.3 - CoT prompting 64.5 71.2 57.6 - 45.9",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": "The PaLM rows of Table 4 are the model before Flan finetuning; the table does not use the words 'base' or 'without instruction tuning'."
+    },
+    {
+      "source": "o:chung-2022-base-palm-540b-gains-from-cot",
+      "target": "c:code-in-pre-training",
+      "relation": "observed_under",
+      "confidence": 0.8,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4224308101",
+          "passage": "The source code in the pretraining dataset is obtained from open source repositories on GitHub.",
+          "location": "methods",
+          "verified": true
+        }
+      ],
+      "note": "PaLM's pre-training data includes source code; this is the PaLM paper's statement, attached here to the Flan paper's result."
+    },
+    {
+      "source": "o:chung-2022-base-palm-540b-gains-from-cot",
+      "target": "h:instruction-tuning-is-what-makes-cot-work",
+      "relation": "contradicts",
+      "confidence": 0.7,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4307079201",
+          "passage": "PaLM 540B - direct prompting 69.3 62.7 38.3 52.9 18.3 - CoT prompting 64.5 71.2 57.6 - 45.9",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": "A base model with no instruction tuning gains strongly from chain-of-thought, so instruction tuning is not necessary for it."
+    },
+    {
+      "source": "e:chung-2022-flan-palm-vs-palm",
+      "target": "o:chung-2022-instruction-tuning-without-cot-degrades-reasoning",
+      "relation": "yields",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4307079201",
+          "passage": "whereas prior instruction finetuning methods that do not include chain-of-thought (Wei et al., 2022b, CoT;) severely degrade performance on CoT evaluations, adding just nine CoT datasets into the finetuning mixture enables better performance on all evaluations",
+          "location": "introduction",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:chung-2022-instruction-tuning-without-cot-degrades-reasoning",
+      "target": "c:instruction-tuning-without-cot-data",
+      "relation": "observed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4307079201",
+          "passage": "instruction finetuning without CoT actually degrades reasoning ability",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:chung-2022-instruction-tuning-without-cot-degrades-reasoning",
+      "target": "h:cot-data-in-finetuning-matters-not-instruction-tuning-as-such",
+      "relation": "supports",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4307079201",
+          "passage": "instruction finetuning without CoT actually degrades reasoning ability, including just nine CoT datasets improves performance on all evaluations",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:chung-2022-instruction-tuning-without-cot-degrades-reasoning",
+      "target": "h:instruction-tuning-is-what-makes-cot-work",
+      "relation": "contradicts",
+      "confidence": 0.75,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4307079201",
+          "passage": "instruction finetuning without CoT actually degrades reasoning ability",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:chung-2022-flan-palm-vs-palm",
+      "target": "o:chung-2022-cot-finetuning-unlocks-zero-shot-cot",
+      "relation": "yields",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4307079201",
+          "passage": "we show that CoT finetuning unlocks zero-shot reasoning via “let’s think step-by-step” on challenging BIG-Bench tasks",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:chung-2022-cot-finetuning-unlocks-zero-shot-cot",
+      "target": "c:cot-data-in-finetuning-mixture",
+      "relation": "observed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4307079201",
+          "passage": "including nine datasets with chain-of-thought (CoT) annotations in the finetuning mixture improves reasoning ability",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:chung-2022-cot-finetuning-unlocks-zero-shot-cot",
+      "target": "c:zero-shot-cot-prompting",
+      "relation": "observed_under",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4307079201",
+          "passage": "CoT finetuning unlocks zero-shot reasoning via “let’s think step-by-step”",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:chung-2022-cot-finetuning-unlocks-zero-shot-cot",
+      "target": "h:cot-data-in-finetuning-matters-not-instruction-tuning-as-such",
+      "relation": "supports",
+      "confidence": 0.85,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4307079201",
+          "passage": "CoT finetuning unlocks zero-shot reasoning via “let’s think step-by-step” on challenging BIG-Bench tasks",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:chung-2022-cot-finetuning-unlocks-zero-shot-cot",
+      "target": "h:lead-training-recipe-gates-cot-and-emergence",
+      "relation": "supports",
+      "confidence": 0.6,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4307079201",
+          "passage": "CoT finetuning unlocks zero-shot reasoning via “let’s think step-by-step” on challenging BIG-Bench tasks",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": "At fixed size, what the model was finetuned on decides whether zero-shot chain-of-thought works."
+    },
+    {
+      "source": "e:ma-2023-code-at-each-training-stage",
+      "target": "h:code-training-gives-models-multi-step-reasoning",
+      "relation": "tests",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4387221974",
+          "passage": "we naturally wonder at which training stage introducing code data can really help LLMs reasoning",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:ma-2023-code-at-each-training-stage",
+      "target": "c:code-in-pre-training",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4387221974",
+          "passage": "we introduce the code data at the pre-training stage, instruction-tuning stage, and both of them, respectively",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:ma-2023-code-at-each-training-stage",
+      "target": "c:code-in-instruction-tuning",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4387221974",
+          "passage": "we introduce the code data at the pre-training stage, instruction-tuning stage, and both of them, respectively",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:ma-2023-code-at-each-training-stage",
+      "target": "c:matched-text-only-baseline",
+      "relation": "performed_under",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4387221974",
+          "passage": "we obtain 100GB of text data with the same scale and source as PanGu2.6B by sampling each data source using different ratios",
+          "location": "methods",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:ma-2023-code-at-each-training-stage",
+      "target": "c:models-under-13b",
+      "relation": "performed_under",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4387221974",
+          "passage": "we use the open-sourced PanGu2.6B and PanGu13B",
+          "location": "methods",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:ma-2023-code-at-each-training-stage",
+      "target": "o:ma-2023-code-in-pretraining-improves-general-reasoning",
+      "relation": "yields",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4387221974",
+          "passage": "pre-training LLMs with the mixture of code and text can significantly enhance LLMs' general reasoning capability almost without negative transfer on other tasks",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:ma-2023-code-in-pretraining-improves-general-reasoning",
+      "target": "c:code-in-pre-training",
+      "relation": "observed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4387221974",
+          "passage": "pre-training LLMs with the mixture of code and text can significantly enhance LLMs' general reasoning capability",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:ma-2023-code-in-pretraining-improves-general-reasoning",
+      "target": "h:code-training-gives-models-multi-step-reasoning",
+      "relation": "supports",
+      "confidence": 0.85,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4387221974",
+          "passage": "pre-training LLMs with the mixture of code and text can significantly enhance LLMs' general reasoning capability almost without negative transfer on other tasks",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:ma-2023-code-at-each-training-stage",
+      "target": "o:ma-2023-code-at-instruction-tuning-is-task-specific",
+      "relation": "yields",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4387221974",
+          "passage": "at the instruction-tuning stage, code data endows LLMs the task-specific reasoning capability",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:ma-2023-code-at-instruction-tuning-is-task-specific",
+      "target": "c:code-in-instruction-tuning",
+      "relation": "observed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4387221974",
+          "passage": "at the instruction-tuning stage, code data endows LLMs the task-specific reasoning capability",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:ma-2023-code-at-instruction-tuning-is-task-specific",
+      "target": "h:code-training-gives-models-multi-step-reasoning",
+      "relation": "supports",
+      "confidence": 0.5,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4387221974",
+          "passage": "at the instruction-tuning stage, code data endows LLMs the task-specific reasoning capability",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": "Supports the code account for pre-training more than for post-training: late code helps narrowly."
+    },
+    {
+      "source": "e:aryabumi-2024-code-in-pretraining-ablations",
+      "target": "h:code-training-gives-models-multi-step-reasoning",
+      "relation": "tests",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4403011998",
+          "passage": "what is the impact of code data used in pre-training on a large variety of downstream tasks beyond code generation",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:aryabumi-2024-code-in-pretraining-ablations",
+      "target": "c:code-in-pre-training",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4403011998",
+          "passage": "compared to text-only pre-training, the addition of code results in up to relative increase of 8.2% in natural language (NL) reasoning",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:aryabumi-2024-code-in-pretraining-ablations",
+      "target": "c:matched-text-only-baseline",
+      "relation": "performed_under",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4403011998",
+          "passage": "compared to text-only pre-training",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:aryabumi-2024-code-in-pretraining-ablations",
+      "target": "c:models-under-13b",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4403011998",
+          "passage": "models with sizes ranging from 470M to 2.8B parameters",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:aryabumi-2024-code-in-pretraining-ablations",
+      "target": "o:aryabumi-2024-code-raises-nl-reasoning",
+      "relation": "yields",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4403011998",
+          "passage": "compared to text-only pre-training, the addition of code results in up to relative increase of 8.2% in natural language (NL) reasoning",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:aryabumi-2024-code-raises-nl-reasoning",
+      "target": "h:code-training-gives-models-multi-step-reasoning",
+      "relation": "supports",
+      "confidence": 0.75,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4403011998",
+          "passage": "code is a critical building block for generalization far beyond coding tasks",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": "Natural-language reasoning benchmarks, not chain-of-thought gain, and no model above 2.8B."
+    },
+    {
+      "source": "e:shao-2024-code-before-math",
+      "target": "h:code-training-gives-models-multi-step-reasoning",
+      "relation": "tests",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "arxiv:2402.03300",
+          "passage": "A popular yet unverified hypothesis suggests that code training improves reasoning.",
+          "location": "discussion",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:shao-2024-code-before-math",
+      "target": "c:models-under-13b",
+      "relation": "performed_under",
+      "confidence": 0.85,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "arxiv:2402.03300",
+          "passage": "we introduce DeepSeekMath 7B, which continues pre-training DeepSeek-Coder-Base-v1.5 7B",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:shao-2024-code-before-math",
+      "target": "c:code-in-pre-training",
+      "relation": "performed_under",
+      "confidence": 0.85,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "arxiv:2402.03300",
+          "passage": "Code training prior to math training improves models’ ability to solve mathematical problems both with and without tool use.",
+          "location": "discussion",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:shao-2024-code-before-math",
+      "target": "o:shao-2024-code-training-improves-math-reasoning",
+      "relation": "yields",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "arxiv:2402.03300",
+          "passage": "code training improves models’ ability to do mathematical reasoning both with and without tool use",
+          "location": "discussion",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:shao-2024-code-training-improves-math-reasoning",
+      "target": "h:code-training-gives-models-multi-step-reasoning",
+      "relation": "supports",
+      "confidence": 0.8,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "arxiv:2402.03300",
+          "passage": "We attempt to offer a partial response to this, particularly within the mathematical domain: code training improves models’ ability to do mathematical reasoning both with and without tool use.",
+          "location": "discussion",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:shao-2024-rl-maj-vs-pass",
+      "target": "h:rl-sharpens-reasoning-already-present",
+      "relation": "tests",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "arxiv:2402.03300",
+          "passage": "We evaluate the Pass@K and Maj@K accuracy of the Instruct and RL models on two benchmarks.",
+          "location": "discussion",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:shao-2024-rl-maj-vs-pass",
+      "target": "c:rl-post-training",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "arxiv:2402.03300",
+          "passage": "we introduce Group Relative Policy Optimization (GRPO), a variant of Proximal Policy Optimization (PPO), that enhances mathematical reasoning abilities",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:shao-2024-rl-maj-vs-pass",
+      "target": "c:sampling-k-responses",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "arxiv:2402.03300",
+          "passage": "We evaluate the Pass@K and Maj@K accuracy of the Instruct and RL models on two benchmarks.",
+          "location": "discussion",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:shao-2024-rl-maj-vs-pass",
+      "target": "c:gsm8k",
+      "relation": "performed_under",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "arxiv:2402.03300",
+          "passage": "The Maj@K and Pass@K of SFT and RL DeepSeekMath 7B on GSM8K and MATH",
+          "location": "discussion",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:shao-2024-rl-maj-vs-pass",
+      "target": "c:matched-scale-base-vs-tuned",
+      "relation": "performed_under",
+      "confidence": 0.85,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "arxiv:2402.03300",
+          "passage": "The Maj@K and Pass@K of SFT and RL DeepSeekMath 7B on GSM8K and MATH",
+          "location": "discussion",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:shao-2024-rl-maj-vs-pass",
+      "target": "o:shao-2024-rl-raises-maj-not-pass",
+      "relation": "yields",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "arxiv:2402.03300",
+          "passage": "As shown in Figure 7, RL enhances Maj@K’s performance but not Pass@K.",
+          "location": "discussion",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:shao-2024-rl-raises-maj-not-pass",
+      "target": "h:rl-sharpens-reasoning-already-present",
+      "relation": "supports",
+      "confidence": 0.85,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "arxiv:2402.03300",
+          "passage": "It was noted that RL enhances Maj@K but not Pass@K.",
+          "location": "discussion",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:suzgun-2022-bbh-across-model-families",
+      "target": "h:code-training-gives-models-multi-step-reasoning",
+      "relation": "tests",
+      "confidence": 0.5,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4385571157",
+          "passage": "We evaluate several model scales for both OpenAI models (Brown et al., 2020; Ouyang et al., 2022; Chen et al., 2021a) and PaLM (Chowdhery et al., 2022).",
+          "location": "methods",
+          "verified": true
+        }
+      ],
+      "note": "Not designed to test the code account, but it compares a code model with text models under the same prompts."
+    },
+    {
+      "source": "e:suzgun-2022-bbh-across-model-families",
+      "target": "c:codex-code-davinci-002",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571157",
+          "passage": "Codex (code-davinci-002) to surpass the average human-rater performance on 17 of the 23 tasks",
+          "location": "introduction",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:suzgun-2022-bbh-across-model-families",
+      "target": "c:big-bench-hard",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571157",
+          "passage": "we focus on a suite of 23 challenging BIG-Bench tasks which we call BIG-Bench Hard (BBH)",
+          "location": "introduction",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:suzgun-2022-bbh-across-model-families",
+      "target": "c:few-shot-cot-prompting",
+      "relation": "performed_under",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571157",
+          "passage": "We evaluate few-shot performance via standard “answer-only” prompting (Brown et al., 2020; Srivastava et al., 2022) and chain-of-thought prompting (Wei et al., 2022b).",
+          "location": "methods",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:suzgun-2022-bbh-across-model-families",
+      "target": "o:suzgun-2022-codex-gains-most-from-cot",
+      "relation": "yields",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571157",
+          "passage": "applying chain-of-thought (CoT) prompting to BBH tasks enables PaLM to surpass the average human-rater performance on 10 of the 23 tasks, and Codex (code-davinci-002) to surpass the average human-rater performance on 17 of the 23 tasks",
+          "location": "introduction",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:suzgun-2022-codex-gains-most-from-cot",
+      "target": "h:code-training-gives-models-multi-step-reasoning",
+      "relation": "supports",
+      "confidence": 0.5,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4385571157",
+          "passage": "CoT prompting enables the most capable Codex model to outperform the average human-rater baseline on 17 out of 23 tasks in BBH",
+          "location": "conclusion",
+          "verified": true
+        }
+      ],
+      "note": "Codex differs from PaLM in much besides code, and the same paper notes PaLM and InstructGPT do better than Codex on some task types."
+    },
+    {
+      "source": "e:wang-2023-base-gpt3-preliminary",
+      "target": "h:lead-training-recipe-gates-cot-and-emergence",
+      "relation": "tests",
+      "confidence": 0.6,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4385571045",
+          "passage": "We also tried the original GPT-3 175B without instruction-finetuning in our preliminary experiments",
+          "location": "methods",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:wang-2023-base-gpt3-preliminary",
+      "target": "c:original-gpt3-175b",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571045",
+          "passage": "the original GPT-3 175B without instruction-finetuning",
+          "location": "methods",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:wang-2023-base-gpt3-preliminary",
+      "target": "c:few-shot-cot-prompting",
+      "relation": "performed_under",
+      "confidence": 0.85,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571045",
+          "passage": "find that CoT prompting does not yield much performance gain than standard prompting",
+          "location": "methods",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:wang-2023-base-gpt3-preliminary",
+      "target": "o:wang-2023-base-gpt3-gains-little-from-cot",
+      "relation": "yields",
+      "confidence": 0.8,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571045",
+          "passage": "We also tried the original GPT-3 175B without instruction-finetuning in our preliminary experiments, but find that CoT prompting does not yield much performance gain than standard prompting, echoing Fu et al. (2022).",
+          "location": "methods",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:wang-2023-base-gpt3-gains-little-from-cot",
+      "target": "c:base-model-without-instruction-tuning",
+      "relation": "observed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571045",
+          "passage": "the original GPT-3 175B without instruction-finetuning",
+          "location": "methods",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:wang-2023-base-gpt3-gains-little-from-cot",
+      "target": "h:lead-training-recipe-gates-cot-and-emergence",
+      "relation": "supports",
+      "confidence": 0.7,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4385571045",
+          "passage": "find that CoT prompting does not yield much performance gain than standard prompting, echoing Fu et al. (2022)",
+          "location": "methods",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:wang-2023-base-gpt3-gains-little-from-cot",
+      "target": "o:chung-2022-base-palm-540b-gains-from-cot",
+      "relation": "contradicts",
+      "confidence": 0.5,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4385571045",
+          "passage": "We also tried the original GPT-3 175B without instruction-finetuning in our preliminary experiments, but find that CoT prompting does not yield much performance gain than standard prompting",
+          "location": "methods",
+          "verified": true
+        }
+      ],
+      "note": "Two base models without instruction tuning, opposite results. They differ in size (175B, 540B), in era, and in pre-training data: PaLM's includes source code."
+    },
+    {
+      "source": "e:kojima-2022-zero-shot-cot-by-size",
+      "target": "h:lead-training-recipe-gates-cot-and-emergence",
+      "relation": "tests",
+      "confidence": 0.5,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4281557260",
+          "passage": "Does model size matter for zero-shot reasoning?",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:kojima-2022-zero-shot-cot-by-size",
+      "target": "c:zero-shot-cot-prompting",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4281557260",
+          "passage": "we show that LLMs are decent zero-shot reasoners by simply adding \"Let's think step by step\" before each answer",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:kojima-2022-zero-shot-cot-by-size",
+      "target": "c:original-gpt3-175b",
+      "relation": "performed_under",
+      "confidence": 0.8,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4281557260",
+          "passage": "as the model size gets bigger, for Original/Instruct GPT-3 and PaLM",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:kojima-2022-zero-shot-cot-by-size",
+      "target": "o:kojima-2022-original-gpt3-gains-with-scale",
+      "relation": "yields",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4281557260",
+          "passage": "In contrast, the performance drastically increases with chain of thought reasoning, as the model size gets bigger, for Original/Instruct GPT-3 and PaLM.",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:kojima-2022-original-gpt3-gains-with-scale",
+      "target": "h:lead-training-recipe-gates-cot-and-emergence",
+      "relation": "contradicts",
+      "confidence": 0.5,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4281557260",
+          "passage": "the performance drastically increases with chain of thought reasoning, as the model size gets bigger, for Original/Instruct GPT-3 and PaLM",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": "If original GPT-3 gains from zero-shot chain-of-thought as it grows, the base model is not simply unable to use it."
+    },
+    {
+      "source": "o:kojima-2022-original-gpt3-gains-with-scale",
+      "target": "o:wang-2023-base-gpt3-gains-little-from-cot",
+      "relation": "contradicts",
+      "confidence": 0.5,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4281557260",
+          "passage": "the performance drastically increases with chain of thought reasoning, as the model size gets bigger, for Original/Instruct GPT-3 and PaLM",
+          "location": "results",
+          "verified": true
+        }
+      ],
+      "note": "Zero-shot chain-of-thought on arithmetic against few-shot chain-of-thought on Wang's tasks."
+    },
+    {
+      "source": "e:longpre-2023-flan-collection-ablations",
+      "target": "h:cot-data-in-finetuning-matters-not-instruction-tuning-as-such",
+      "relation": "tests",
+      "confidence": 0.7,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4318908031",
+          "passage": "Through careful ablation studies on the Flan Collection of tasks and methods, we tease apart the effect of design decisions",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:longpre-2023-flan-collection-ablations",
+      "target": "c:cot-data-in-finetuning-mixture",
+      "relation": "performed_under",
+      "confidence": 0.9,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4318908031",
+          "passage": "training with mixed prompt settings (zero-shot, few-shot, and chain-of-thought) actually yields stronger (2%+) performance in all settings",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "e:longpre-2023-flan-collection-ablations",
+      "target": "o:longpre-2023-mixed-prompt-settings-help-everywhere",
+      "relation": "yields",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4318908031",
+          "passage": "training with mixed prompt settings (zero-shot, few-shot, and chain-of-thought) actually yields stronger (2%+) performance in all settings",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "o:longpre-2023-mixed-prompt-settings-help-everywhere",
+      "target": "h:cot-data-in-finetuning-matters-not-instruction-tuning-as-such",
+      "relation": "supports",
+      "confidence": 0.6,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4318908031",
+          "passage": "training with mixed prompt settings (zero-shot, few-shot, and chain-of-thought) actually yields stronger (2%+) performance in all settings",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    },
+    {
+      "source": "h:code-training-gives-models-multi-step-reasoning",
+      "target": "h:instruction-tuning-is-what-makes-cot-work",
+      "relation": "competes_with",
+      "confidence": 0.55,
+      "asserted_by": "model",
+      "provenance": [
+        {
+          "paper_id": "W4387221974",
+          "passage": "pre-training LLMs with the mixture of code and text can significantly enhance LLMs' general reasoning capability",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": "Two accounts of where reasoning ability comes from: what the model was pre-trained on, or how it was tuned afterwards."
+    },
+    {
+      "source": "e:chung-2022-flan-palm-vs-palm",
+      "target": "c:instruction-tuned",
+      "relation": "performed_under",
+      "confidence": 0.95,
+      "asserted_by": "author",
+      "provenance": [
+        {
+          "paper_id": "W4307079201",
+          "passage": "Flan-PaLM 540B instruction-finetuned on 1.8K tasks outperforms PALM 540B by a large margin (+9.4% on average)",
+          "location": "abstract",
+          "verified": true
+        }
+      ],
+      "note": ""
+    }
+  ],
+  "retracted": []
+}
