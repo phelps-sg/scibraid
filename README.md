@@ -135,7 +135,13 @@ Requires [uv](https://docs.astral.sh/uv/) and Claude Code. Install scibraid as a
 /plugin install scibraid@scibraid
 ```
 
-The plugin puts a `scibraid` command on the PATH of Claude Code's shell for as long as it is enabled. The command runs the copy of the package that ships with the plugin, in an environment that uv builds on first use and keeps outside the plugin directory, so nothing else needs installing. Outside a Claude Code session the command is not on your PATH; to use it there, or to work on scibraid itself, install it from a clone:
+The plugin puts a `scibraid` command on the PATH of Claude Code's shell for as long as it is enabled. The command runs the copy of the package that ships with the plugin, in an environment that uv builds on first use and keeps outside the plugin directory, so nothing else needs installing. Outside a Claude Code session the command is not on your PATH. To use it there, install it from [PyPI](https://pypi.org/project/scibraid/):
+
+```bash
+uv tool install "scibraid[embeddings]"
+```
+
+To work on scibraid itself, install it from a clone instead:
 
 ```bash
 git clone https://github.com/phelps-sg/scibraid && cd scibraid
