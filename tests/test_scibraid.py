@@ -1390,3 +1390,9 @@ def test_view_example_renders_the_example_and_leaves_the_environment_and_your_da
     assert "training-recipe-gates-cot-and-emergence" in html and "llm-emergent-abilities" in html
     assert os.environ["SCIBRAID_HOME"] == home_before and os.environ["SCIBRAID_POOL_URL"] == "http://pool.invalid"
     assert store.list_subgraphs() == []
+
+
+def test_viewing_a_missing_subgraph_points_to_the_example_flag(capsys):
+    assert main(["view", "example", "--no-open"]) == 1
+    err = capsys.readouterr().err
+    assert "no subgraph 'example'" in err and "view --example" in err

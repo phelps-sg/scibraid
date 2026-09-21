@@ -611,7 +611,12 @@ def cmd_view(args: argparse.Namespace) -> int:
 
 def _view(args: argparse.Namespace) -> int:
     for slug in args.slugs:
-        store.load_subgraph(slug)
+        try:
+            store.load_subgraph(slug)
+        except FileNotFoundError as exc:
+            if args.example:
+                raise
+            raise FileNotFoundError(f"{exc}; `scibraid view --example` opens the bundled example") from exc
     if args.output:
         subgraphs = [store.load_subgraph(s) for s in args.slugs] if args.slugs else store.list_subgraphs()
         Path(args.output).write_text(render_view(subgraphs))
