@@ -110,22 +110,29 @@ The important result is not that every candidate is an insight. Most are not. Th
 
 ## Install
 
-Requires `uv` and Claude Code. Reading PDFs uses `pdftotext` from poppler if it is installed, and otherwise needs the `fulltext` extra. Compiling a write-up needs `pdflatex` and `bibtex`; without them the draft is checked but not compiled.
+Requires [uv](https://docs.astral.sh/uv/) and Claude Code. Install scibraid as a plugin:
+
+```text
+/plugin marketplace add phelps-sg/scibraid
+/plugin install scibraid@scibraid
+```
+
+The plugin puts a `scibraid` command on the PATH of Claude Code's shell for as long as it is enabled. The command runs the copy of the package that ships with the plugin, in an environment that uv builds on first use and keeps outside the plugin directory, so nothing else needs installing. Outside a Claude Code session the command is not on your PATH; to use it there, or to work on scibraid itself, install it from a clone:
 
 ```bash
-git clone <this repo> scibraid && cd scibraid
+git clone https://github.com/phelps-sg/scibraid && cd scibraid
 uv tool install --editable ".[embeddings]"
 ```
 
+Reading PDFs uses `pdftotext` from poppler if it is installed, and otherwise needs the `fulltext` extra. Compiling a write-up needs `pdflatex` and `bibtex`; without them the draft is checked but not compiled.
+
+Each agent names the model it runs on. Where your plan does not include that model, Claude Code runs the agent on the newest available model of the same family, or on the session's model, and warns you which. See Which model does what.
+
 Literature search uses [OpenAlex](https://openalex.org/), which needs no account. Requests without a key share one free daily budget per IP address, and a day of building subgraphs can exhaust it, so get a free key and either set `OPENALEX_API_KEY` or put the key in `~/.openalex-tok` (another path can be named in `OPENALEX_API_KEY_FILE`). A file is the easier of the two, because every session and subagent on the machine finds it.
 
-The `embeddings` extra adds a small local embedding model (fastembed, about 70 MB on first use, no API key) to help the alignment stage find matching conditions that share no words. Leave it off and the system still works using word overlap.
+The `embeddings` extra adds a small local embedding model (fastembed, about 70 MB on first use, no API key) to help the alignment stage find matching conditions that share no words. Leave it off and the system still works using word overlap. The clone install above includes it. Under the plugin it is off unless you set `SCIBRAID_EXTRAS=embeddings` in the environment Claude Code starts from.
 
-Inside this repository Claude Code finds the skills and the agents through `.claude/skills` and `.claude/agents`. To use them elsewhere, load the repository as a plugin:
-
-```bash
-claude --plugin-dir /path/to/scibraid
-```
+To develop the skills or agents without installing the plugin, start Claude Code inside a clone (it finds them through `.claude/skills` and `.claude/agents`), or point it at the clone with `claude --plugin-dir /path/to/scibraid`.
 
 ## Use
 

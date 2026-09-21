@@ -1,0 +1,26 @@
+#!/bin/sh
+# Launcher for the scibraid CLI when it is installed as a Claude Code plugin.
+# The plugin's bin/ directory is on PATH while the plugin is enabled, so the
+# skills and agents can call `scibraid` without a separate install step.
+# It runs the copy of the package that ships with the plugin, in an environment
+# kept outside the plugin directory so that updating the plugin does not lose it.
+# Set SCIBRAID_EXTRAS=embeddings to add the local embedding model.
+
+set -eu
+
+if ! command -v uv >/dev/null 2>&1; then
+    echo "scibraid needs uv, which was not found on PATH." >&2
+    echo "Install it from https://docs.astral.sh/uv/getting-started/installation/ and try again." >&2
+    exit 127
+fi
+
+here=$(dirname "$(readlink -f "$0")")
+root=$(dirname "$here")
+
+UV_PROJECT_ENVIRONMENT="${CLAUDE_PLUGIN_DATA:-${XDG_CACHE_HOME:-$HOME/.cache}/scibraid}/venv"
+export UV_PROJECT_ENVIRONMENT
+
+if [ -n "${SCIBRAID_EXTRAS:-}" ]; then
+    exec uv run --quiet --no-dev --project "$root" --extra "$SCIBRAID_EXTRAS" scibraid "$@"
+fi
+exec uv run --quiet --no-dev --project "$root" scibraid "$@"

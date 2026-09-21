@@ -1,6 +1,18 @@
 {
   "name": "scibraid",
-  "description": "Build provenance-rich evidence subgraphs from the scientific literature and pool them.",
+  "description": "Ask a research question and get an evidence graph of hypotheses, experiments, conditions and results, every link backed by a quotation verified against the paper. Pool graphs to find connections and contradictions across literatures.",
   "version": "0.1.0",
-  "author": { "name": "Steve Phelps" }
+  "author": { "name": "Steve Phelps", "url": "https://github.com/phelps-sg" },
+  "homepage": "https://github.com/phelps-sg/scibraid",
+  "repository": "https://github.com/phelps-sg/scibraid",
+  "license": "MIT",
+  "keywords": [
+    "literature-review",
+    "evidence-synthesis",
+    "knowledge-graph",
+    "research",
+    "provenance",
+    "replication",
+    "openalex"
+  ]
 }
