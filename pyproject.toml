@@ -1,6 +1,6 @@
 [project]
 name = "scibraid"
-version = "0.1.0"
+version = "0.1.1"
 description = "Deterministic tools for building and pooling evidence subgraphs of the scientific literature"
 readme = "README.md"
 license = "MIT"

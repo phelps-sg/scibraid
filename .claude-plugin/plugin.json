@@ -1,7 +1,7 @@
 {
   "name": "scibraid",
   "description": "Ask a research question and get an evidence graph of hypotheses, experiments, conditions and results, every link backed by a quotation verified against the paper. Pool graphs to find connections and contradictions across literatures.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": { "name": "Steve Phelps", "url": "https://github.com/phelps-sg" },
   "homepage": "https://github.com/phelps-sg/scibraid",
   "repository": "https://github.com/phelps-sg/scibraid",
