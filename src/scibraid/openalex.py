@@ -19,7 +19,7 @@ _ATOM = "{http://www.w3.org/2005/Atom}"
 ARXIV_PAUSE = 3.0
 FIELDS = (
     "id,doi,title,publication_year,authorships,primary_location,"
-    "cited_by_count,type,abstract_inverted_index,open_access,best_oa_location,locations,ids"
+    "cited_by_count,type,abstract_inverted_index,open_access,best_oa_location,locations,ids,biblio"
 )
 GREY_TYPES = {"preprint", "dissertation", "report", "other", "posted-content"}
 ARXIV_ID = re.compile(r"(?<![\d.])(\d{4}\.\d{4,5})(?:v\d+)?(?![\d])")
@@ -48,6 +48,11 @@ def _arxiv_id(work: dict) -> str | None:
     return None
 
 
+def pages(biblio: dict) -> str | None:
+    first, last = biblio.get("first_page"), biblio.get("last_page")
+    return f"{first}--{last}" if first and last and first != last else first or None
+
+
 def _paper(work: dict) -> Paper:
     location = work.get("primary_location") or {}
     source = location.get("source") or {}
@@ -68,6 +73,9 @@ def _paper(work: dict) -> Paper:
         author_ids=[tail(p.get("id")) for p in people],
         author_orcids=[tail(p.get("orcid")) for p in people],
         venue=source.get("display_name"),
+        volume=(work.get("biblio") or {}).get("volume"),
+        issue=(work.get("biblio") or {}).get("issue"),
+        pages=pages(work.get("biblio") or {}),
         url=location.get("landing_page_url") or work.get("doi"),
         cited_by_count=work.get("cited_by_count"),
         source_tier=SourceTier.GREY if work.get("type") in GREY_TYPES else SourceTier.PUBLISHED,

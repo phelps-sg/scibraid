@@ -114,6 +114,10 @@ class Paper(BaseModel):
     author_ids: list[str | None] = []
     author_orcids: list[str | None] = []
     venue: str | None = None
+    # Where in the venue, for a reference list: a journal's volume and issue, and the page range.
+    volume: str | None = None
+    issue: str | None = None
+    pages: str | None = None
     url: str | None = None
     cited_by_count: int | None = None
     source_tier: SourceTier = SourceTier.PUBLISHED

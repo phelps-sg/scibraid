@@ -891,6 +891,15 @@ def test_bibtex_entries_and_unique_keys(tmp_path, capsys):
     assert bib["W7"]["entry"].startswith("@article{lovelace2023study,") and "50\\% Gains \\& Losses" in bib["W7"]["entry"] and "doi = {10.1/xyz}" in bib["W7"]["entry"]
     assert bib["W8"]["key"] == "lovelace2023naming"  # first by title keeps the plain key; the second gets a suffix
     assert "and others" in bib["W9"]["entry"]  # author lists are stored cut at eight
+    # A reference list in the usual form: where in the journal, no URL beside a DOI, a repository is not a journal.
+    full = bibtex.entry(Paper(id="W10", title="Games", year=2025, authors=["Katherine Van Koevering", "Jon Kleinberg"], venue="Nature Human Behaviour", volume="9", issue="7", pages="1380--1390", doi="10.1/abc", url="https://doi.org/10.1/abc"))
+    assert "volume = {9}" in full and "pages = {1380--1390}" in full and "url =" not in full and "{Van Koevering}, Katherine and Jon Kleinberg" in full
+    deposited = bibtex.entry(Paper(id="W11", title="Collusion", year=2024, authors=["Sara Fish"], venue="RePEc: Research Papers in Economics", arxiv_id="2404.00806", doi="10.48550/arxiv.2404.00806", url="http://arxiv.org/pdf/2404.00806"))
+    assert deposited.startswith("@misc{") and "arXiv preprint arXiv:2404.00806" in deposited and "RePEc" not in deposited and "url =" not in deposited
+    assert bibtex.entry(Paper(id="W12", title="Styles", year=2026, authors=["A B"], venue="Findings of the ACL", doi="10.2/x")).startswith("@inproceedings{")
+    anthology = bibtex.entry(Paper(id="W13", title="Teams", year=2024, authors=["A B"], arxiv_id="2402.12327", doi="10.18653/v1/2024.findings-emnlp.297", pages="5163--5186"))
+    assert "booktitle = {Findings of the Association for Computational Linguistics: EMNLP 2024}" in anthology and "pages = {5163--5186}" in anthology
+    assert "url = {https://doi.org/10.3/osf}" in bibtex.entry(Paper(id="W14", title="Deposited", year=2026, authors=["A B"], venue="OSF Preprints", doi="10.3/osf"))
 
     first = Subgraph(slug="q", question="Does X work?")
     store.add_batch(first, batch())
