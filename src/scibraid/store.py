@@ -59,6 +59,10 @@ def save_paper(paper: Paper) -> None:
     _write_atomic(home() / "papers" / f"{_safe(paper.id)}.json", paper.model_dump_json(indent=2))
 
 
+def cached_paper_ids() -> list[str]:
+    return sorted(Paper.model_validate_json(p.read_text()).id for p in (home() / "papers").glob("*.json"))
+
+
 def load_paper(paper_id: str) -> Paper | None:
     path = home() / "papers" / f"{_safe(paper_id)}.json"
     return Paper.model_validate_json(path.read_text()) if path.exists() else None

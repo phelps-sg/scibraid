@@ -262,6 +262,7 @@ Graphs can be filtered by node type, who asserted a relationship and confidence.
 | `search "<query>"` | Search OpenAlex by title and abstract, and cache the results with their abstracts and whether an open copy exists |
 | `search --citing <id>` / `--references-of <id>` | Search among the works that cite a paper, or among its references |
 | `paper get <identifier>` | Cache a paper's OpenAlex record by DOI, arXiv id or URL, PubMed id or OpenAlex id. An arXiv id is checked against arXiv's own title |
+| `paper refresh <id ...> \| --all` | Re-fetch cached OpenAlex records, reporting ids that OpenAlex has merged away and papers newly marked retracted |
 | `paper reid <old id> [identifier]` | Give a hand-added paper its OpenAlex record in every subgraph and lead that cites it, keeping the text its passages were checked against |
 | `paper show\|add\|text` | Read a paper, add one OpenAlex lacks, or attach full text by hand |
 | `fetch <id ...> \| --subgraph <slug>` | Find an open copy (arXiv HTML, Europe PMC, PDF) and attach its full text |
@@ -276,7 +277,7 @@ Graphs can be filtered by node type, who asserted a relationship and confidence.
 | `retract <slug> --edge <source> <relation> <target> \| --node <id> --reason "..."` | Take out a wrong link, or a node with its links, keeping a record of what it was and why |
 | `view [slug ...] [--example]` | Browse a graph in the browser, or the bundled example |
 | `example [dir]` | Write the bundled example pool to a data directory of its own, to try the other commands on it |
-| `doctor` (or `healthcheck`) `[--offline]` | Check that this machine is set up for scibraid, and say how to fix what is not |
+| `doctor` (or `healthcheck`) `[--offline]` | Check that this machine is set up for scibraid, that cached OpenAlex ids still exist, and say how to fix what is not |
 | `pool <slug>` | Add a subgraph to the pool |
 | `candidates [--budget N] [--type T] [--lexical]` | Rank unjudged cross-graph pairs |
 | `hypotheses` | Show hypothesis lists for pooled subgraphs |
@@ -379,6 +380,7 @@ A useful side effect is that a subgraph extracted by one model and checked by an
 The current system is a research prototype.
 
 - A check that a lead is already known, or that a question has already been asked, is a brief agent search, not a systematic literature review. `holds`, `open` and "not found posed anywhere" therefore mean that nothing was found, not that nothing exists.
+- OpenAlex merges duplicate records without notice, and the old id then answers to nothing. `doctor` reports cached ids that have vanished and `paper reid` moves a paper's citations to the surviving record; sixteen of the first 582 records cached were merged away within weeks.
 - Retraction is taken from OpenAlex's `is_retracted` flag, which lags the retraction notices and misses preprints; a paper withdrawn on arXiv is not flagged. A retracted paper's evidence is kept and marked, not removed.
 - Quote verification establishes that a passage exists in the source. It does not establish that the passage actually supports the relationship the agent attached to it.
 - The example graphs were built and aligned by the same agent in one session, so they are not independent in the way reviews produced by different researchers would be. The tool now reports this (`same reader`) instead of leaving it to be remembered.

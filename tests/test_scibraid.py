@@ -243,6 +243,30 @@ def test_independent_groups_share_no_author():
     assert independence.evidence_for(sg, "h:x-reduces-growth", Relation.TESTS) == (1, 1, 1)
 
 
+def test_refresh_reports_vanished_ids_and_new_retractions(monkeypatch, capsys):
+    from scibraid import doctor
+    work = dict(WORK, id="https://openalex.org/W1", title="Compound X under hypoxia", is_retracted=True)
+    indexed = dict(WORK, id="https://openalex.org/W3", title="Indexed")
+
+    def handler(request):  # the filter index knows W3 only; W1 answers directly; W2 is gone
+        if request.url.path.endswith("/works/W1"):
+            return httpx.Response(200, json=work)
+        if request.url.path.endswith("/works/W2"):
+            return httpx.Response(404, json={})
+        return httpx.Response(200, json={"results": [indexed]})
+
+    client = httpx.Client(transport=httpx.MockTransport(handler))
+    fresh, vanished = openalex.refresh(["W1", "W2", "W3"], client)
+    assert set(fresh) == {"W1", "W3"} and vanished == ["W2"] and fresh["W1"].is_retracted
+    monkeypatch.setattr(openalex, "refresh", lambda ids, client=None: (fresh, [i for i in ids if i != "W1"]))
+    store.save_paper(Paper(id="W2", title="Gone", abstract="x"))
+    assert not doctor._cached_records().ok and "W2" in doctor._cached_records().detail
+    assert main(["paper", "refresh", "--all"]) == 0
+    out = json.loads(capsys.readouterr().out)
+    assert out["newly_retracted"] == ["W1"] and out["vanished"][0]["id"] == "W2"
+    assert store.load_paper("W1").is_retracted
+
+
 def test_a_retracted_paper_is_flagged_at_every_step(tmp_path, capsys):
     paper = store.load_paper("W1"); paper.is_retracted = True; store.save_paper(paper)
     sg = Subgraph(slug="q", question="Does X work?")
@@ -1374,7 +1398,7 @@ def test_doctor_on_a_bare_machine_says_how_to_fix_each_gap_but_fails_only_on_req
     findings = doctor.check(client=_openalex_client(200))
     assert doctor.ok(findings)
     missing = {f.name: f for f in findings if not f.ok}
-    assert set(missing) == {"OpenAlex key", "PDF text", "LaTeX", "embeddings", "uv"}
+    assert set(missing) == {"OpenAlex key", "PDF text", "LaTeX", "embeddings", "uv", "cached records"}  # the mock answers no id, so W1 has "vanished"
     assert all(f.fix for f in missing.values())
     text = doctor.report(findings)
     assert "[warn] OpenAlex key" in text and "[note] LaTeX" in text and "Nothing required is missing." in text

@@ -65,6 +65,23 @@ def _openalex_reachable(client: httpx.Client | None = None) -> Finding:
     return Finding(name, True, REQUIRED, "reachable")
 
 
+def _cached_records(client: httpx.Client | None = None) -> Finding:
+    """OpenAlex merges records without notice, and a cached id that no longer answers breaks
+    citation sweeps and lookups on it. Checked in batches of fifty, so a large cache is cheap."""
+    name = "cached records"
+    ids = [pid for pid in store.cached_paper_ids() if pid.startswith("W")]
+    if not ids:
+        return Finding(name, True, RECOMMENDED, "no OpenAlex records cached yet")
+    try:
+        _, vanished = openalex.refresh(ids, client)
+    except (openalex.OpenAlexError, httpx.HTTPError) as exc:
+        return Finding(name, True, RECOMMENDED, f"{len(ids)} cached; could not be checked ({type(exc).__name__})")
+    if vanished:
+        return Finding(name, False, RECOMMENDED, f"{len(vanished)} of {len(ids)} cached OpenAlex ids no longer exist: {', '.join(vanished[:6])}" + (" ..." if len(vanished) > 6 else ""),
+                       "run `scibraid paper refresh --all`, then `scibraid paper reid <old id> <arXiv id or DOI>` for each")
+    return Finding(name, True, RECOMMENDED, f"{len(ids)} cached OpenAlex ids all still exist")
+
+
 def _pdf_reader() -> Finding:
     if shutil.which("pdftotext"):
         return Finding("PDF text", True, OPTIONAL, "pdftotext (poppler)")
@@ -118,6 +135,7 @@ def check(offline: bool = False, client: httpx.Client | None = None) -> list[Fin
     ]
     if not offline:
         findings.insert(2, _openalex_reachable(client))
+        findings.append(_cached_records(client))
     findings += [_pdf_reader(), _latex(), _embeddings(), _uv()]
     return findings
 

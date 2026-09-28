@@ -114,6 +114,31 @@ def cmd_paper_get(args: argparse.Namespace) -> int:
     return 1 if failed else 0
 
 
+def cmd_paper_refresh(args: argparse.Namespace) -> int:
+    ids = [pid for pid in (store.cached_paper_ids() if args.all else args.ids) if pid.startswith("W")]
+    if not ids:
+        print("nothing to refresh: name OpenAlex ids, or pass --all", file=sys.stderr)
+        return 1
+    try:
+        fresh, vanished = openalex.refresh(ids)
+    except openalex.OpenAlexError as exc:
+        print(exc, file=sys.stderr)
+        return 1
+    newly_retracted = []
+    for pid, paper in fresh.items():
+        held = store.load_paper(pid)
+        if held is not None and paper.is_retracted and not held.is_retracted:
+            newly_retracted.append(pid)
+        store.save_paper(_keeping_text_source(paper))
+    hints = {}
+    for pid in vanished:
+        held = store.load_paper(pid)
+        hints[pid] = (held.arxiv_id or held.doi or "") if held else ""
+    _emit({"refreshed": len(fresh), "vanished": [{"id": pid, "reid_with": hint} for pid, hint in hints.items()], "newly_retracted": newly_retracted,
+           "note": "a vanished id was merged into another record: `scibraid paper reid <id> <reid_with>` moves every citation of it" if vanished else ""})
+    return 0
+
+
 def cmd_paper_reid(args: argparse.Namespace) -> int:
     if store.load_paper(args.old) is None:
         print(f"paper {args.old!r} is not cached", file=sys.stderr)
@@ -1008,6 +1033,11 @@ def build_parser() -> argparse.ArgumentParser:
     p = paper_sub.add_parser("get", help="cache a paper from OpenAlex by DOI, arXiv id or URL, PubMed id or OpenAlex id")
     p.add_argument("identifiers", nargs="+")
     p.set_defaults(func=cmd_paper_get)
+
+    p = paper_sub.add_parser("refresh", help="re-fetch cached OpenAlex records: retraction flags, journal details, and which ids have vanished")
+    p.add_argument("ids", nargs="*")
+    p.add_argument("--all", action="store_true")
+    p.set_defaults(func=cmd_paper_refresh)
 
     p = paper_sub.add_parser("reid", help="give a hand-added paper its OpenAlex record, in every subgraph and lead that cites it")
     p.add_argument("old", help="the id it was added under, e.g. arxiv:2201.11903")

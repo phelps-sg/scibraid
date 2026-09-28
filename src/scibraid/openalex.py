@@ -158,6 +158,35 @@ def search(
     return [_paper(work) for work in _get(API, params, client)["results"]]
 
 
+def refresh(ids: list[str], client: httpx.Client | None = None) -> tuple[dict[str, Paper], list[str]]:
+    """Fresh records for cached OpenAlex works, and the ids OpenAlex no longer answers to.
+
+    OpenAlex merges duplicate records without notice, after which the old id returns nothing: a
+    citation search on it finds no citing works, and a lookup fails. Fifty ids go in one request."""
+    found: dict[str, Paper] = {}
+    for start in range(0, len(ids), 50):
+        chunk = ids[start:start + 50]
+        params = {"filter": "openalex:" + "|".join(chunk), "select": FIELDS, "per-page": "50"}
+        for work in _get(API, params, client)["results"]:
+            paper = _paper(work)
+            found[paper.id] = paper
+    # The filter runs on a search index that lags the records themselves, so an id it does not
+    # return is asked for directly; only an id that answers to nothing there has gone.
+    vanished = []
+    for pid in ids:
+        if pid in found:
+            continue
+        try:
+            work = _get(f"{API}/{pid}", {"select": FIELDS}, client)
+        except OpenAlexError:
+            work = {}
+        if work.get("id"):
+            found[pid] = _paper(work)
+        else:
+            vanished.append(pid)
+    return found, vanished
+
+
 def work_path(identifier: str) -> str:
     """The OpenAlex path for a DOI, an arXiv id or URL, a PubMed id, or an OpenAlex id."""
     text = identifier.strip()
