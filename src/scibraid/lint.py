@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from collections import Counter
 
+from . import sweep
 from .models import AssertedBy, NodeType, Outcome, Relation, Subgraph
 
 
@@ -70,6 +71,11 @@ def lint(sg: Subgraph) -> list[str]:
             "no negative, null or inconclusive observations: search for failed replications, "
             "null results and boundary conditions before treating this as complete"
         )
+    if stale := sweep.unswept(sg):
+        findings.append(f"{len(stale)} load-bearing paper(s) not yet swept for later work that cites them ({', '.join(stale[:5])}): run `scibraid sweep`")
+    for pid, paper in sg.papers.items():
+        if paper.is_retracted:
+            findings.append(f"{pid}: this paper has been retracted ({paper.title[:60]}); retract what rests on it, or say why it still counts")
     if len(sg.papers) == 1:
         findings.append("only one paper contributes; a subgraph should triangulate sources")
     return findings

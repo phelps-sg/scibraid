@@ -21,6 +21,10 @@ A deterministic check verifies each quotation against the paper's text, where th
 
 Failed replications and null results are recorded alongside positive results. They matter because they mark the parts of hypothesis space that have already been searched.
 
+Evidence is counted by source, not by paper. Papers with an author in common (by OpenAlex author id, or by name where there is none) are one group, and the dossier gives, beside the number of papers supporting a hypothesis, the number of independent groups. A result reported four times by one laboratory is one source reporting four times. This is the one credibility measure the graph computes; citation counts, venues and sample sizes are recorded and shown, and weighed by whoever writes, not folded into a score.
+
+Results age, fastest in the fields that publish fastest, and a result is more often overturned by a later paper that reran it on something newer than by one that calls itself a replication. `scibraid sweep` searches among the works that cite the papers a subgraph rests on most, newest first and for the vocabulary of failure, and `lint` asks for the sweep until it has been done. The graph records what each result was obtained on (the model, the population, the year) as conditions, so a later result under a newer condition sits beside the older one rather than replacing it.
+
 ## The first review is already useful
 
 scibraid does not require a corpus-wide knowledge graph to exist before it can answer a question.
@@ -265,6 +269,7 @@ Graphs can be filtered by node type, who asserted a relationship and confidence.
 | `frame <slug> [--hypothesis ...] [--condition ...] [--brief ...]` | Add to the framing of an existing subgraph |
 | `add <slug> batch.json` | Validate and apply a batch |
 | `show <slug> [--format summary\|json\|mermaid]` | Inspect a subgraph |
+| `sweep <slug> [--top N] [--limit K] [--paper id ...]` | The newest works citing the papers the subgraph rests on, and those reporting failures: what has been published since |
 | `lint <slug>` | Find structural gaps and unverified evidence |
 | `duplicates <slug>` | List conditions and hypotheses within a subgraph that may be one thing under two ids |
 | `merge <slug> <keep> <drop>` | Fold one node into another, moving its links and passages |
@@ -374,6 +379,7 @@ A useful side effect is that a subgraph extracted by one model and checked by an
 The current system is a research prototype.
 
 - A check that a lead is already known, or that a question has already been asked, is a brief agent search, not a systematic literature review. `holds`, `open` and "not found posed anywhere" therefore mean that nothing was found, not that nothing exists.
+- Retraction is taken from OpenAlex's `is_retracted` flag, which lags the retraction notices and misses preprints; a paper withdrawn on arXiv is not flagged. A retracted paper's evidence is kept and marked, not removed.
 - Quote verification establishes that a passage exists in the source. It does not establish that the passage actually supports the relationship the agent attached to it.
 - The example graphs were built and aligned by the same agent in one session, so they are not independent in the way reviews produced by different researchers would be. The tool now reports this (`same reader`) instead of leaving it to be remembered.
 - The model tiers rest on a single five-paper comparison on one question. Whether hypothesis alignment or the checking of leads can move to a cheaper model has not been tested, so both are pinned to the top model. Framing, retrieval and the judging of candidate pairs run on the session's model, and have only been tried with the top model as the session.

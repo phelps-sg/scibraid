@@ -21,7 +21,7 @@ from pathlib import Path
 import httpx
 from pydantic import ValidationError
 
-from . import align, bibtex, doctor, draft, embed, example, fulltext, identity, openalex, store
+from . import align, bibtex, doctor, draft, embed, example, fulltext, identity, openalex, store, sweep
 from .lint import lint
 from .models import Alignment, Batch, Builder, Lead, Paper, Subgraph
 from .pool import get_pool
@@ -357,6 +357,30 @@ def cmd_show(args: argparse.Namespace) -> int:
         for r in sg.retracted:
             what = f"node {r.node.id} and {len(r.edges)} edge(s)" if r.node else "; ".join(f"{e.source} -{e.relation}-> {e.target}" for e in r.edges)
             print(f"  retracted: {what}  ({r.reason})")
+    return 0
+
+
+def cmd_sweep(args: argparse.Namespace) -> int:
+    sg = store.load_subgraph(args.slug)
+    chosen = args.paper or [pid for pid, _ in sweep.load_bearing(sg, args.top)]
+    try:
+        candidates = sweep.sweep(sg, chosen, limit=args.limit, from_year=args.from_year, queries=tuple(args.query or ()))
+    except openalex.OpenAlexError as exc:
+        print(exc, file=sys.stderr)
+        return 1
+    for c in candidates:
+        store.save_paper(_keeping_text_source(c.pop("_paper")))
+    store.save_subgraph(sg)
+    if args.full:
+        _emit(candidates)
+        return 0
+    print(f"swept {len(chosen)} paper(s): {', '.join(chosen)}")
+    for c in candidates:
+        first = (c["authors"][0] + " et al.") if len(c["authors"]) > 1 else "".join(c["authors"])
+        flag = " [RETRACTED]" if c["is_retracted"] else ""
+        print(f"{c['id']}  {c['year']}  cites={c['cited_by_count']}  [{c['oa_status']}]  {first}  <- {', '.join(c['cites'])}  ({', '.join(c['hits'])}){flag}")
+        print(f"    {c['title']}")
+    print(f"\n{len(candidates)} candidate(s) not in the subgraph, newest first; read one with `scibraid paper show <id>`, and extract what bears on the hypotheses")
     return 0
 
 
@@ -1028,6 +1052,16 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("slug")
     p.add_argument("--format", choices=["summary", "json", "mermaid", "markdown"], default="summary")
     p.set_defaults(func=cmd_show)
+
+    p = sub.add_parser("sweep", help="the newest works citing the papers a subgraph rests on, and those reporting failures")
+    p.add_argument("slug")
+    p.add_argument("--paper", nargs="*", help="which papers to sweep (default: the load-bearing ones)")
+    p.add_argument("--top", type=int, default=5, help="how many load-bearing papers (default 5)")
+    p.add_argument("--limit", type=int, default=10, help="results per query (default 10)")
+    p.add_argument("--from-year", type=int)
+    p.add_argument("--query", action="append", help="a further query to run among the citing works, e.g. the question's own terms (repeatable)")
+    p.add_argument("--full", action="store_true", help="JSON")
+    p.set_defaults(func=cmd_sweep)
 
     p = sub.add_parser("lint", help="structural checks: what to look at again")
     p.add_argument("slug")

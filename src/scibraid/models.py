@@ -128,6 +128,8 @@ class Paper(BaseModel):
     arxiv_id: str | None = None
     pmcid: str | None = None
     text_source: str | None = None  # where the attached full text was fetched from
+    # Retracted papers keep being cited, so a citation count says nothing about it; this does.
+    is_retracted: bool = False
 
 
 class Builder(BaseModel):
@@ -237,6 +239,8 @@ class Subgraph(BaseModel):
     nodes: dict[str, Node] = {}
     edges: list[Edge] = []
     retracted: list[Retraction] = []
+    # Papers whose citing works have been searched for later results, and when (`scibraid sweep`).
+    swept: dict[str, str] = {}
 
 
 class Verdict(StrEnum):

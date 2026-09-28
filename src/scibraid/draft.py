@@ -14,7 +14,7 @@ import subprocess
 from collections import defaultdict
 from pathlib import Path
 
-from . import bibtex, identity, store
+from . import bibtex, identity, independence, store
 from .align import _Lexical
 from .embed import Embedder, calibrated
 from .embed import cosine as cosine_of
@@ -131,8 +131,13 @@ def voice(name: str | None = None) -> tuple[dict, Path] | None:
 # ---- citation keys --------------------------------------------------------------
 
 def assign_keys(keys: dict[str, str], papers: list[Paper]) -> dict[str, str]:
-    """Keys for papers that have none, leaving existing keys alone so a draft's citations stay valid."""
-    keys = dict(keys)
+    """Keys for papers that have none, leaving existing keys alone so a draft's citations stay valid.
+
+    A paper that has left the pool (re-identified under another id, or dropped from a subgraph) gives
+    up its key, so that a paper which returns under a new id gets the plain key and not a suffixed one.
+    """
+    present = {p.id for p in papers}
+    keys = {pid: key for pid, key in keys.items() if pid in present}
     for paper in sorted(papers, key=lambda p: (p.year or 0, p.title)):
         if paper.id in keys:
             continue
@@ -246,11 +251,11 @@ def dossier(subgraphs: list[Subgraph], alignments: list[Alignment], leads: list[
         for nid in sorted((n for n, node in sg.nodes.items() if node.type is NodeType.HYPOTHESIS), key=lambda h: -relevance.get(f"{sg.slug}/{h}", 0)):
             counts = []
             for relation in (Relation.SUPPORTS, Relation.CONTRADICTS):
-                found = [e for e in sg.edges if e.target == nid and e.relation is relation]
-                counts.append(f"{len(found)} from {len({e.provenance[0].paper_id for e in found})} paper(s)")
+                n_edges, n_papers, n_groups = independence.evidence_for(sg, nid, relation)
+                counts.append(f"{n_edges} from {n_papers} paper(s)" + (f", {n_groups} independent group(s)" if n_papers > 1 else ""))
             marks = "; ".join(m for m, on in (("framed", sg.nodes[nid].framed), ("derived from a lead", sg.nodes[nid].derived_from)) if on)
             overview.append(f"| `{nid}`{rel(f'{sg.slug}/{nid}')} {_cut(sg.nodes[nid].label, 170)} | {counts[0]} | {counts[1]} | {marks} |")
-        overview += ["", "Counts describe the review, not the world: they are not votes, and one study extracted twice counts twice.", ""]
+        overview += ["", "Counts describe the review, not the world: they are not votes, and one study extracted twice counts twice. Papers with an author in common are one group; a result reported by several papers from one group is one source reporting several times.", ""]
         out = [f"# Evidence: `{sg.slug}`", "", sg.question, ""]
         files[f"evidence-{sg.slug}.md"] = ""  # filled below
         under: dict[str, list[str]] = defaultdict(list)
@@ -384,6 +389,9 @@ def check(directory: Path, compile_it: bool = True) -> dict:
     cited = {k.strip() for group in _CITE.findall(tex) for k in group.split(",") if k.strip()}
     for key in sorted(cited - set(by_key)):
         errors.append(f"\\cite{{{key}}}: no such key in refs.bib. Add the paper with `scibraid draft cite`, never by hand")
+    for key in sorted(cited & set(by_key)):
+        if (paper := store.load_paper(by_key[key])) and paper.is_retracted:
+            errors.append(f"\\cite{{{key}}}: this paper has been retracted; cite it only to say so")
     if unused := sorted(set(by_key) - cited):
         warnings.append(f"{len(unused)} of {len(by_key)} references are never cited; plainnat prints only cited ones, so this is a note on coverage: "
                         + ", ".join(unused[:12]) + (" ..." if len(unused) > 12 else ""))

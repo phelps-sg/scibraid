@@ -227,6 +227,8 @@ def add_batch(sg: Subgraph, batch: Batch) -> AddReport:
                     f"{name}: paper {prov.paper_id!r} is not cached (search or `paper add` first)"
                 )
                 continue
+            if paper.is_retracted and paper.id not in papers:
+                report.warnings.append(f"{name}: paper {paper.id} has been retracted; its evidence is recorded, but say in a note why it still counts")
             papers[paper.id] = paper
             prov.verified = verify(prov.paper_id, prov.passage, prov.location)
             if prov.verified is False:

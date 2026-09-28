@@ -19,7 +19,7 @@ _ATOM = "{http://www.w3.org/2005/Atom}"
 ARXIV_PAUSE = 3.0
 FIELDS = (
     "id,doi,title,publication_year,authorships,primary_location,"
-    "cited_by_count,type,abstract_inverted_index,open_access,best_oa_location,locations,ids,biblio"
+    "cited_by_count,type,abstract_inverted_index,open_access,best_oa_location,locations,ids,biblio,is_retracted"
 )
 GREY_TYPES = {"preprint", "dissertation", "report", "other", "posted-content"}
 ARXIV_ID = re.compile(r"(?<![\d.])(\d{4}\.\d{4,5})(?:v\d+)?(?![\d])")
@@ -84,6 +84,7 @@ def _paper(work: dict) -> Paper:
         oa_url=best.get("pdf_url") or access.get("oa_url") or best.get("landing_page_url"),
         arxiv_id=_arxiv_id(work),
         pmcid=pmcid,
+        is_retracted=bool(work.get("is_retracted")),
     )
 
 

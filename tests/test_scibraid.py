@@ -5,10 +5,10 @@ import pytest
 
 import threading
 
-from scibraid import align, bibtex, fulltext, identity, main, openalex, store
+from scibraid import align, bibtex, draft, fulltext, identity, main, openalex, store
 from scibraid.cli import _md_table, make_server
 from scibraid.lint import lint
-from scibraid.models import Alignment, AssertedBy, Batch, Builder, Lead, Paper, Subgraph
+from scibraid.models import Alignment, AssertedBy, Batch, Builder, Lead, Paper, Relation, Subgraph
 from scibraid.pool import HttpPool, LocalPool
 
 ABSTRACT = (
@@ -209,10 +209,63 @@ def test_lint_flags_gaps():
     assert "only one paper" in findings
 
 
+def test_sweep_lists_newer_citing_work_and_lint_asks_for_it(capsys):
+    from scibraid import sweep
+    sg = Subgraph(slug="q", question="Does X work?")
+    store.add_batch(sg, batch())
+    assert [pid for pid, _ in sweep.load_bearing(sg)] == ["W1"]
+    assert any("not yet swept" in f for f in lint(sg))
+    later = Paper(id="W500", title="X revisited: the effect does not replicate", year=2026, authors=["Z"], cited_by_count=3)
+    older = Paper(id="W400", title="An application of X", year=2019, authors=["Y"], cited_by_count=90)
+    calls = []
+
+    def fake_search(query=None, limit=10, from_year=None, sort=None, citing=None, **_):
+        calls.append((query, citing, sort))
+        return [older, later] if query in (None, "replication") else []
+
+    found = sweep.sweep(sg, ["W1"], limit=5, searcher=fake_search)
+    assert [c["id"] for c in found] == ["W500", "W400"]  # newest first, whatever the citation counts
+    assert found[0]["hits"] == ["newest", "replication"] and found[0]["cites"] == ["W1"]
+    assert all(c == "W1" for _, c, _ in calls) and all(s == "publication_date:desc" for _, _, s in calls)
+    assert "W1" in sg.swept and not any("not yet swept" in f for f in lint(sg))
+
+
+def test_independent_groups_share_no_author():
+    from scibraid import independence
+    a = Paper(id="A", title="a", authors=["Ann Lee", "Bo Chen"], author_ids=["A1", "A2"])
+    b = Paper(id="B", title="b", authors=["Bo Chen", "Cy Park"], author_ids=["A2", "A3"])
+    c = Paper(id="C", title="c", authors=["Di Roy"], author_ids=["A4"])
+    d = Paper(id="D", title="d", authors=["Cy Park"], author_ids=[])  # no ids: matched by name
+    g = independence.groups([a, b, c, d])
+    assert g["A"] == g["B"] == g["D"] and g["C"] != g["A"]
+    sg = Subgraph(slug="q", question="Does X work?")
+    store.add_batch(sg, batch())
+    assert independence.evidence_for(sg, "h:x-reduces-growth", Relation.TESTS) == (1, 1, 1)
+
+
+def test_a_retracted_paper_is_flagged_at_every_step(tmp_path, capsys):
+    paper = store.load_paper("W1"); paper.is_retracted = True; store.save_paper(paper)
+    sg = Subgraph(slug="q", question="Does X work?")
+    report = store.add_batch(sg, batch())
+    assert any("has been retracted" in w for w in report.warnings)
+    assert any("W1: this paper has been retracted" in f for f in lint(sg))
+    store.save_subgraph(sg)
+    assert main(["pool", "q"]) == 0
+    d = tmp_path / "draft"
+    assert main(["draft", "start", str(d), "q"]) == 0
+    key = json.loads((d / "draft.json").read_text())["keys"]["W1"]
+    main_tex = d / "main.tex"
+    main_tex.write_text(main_tex.read_text().replace("\\section{Introduction}", "\\section{Introduction}\nAs shown by \\citet{" + key + "}."))
+    result = draft.check(d, compile_it=False)
+    assert any("has been retracted; cite it only to say so" in e for e in result["errors"])
+    paper.is_retracted = False; store.save_paper(paper)
+
+
 WORK = {
     "id": "https://openalex.org/W99",
     "doi": "https://doi.org/10.1/abc",
     "title": "A preprint",
+    "is_retracted": False,
     "publication_year": 2021,
     "type": "preprint",
     "cited_by_count": 3,
@@ -890,6 +943,9 @@ def test_bibtex_entries_and_unique_keys(tmp_path, capsys):
     assert bib["arxiv:2301.00001"]["entry"].startswith("@misc{lovelace2023naminga,") and "eprint = {2301.00001}" in bib["arxiv:2301.00001"]["entry"]
     assert bib["W7"]["entry"].startswith("@article{lovelace2023study,") and "50\\% Gains \\& Losses" in bib["W7"]["entry"] and "doi = {10.1/xyz}" in bib["W7"]["entry"]
     assert bib["W8"]["key"] == "lovelace2023naming"  # first by title keeps the plain key; the second gets a suffix
+    from scibraid import draft as d
+    moved = d.assign_keys({"W7": "lovelace2023study"}, [Paper(id="W70", title="A Study of 50% Gains & Losses", year=2023, authors=["Ada Lovelace"])])
+    assert moved == {"W70": "lovelace2023study"}  # re-identified paper takes over the plain key
     assert "and others" in bib["W9"]["entry"]  # author lists are stored cut at eight
     # A reference list in the usual form: where in the journal, no URL beside a DOI, a repository is not a journal.
     full = bibtex.entry(Paper(id="W10", title="Games", year=2025, authors=["Katherine Van Koevering", "Jon Kleinberg"], venue="Nature Human Behaviour", volume="9", issue="7", pages="1380--1390", doi="10.1/abc", url="https://doi.org/10.1/abc"))
