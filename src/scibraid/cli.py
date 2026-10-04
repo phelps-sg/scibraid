@@ -425,9 +425,9 @@ def _shared(sg: Subgraph, node_id: str | None = None) -> list[dict]:
         for pid, passages in sorted(papers.items()):
             paper, fit = sg.papers.get(pid), fits.get(pid)
             rows.append({"paper": pid, "cited_as": f"{surname((paper.authors or ['?'])[0])} {paper.year}" if paper else pid,
-                         "status": "coined for this paper" if fit and fit.minted else "reason given" if fit else "no reason recorded",
+                         "status": "coined for this paper" if fit and fit.minted else {"fits": "fits", "narrower": "narrower than the label", "partly": "fits only in part"}[fit.kind] if fit else "no reason recorded",
                          "why": fit.why if fit else "", "by": (fit.by.model or "") if fit and fit.by else "", "passage": passages[0].passage})
-        out.append({"id": nid, "label": node.label, "framed": node.framed, "papers": rows, "unexplained": store.unexplained(sg, nid)})
+        out.append({"id": nid, "label": node.label, "framed": node.framed, "papers": rows, "unexplained": store.unexplained(sg, nid), "ill_fitting": store.ill_fitting(sg, nid)})
     return sorted(out, key=lambda item: (-len(item["unexplained"]), -len(item["papers"]), item["id"]))
 
 
@@ -443,7 +443,7 @@ def cmd_fit_list(args: argparse.Namespace) -> int:
         _emit(shared)
         return 0
     for item in shared:
-        print(f"{item['id']}{' [framed]' if item['framed'] else ''}: {item['label']}")
+        print(f"{item['id']}{' [framed]' if item['framed'] else ''}{' [no paper fits the label outright]' if item['ill_fitting'] else ''}: {item['label']}")
         for row in item["papers"]:
             reason = f": {row['why']}" if row["why"] else ""
             print(f"  {row['cited_as']} ({row['paper']}) [{row['status']}]{reason}")
@@ -453,10 +453,21 @@ def cmd_fit_list(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_relabel(args: argparse.Namespace) -> int:
+    with store.subgraph_lock(args.slug):
+        sg = store.load_subgraph(args.slug)
+        errors = store.relabel(sg, args.node, args.label, args.reason, _builder(args))
+        if not errors:
+            store.save_subgraph(sg)
+    _emit({"ok": not errors, "errors": errors, "node": args.node, "label": args.label,
+           "note": "" if errors else "pool the subgraph again; alignment verdicts on this node were judged against the old label and should be read again"})
+    return 1 if errors else 0
+
+
 def cmd_fit_add(args: argparse.Namespace) -> int:
     with store.subgraph_lock(args.slug):
         sg = store.load_subgraph(args.slug)
-        errors = store.record_fit(sg, args.node, args.paper, args.why, _builder(args))
+        errors = store.record_fit(sg, args.node, args.paper, args.why, _builder(args), args.kind)
         if not errors:
             store.save_subgraph(sg)
     _emit({"ok": not errors, "errors": errors, "node": args.node, "paper": args.paper})
@@ -1167,6 +1178,14 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--format", choices=["summary", "json", "mermaid", "markdown"], default="summary")
     p.set_defaults(func=cmd_show)
 
+    p = sub.add_parser("relabel", help="reword a node's label so that it is true of what sits under it, keeping the old wording and the reason")
+    p.add_argument("slug")
+    p.add_argument("node")
+    p.add_argument("--label", required=True)
+    p.add_argument("--reason", required=True)
+    p.add_argument("--model", help="the language model doing this work (the tool cannot see it)")
+    p.set_defaults(func=cmd_relabel)
+
     ft = sub.add_parser("fit", help="why each paper belongs under an id that several papers share")
     ft_sub = ft.add_subparsers(dest="fit_command", required=True)
     p = ft_sub.add_parser("list", help="shared conditions, with each paper's reason and a passage side by side")
@@ -1180,6 +1199,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("node")
     p.add_argument("paper")
     p.add_argument("--why", required=True)
+    p.add_argument("--kind", choices=["fits", "narrower", "partly"], default="fits", help="outright, true but more specific in a way that matters, or true of some of its experiments only")
     p.add_argument("--model", help="the language model doing this work (the tool cannot see it)")
     p.set_defaults(func=cmd_fit_add)
 

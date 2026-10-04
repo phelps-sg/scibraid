@@ -408,6 +408,25 @@ function renderPanel() {
     const attrs = Object.entries(node.attrs || {});
     if (attrs.length) add(panel, el("h3", {}, "Attributes"), el("dl", {}, attrs.map(([k, v]) => [el("dt", {}, k), el("dd", {}, Array.isArray(v) ? v.join(", ") : String(v))])));
     if (node.provenance && node.provenance.length) add(panel, el("h3", {}, "Source passages"), provenance(node.provenance));
+    // Why each paper sits under this id. Sharing an id is a reader's judgement that the papers mean one thing.
+    const under = new Map();
+    for (const p of node.provenance || []) if (!under.has(p.paper_id)) under.set(p.paper_id, p.passage);
+    for (const e of touching) for (const p of e.provenance) if (!under.has(p.paper_id)) under.set(p.paper_id, p.passage);
+    const fits = new Map((node.fits || []).map((f) => [f.paper_id, f]));
+    if (node.type === "condition" && (under.size > 1 || fits.size)) {
+      const coined = [...fits.values()].some((f) => f.minted);
+      add(panel, el("h3", {}, `Why each paper is under this id (${under.size})`),
+        under.size > 1 ? el("p", { class: "note" }, "Papers share a condition because their readers chose the same id. Read the reasons against one another: if they describe different things, the id lumps them.") : null,
+        [...under.entries()].map(([pid, passage]) => {
+          const paper = model.papers[pid] || {}, fit = fits.get(pid);
+          const cite = [paper.authors && paper.authors.length ? surname(paper.authors[0]) + (paper.authors.length > 1 ? " et al." : "") : null, paper.year].filter(Boolean).join(" ") || pid;
+          const status = fit && fit.minted ? "the id was coined for this paper" : fit ? ({ fits: "fits", narrower: "narrower than the label", partly: "fits only in part" }[fit.kind || "fits"]) + (fit.by && fit.by.model ? ` · judged by ${fit.by.model}` : "") : coined || under.size > 1 ? "no reason recorded" : "";
+          return el("div", { class: "card" },
+            el("div", { class: "meta" }, el("a", { href: "#", onclick: (ev) => { ev.preventDefault(); select("paper:" + pid); } }, cite), status),
+            fit && fit.why ? el("div", {}, fit.why) : null,
+            el("div", { class: "note" }, "“" + short(passage, 220) + "”"));
+        }));
+    }
     add(panel, el("h3", {}, `Relationships (${touching.length})`), touching.map((e) => edgeCard(e, node.key)));
     const aligned = model.links.filter((x) => x.s === node.key || x.t === node.key);
     if (aligned.length) add(panel, el("h3", {}, "Aligned with other subgraphs"), aligned.map((x) => { const other = model.nodes.get(x.s === node.key ? x.t : x.s);

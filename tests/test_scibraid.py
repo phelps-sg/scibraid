@@ -576,6 +576,20 @@ def test_a_paper_put_under_an_existing_condition_must_say_why(capsys):
     assert main(["fit", "add", "q", "c:hypoxia", "W5", "--why", "Low oxygen in culture is hypoxia.", "--model", "m"]) == 0
     assert store.unexplained(store.load_subgraph("q"), "c:hypoxia") == []
 
+    # a label that fits no paper outright is reported: reword it, or split the id
+    sg = store.load_subgraph("q")
+    assert not store.ill_fitting(sg, "c:hypoxia")
+    for paper_id in ("W1", "W5"):
+        assert store.record_fit(sg, "c:hypoxia", paper_id, "True, but at a stated oxygen level the label omits.", kind="narrower") == []
+    assert store.ill_fitting(sg, "c:hypoxia") and any("fits none of their papers outright" in f for f in lint(sg))
+    assert main(["fit", "add", "q", "c:hypoxia", "W5", "--why", "Low oxygen in culture is hypoxia.", "--kind", "fits"]) == 0
+
+    # the other repair: reword the label, keeping the old one
+    assert main(["relabel", "q", "c:hypoxia", "--label", "Culture at 1% oxygen", "--reason", "Both papers state the level."]) == 0
+    renamed = store.load_subgraph("q").nodes["c:hypoxia"]
+    assert renamed.label == "Culture at 1% oxygen" and renamed.attrs["relabelled_from"][0]["reason"] == "Both papers state the level."
+    assert main(["relabel", "q", "c:nowhere", "--label", "x", "--reason", "y"]) == 1
+
     # merging carries the reasons with it
     sg = store.load_subgraph("q")
     sg.nodes["c:low-o2"] = sg.nodes["c:hypoxia"].model_copy(update={"id": "c:low-o2", "fits": [Fit(paper_id="W7", why="A third paper's reason.")]})

@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 from enum import StrEnum
-from typing import Any
+from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
@@ -167,6 +167,9 @@ class Fit(BaseModel):
     paper_id: str
     why: str = ""
     minted: bool = False
+    # How well the label fits: outright; true but the paper's version is more specific in a way that
+    # matters when results are compared ("narrower"); or true of some of its experiments and not others ("partly").
+    kind: Literal["fits", "narrower", "partly"] = "fits"
     by: Builder | None = None
     when: str = Field(default_factory=lambda: _now())
 
@@ -224,6 +227,7 @@ class Reuse(BaseModel):
 
     id: str
     why: str = Field(min_length=15)
+    kind: Literal["fits", "narrower", "partly"] = "fits"
     paper_id: str | None = None  # needed only when a batch carries more than one paper
 
 

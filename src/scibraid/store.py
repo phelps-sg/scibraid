@@ -181,10 +181,11 @@ class AddReport:
 
 
 def evidencing(sg: Subgraph, node_id: str) -> dict[str, list[Provenance]]:
-    """paper id -> the passages by which that paper is recorded under a node."""
+    """paper id -> the passages of the links by which that paper is recorded under a node.
+
+    Links only. A passage kept on the node itself describes the node (a framed condition may carry
+    one from a paper that says it did not run it) and puts no experiment under it."""
     found: dict[str, list[Provenance]] = {}
-    for prov in sg.nodes[node_id].provenance if node_id in sg.nodes else []:
-        found.setdefault(prov.paper_id, []).append(prov)
     for edge in sg.edges:
         if node_id in (edge.source, edge.target):
             for prov in edge.provenance:
@@ -201,14 +202,41 @@ def unexplained(sg: Subgraph, node_id: str) -> list[str]:
     return missing if any(f.minted for f in node.fits) else missing[1:]
 
 
-def record_fit(sg: Subgraph, node_id: str, paper_id: str, why: str, by: Builder | None = None) -> list[str]:
+def relabel(sg: Subgraph, node_id: str, label: str, reason: str, by: Builder | None = None) -> list[str]:
+    """Reword a node's label so that it is true of what sits under it, keeping the old wording and why it went.
+
+    A label is written before the papers are read, or for the first of them; what accumulates under
+    it shows what the category really is. Rewording changes what every link to the node asserts, so
+    the old label is kept on the node for anyone checking an earlier reading."""
+    if node_id not in sg.nodes:
+        return [f"unknown node {node_id!r}"]
+    node = sg.nodes[node_id]
+    if label == node.label:
+        return ["that is already the label"]
+    if not 1 <= len(label) <= 200:
+        return ["a label is between 1 and 200 characters"]
+    was = {"label": node.label, "reason": reason, "when": _now(), "by": (by.model or by.person) if by else None}
+    node.attrs = {**node.attrs, "relabelled_from": [*node.attrs.get("relabelled_from", []), was]}
+    node.label = label
+    return []
+
+
+def ill_fitting(sg: Subgraph, node_id: str) -> bool:
+    """A shared condition whose label fits none of its papers outright: every paper under it is there
+    only narrowly or in part. The label wants rewording, or the id wants splitting."""
+    node = sg.nodes[node_id]
+    judged = [f for f in node.fits if not f.minted]
+    return len(evidencing(sg, node_id)) > 1 and len(judged) > 1 and not any(f.kind == "fits" for f in node.fits)
+
+
+def record_fit(sg: Subgraph, node_id: str, paper_id: str, why: str, by: Builder | None = None, kind: str = "fits") -> list[str]:
     """Say, after the fact, why a paper belongs under an id."""
     if node_id not in sg.nodes:
         return [f"unknown node {node_id!r}"]
     if paper_id not in evidencing(sg, node_id):
         return [f"{paper_id} is not recorded under {node_id}"]
     node = sg.nodes[node_id]
-    node.fits = [f for f in node.fits if f.paper_id != paper_id] + [Fit(paper_id=paper_id, why=why, by=by)]
+    node.fits = [f for f in node.fits if f.paper_id != paper_id] + [Fit(paper_id=paper_id, why=why, by=by, kind=kind)]
     return []
 
 
@@ -255,20 +283,17 @@ def add_batch(sg: Subgraph, batch: Batch, by: Builder | None = None) -> AddRepor
     # Which papers this batch puts under which nodes. A paper put under a condition that was already
     # there, and under which it has not been recorded before, must say why its condition is that one.
     touching: dict[str, set[str]] = {}
-    for node in batch.nodes:
-        for prov in node.provenance:
-            touching.setdefault(node.id, set()).add(prov.paper_id)
     for edge in batch.edges:
         for end in (edge.source, edge.target):
             for prov in edge.provenance:
                 touching.setdefault(end, set()).add(prov.paper_id)
-    reasons: dict[tuple[str, str], str] = {}
+    reasons: dict[tuple[str, str], tuple[str, str]] = {}
     for reuse in batch.reuses:
         if reuse.id not in sg.nodes:
             report.errors.append(f"reuses {reuse.id!r}: there is no such node yet, so nothing is being reused")
             continue
         for paper_id in [reuse.paper_id] if reuse.paper_id else sorted(touching.get(reuse.id, ())):
-            reasons[(reuse.id, paper_id)] = reuse.why
+            reasons[(reuse.id, paper_id)] = (reuse.why, reuse.kind)
     for nid in sorted(touching):
         if nid not in sg.nodes or types.get(nid) is not NodeType.CONDITION:
             continue
@@ -320,9 +345,9 @@ def add_batch(sg: Subgraph, batch: Batch, by: Builder | None = None) -> AddRepor
             )
 
     sg.papers.update(papers)
-    for (nid, paper_id), why in reasons.items():
+    for (nid, paper_id), (why, kind) in reasons.items():
         node = sg.nodes[nid]
-        node.fits = [f for f in node.fits if f.paper_id != paper_id] + [Fit(paper_id=paper_id, why=why, by=by)]
+        node.fits = [f for f in node.fits if f.paper_id != paper_id] + [Fit(paper_id=paper_id, why=why, by=by, kind=kind)]
     for node in batch.nodes:
         if (existing := sg.nodes.get(node.id)) is None:
             if node.type is NodeType.CONDITION:

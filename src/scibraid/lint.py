@@ -77,6 +77,9 @@ def lint(sg: Subgraph) -> list[str]:
         worst = ", ".join(f"{nid} ({n})" for n, nid in lumped[:5])
         findings.append(f"{len(lumped)} condition(s) hold papers that never said why they belong there (most: {worst}): "
                         "`scibraid fit list <slug> --unexplained` sets each paper's passage side by side; record a reason with `scibraid fit add`, or give the paper an id of its own")
+    if loose := sorted(nid for nid, node in sg.nodes.items() if node.type is NodeType.CONDITION and store.ill_fitting(sg, nid)):
+        findings.append(f"{len(loose)} condition(s) whose label fits none of their papers outright ({', '.join(loose[:6])}{' ...' if len(loose) > 6 else ''}): "
+                        "reword the label so that it is true of what sits under it, or give the papers ids of their own (`scibraid fit list <slug> <node>`)")
     if stale := sweep.unswept(sg):
         findings.append(f"{len(stale)} load-bearing paper(s) not yet swept for later work that cites them ({', '.join(stale[:5])}): run `scibraid sweep`")
     for pid, paper in sg.papers.items():
