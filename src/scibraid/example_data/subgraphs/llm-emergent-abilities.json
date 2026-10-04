@@ -12,7 +12,7 @@
     }
   ],
   "created": "2026-09-20T07:37:42+00:00",
-  "updated": "2026-09-20T16:13:58+00:00",
+  "updated": "2026-10-04T09:49:49+00:00",
   "papers": {
     "W4283026156": {
       "id": "W4283026156",
@@ -32,6 +32,9 @@
       "author_ids": [],
       "author_orcids": [],
       "venue": "arXiv (Cornell University)",
+      "volume": null,
+      "issue": null,
+      "pages": null,
       "url": "http://arxiv.org/abs/2206.07682",
       "cited_by_count": 1047,
       "source_tier": "grey",
@@ -40,7 +43,8 @@
       "oa_url": null,
       "arxiv_id": null,
       "pmcid": null,
-      "text_source": null
+      "text_source": null,
+      "is_retracted": false
     },
     "W4367628401": {
       "id": "W4367628401",
@@ -55,6 +59,9 @@
       "author_ids": [],
       "author_orcids": [],
       "venue": "arXiv (Cornell University)",
+      "volume": null,
+      "issue": null,
+      "pages": null,
       "url": "http://arxiv.org/abs/2304.15004",
       "cited_by_count": 133,
       "source_tier": "grey",
@@ -63,7 +70,8 @@
       "oa_url": null,
       "arxiv_id": null,
       "pmcid": null,
-      "text_source": null
+      "text_source": null,
+      "is_retracted": false
     },
     "W4402671818": {
       "id": "W4402671818",
@@ -80,6 +88,9 @@
       "author_ids": [],
       "author_orcids": [],
       "venue": null,
+      "volume": null,
+      "issue": null,
+      "pages": null,
       "url": "https://doi.org/10.18653/v1/2024.acl-long.279",
       "cited_by_count": 35,
       "source_tier": "published",
@@ -88,7 +99,8 @@
       "oa_url": null,
       "arxiv_id": null,
       "pmcid": null,
-      "text_source": null
+      "text_source": null,
+      "is_retracted": false
     },
     "W4281690148": {
       "id": "W4281690148",
@@ -108,6 +120,9 @@
       "author_ids": [],
       "author_orcids": [],
       "venue": "arXiv (Cornell University)",
+      "volume": null,
+      "issue": null,
+      "pages": null,
       "url": "http://arxiv.org/abs/2206.04615",
       "cited_by_count": 565,
       "source_tier": "grey",
@@ -116,7 +131,8 @@
       "oa_url": null,
       "arxiv_id": null,
       "pmcid": null,
-      "text_source": null
+      "text_source": null,
+      "is_retracted": false
     },
     "W4387432280": {
       "id": "W4387432280",
@@ -136,6 +152,9 @@
       "author_ids": [],
       "author_orcids": [],
       "venue": "arXiv (Cornell University)",
+      "volume": null,
+      "issue": null,
+      "pages": null,
       "url": "http://arxiv.org/abs/2310.03262",
       "cited_by_count": 1,
       "source_tier": "grey",
@@ -144,7 +163,8 @@
       "oa_url": null,
       "arxiv_id": null,
       "pmcid": null,
-      "text_source": null
+      "text_source": null,
+      "is_retracted": false
     },
     "W4399510412": {
       "id": "W4399510412",
@@ -164,6 +184,9 @@
       "author_ids": [],
       "author_orcids": [],
       "venue": "arXiv (Cornell University)",
+      "volume": null,
+      "issue": null,
+      "pages": null,
       "url": "http://arxiv.org/abs/2406.04391",
       "cited_by_count": 2,
       "source_tier": "grey",
@@ -172,7 +195,8 @@
       "oa_url": null,
       "arxiv_id": null,
       "pmcid": null,
-      "text_source": null
+      "text_source": null,
+      "is_retracted": false
     },
     "W4360892090": {
       "id": "W4360892090",
@@ -188,6 +212,9 @@
       "author_ids": [],
       "author_orcids": [],
       "venue": "arXiv (Cornell University)",
+      "volume": null,
+      "issue": null,
+      "pages": null,
       "url": "http://arxiv.org/abs/2303.13506",
       "cited_by_count": 8,
       "source_tier": "grey",
@@ -196,7 +223,8 @@
       "oa_url": null,
       "arxiv_id": null,
       "pmcid": null,
-      "text_source": null
+      "text_source": null,
+      "is_retracted": false
     },
     "W4297412003": {
       "id": "W4297412003",
@@ -216,6 +244,9 @@
       "author_ids": [],
       "author_orcids": [],
       "venue": "arXiv (Cornell University)",
+      "volume": null,
+      "issue": null,
+      "pages": null,
       "url": "http://arxiv.org/abs/2209.11895",
       "cited_by_count": 87,
       "source_tier": "grey",
@@ -224,7 +255,8 @@
       "oa_url": null,
       "arxiv_id": null,
       "pmcid": null,
-      "text_source": null
+      "text_source": null,
+      "is_retracted": false
     },
     "W4386794314": {
       "id": "W4386794314",
@@ -241,6 +273,9 @@
       "author_ids": [],
       "author_orcids": [],
       "venue": "arXiv (Cornell University)",
+      "volume": null,
+      "issue": null,
+      "pages": null,
       "url": "http://arxiv.org/abs/2309.07311",
       "cited_by_count": 4,
       "source_tier": "grey",
@@ -249,7 +284,8 @@
       "oa_url": null,
       "arxiv_id": null,
       "pmcid": null,
-      "text_source": null
+      "text_source": null,
+      "is_retracted": false
     },
     "W4389519396": {
       "id": "W4389519396",
@@ -265,6 +301,9 @@
       "author_ids": [],
       "author_orcids": [],
       "venue": null,
+      "volume": null,
+      "issue": null,
+      "pages": null,
       "url": "https://doi.org/10.18653/v1/2023.emnlp-main.963",
       "cited_by_count": 21,
       "source_tier": "published",
@@ -273,7 +312,8 @@
       "oa_url": null,
       "arxiv_id": null,
       "pmcid": null,
-      "text_source": null
+      "text_source": null,
+      "is_retracted": false
     },
     "W4393212671": {
       "id": "W4393212671",
@@ -289,6 +329,9 @@
       "author_ids": [],
       "author_orcids": [],
       "venue": "arXiv (Cornell University)",
+      "volume": null,
+      "issue": null,
+      "pages": null,
       "url": "http://arxiv.org/abs/2403.15796",
       "cited_by_count": 1,
       "source_tier": "grey",
@@ -297,7 +340,8 @@
       "oa_url": "https://arxiv.org/pdf/2403.15796",
       "arxiv_id": "2403.15796",
       "pmcid": null,
-      "text_source": null
+      "text_source": null,
+      "is_retracted": false
     },
     "W4404987046": {
       "id": "W4404987046",
@@ -313,6 +357,9 @@
       "author_ids": [],
       "author_orcids": [],
       "venue": "arXiv (Cornell University)",
+      "volume": null,
+      "issue": null,
+      "pages": null,
       "url": "http://arxiv.org/abs/2411.16035",
       "cited_by_count": 0,
       "source_tier": "grey",
@@ -321,7 +368,8 @@
       "oa_url": "https://arxiv.org/pdf/2411.16035",
       "arxiv_id": "2411.16035",
       "pmcid": null,
-      "text_source": "https://arxiv.org/html/2411.16035"
+      "text_source": "https://arxiv.org/html/2411.16035",
+      "is_retracted": false
     }
   },
   "nodes": {
@@ -341,7 +389,8 @@
         }
       ],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "h:emergence-unpredictable": {
       "id": "h:emergence-unpredictable",
@@ -359,7 +408,8 @@
         }
       ],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "h:emergence-metric-artefact": {
       "id": "h:emergence-metric-artefact",
@@ -377,7 +427,8 @@
         }
       ],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:few-shot-prompting": {
       "id": "c:few-shot-prompting",
@@ -388,7 +439,61 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": [
+        {
+          "paper_id": "W4283026156",
+          "why": "The paper is a survey that re-plots others' results; its few-shot BIG-Bench panels are 2-shot and WiC is one-shot, and shot counts are not uniform across the eight tasks. It also treats chain-of-thought, scratchpad and instruction finetuning separately as 'augmented prompting'.",
+          "minted": false,
+          "kind": "narrower",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:48+00:00"
+        },
+        {
+          "paper_id": "W4404987046",
+          "why": "Few-shot prompting is only the evaluation baseline (5-shot MMLU, 6-shot chain-of-thought GSM8K) whose emergence point is the prediction target; most recorded experiments are full-parameter finetuning arms on varying amounts of task data, with few-shot only an extrapolated limit.",
+          "minted": false,
+          "kind": "partly",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:48+00:00"
+        },
+        {
+          "paper_id": "W4367628401",
+          "why": "The in-context examples are exactly two per prompt, on two integer-arithmetic tasks only (2-digit multiplication, 4-digit addition); the prompt wording is not given.",
+          "minted": false,
+          "kind": "fits",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-fable-5-1",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:49+00:00"
+        },
+        {
+          "paper_id": "W4402671818",
+          "why": "Few-shot means exactly 5 in-context examples, on prompts the authors rewrote into completion style; it is used both as a validity test on instruction-tuned models and as the ICL probe on base models such as GPT-J.",
+          "minted": false,
+          "kind": "fits",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-fable-5-1",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:49+00:00"
+        }
+      ]
     },
     "c:big-bench": {
       "id": "c:big-bench",
@@ -399,7 +504,61 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": [
+        {
+          "paper_id": "W4281690148",
+          "why": "The paper introduces BIG-bench itself and evaluates models on its JSON and programmatic tasks (146-171 tasks per model class, plus the 24-task Lite subset), with greedy decoding and 0-3+ shots; the label describes this accurately.",
+          "minted": false,
+          "kind": "fits",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:48+00:00"
+        },
+        {
+          "paper_id": "W4283026156",
+          "why": "Appendix A analyses only six BIG-Bench tasks (three generative, three classification) chosen because they were already judged emergent for LaMDA, evaluated 2-shot; Figure 2 uses four tasks. Only Appendix E classifies all 210 tasks.",
+          "minted": false,
+          "kind": "narrower",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:48+00:00"
+        },
+        {
+          "paper_id": "W4367628401",
+          "why": "The authors ran no BIG-Bench tasks; they re-analysed published BIG-Bench results and hand-annotated claimed-emergence triplets, restricted to tasks where emergence had been claimed, across the 39 preferred metrics.",
+          "minted": false,
+          "kind": "narrower",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:48+00:00"
+        },
+        {
+          "paper_id": "W4402671818",
+          "why": "Tasks are a selection: 14 of 17 BIG-bench tasks previously found emergent in GPT-3, 7 random non-emergent BIG-bench tasks, and also GSM8K, which is not BIG-bench; prompts were modified.",
+          "minted": false,
+          "kind": "narrower",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:48+00:00"
+        }
+      ]
     },
     "c:model-family-lamda": {
       "id": "c:model-family-lamda",
@@ -410,7 +569,35 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": [
+        {
+          "paper_id": "W4283026156",
+          "why": "Appendix A uses only LaMDA models (2.1M to 137B), but the survey curves in Figure 2 show LaMDA alongside GPT-3, Gopher, Chinchilla and PaLM, so the family is one of five there.",
+          "minted": false,
+          "kind": "partly",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:48+00:00"
+        },
+        {
+          "paper_id": "W4367628401",
+          "why": "LaMDA is the family used in the metric-swap test, with its published outputs taken from BIG-Bench rather than queried.",
+          "minted": false,
+          "kind": "fits",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:48+00:00"
+        }
+      ]
     },
     "c:model-family-palm": {
       "id": "c:model-family-palm",
@@ -421,7 +608,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:model-family-gpt3": {
       "id": "c:model-family-gpt3",
@@ -432,7 +620,61 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": [
+        {
+          "paper_id": "W4281690148",
+          "why": "The OpenAI arm used the eight base GPT-3 series models (125M to 175B), with no InstructGPT; the experiment recorded under this label also covers Google BIG-G dense and BIG-G sparse (Switch-style) models, which are not GPT-3.",
+          "minted": false,
+          "kind": "partly",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:48+00:00"
+        },
+        {
+          "paper_id": "W4402671818",
+          "why": "Only davinci, text-davinci-001 and text-davinci-003 are GPT-3 family; the 20 models also include GPT-2, GPT-J/JT, T5/Flan-T5, Falcon and LLaMA, so the label fits only some arms.",
+          "minted": false,
+          "kind": "partly",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:48+00:00"
+        },
+        {
+          "paper_id": "W4283026156",
+          "why": "The paper uses base GPT-3 models of 125M to 175B parameters from Brown et al. (2020); InstructGPT appears only as a cited finetuning example and is not evaluated. GPT-3 is also just one of five families in the survey figures.",
+          "minted": false,
+          "kind": "fits",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-fable-5-1",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:49+00:00"
+        },
+        {
+          "paper_id": "W4367628401",
+          "why": "Only the four sizes publicly queryable on the OpenAI API (350M to 175B) as of 2023-03-15 were used, and the paper treats InstructGPT and GPT-3 as one family.",
+          "minted": false,
+          "kind": "fits",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-fable-5-1",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:49+00:00"
+        }
+      ]
     },
     "c:cross-entropy-loss-metric": {
       "id": "c:cross-entropy-loss-metric",
@@ -443,7 +685,48 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": [
+        {
+          "paper_id": "W4283026156",
+          "why": "Appendix A.1 plots cross-entropy loss of the target sequence for the six LaMDA BIG-Bench tasks against training FLOPs, alongside the downstream metrics.",
+          "minted": false,
+          "kind": "fits",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:48+00:00"
+        },
+        {
+          "paper_id": "W4297412003",
+          "why": "Loss is the per-token log-likelihood loss, but the headline measure is a difference between positions, loss at token 500 minus loss at token 50 of 512-token contexts (nats), not absolute loss on the target; induction heads are scored separately by attention-based evaluators on repeated random tokens.",
+          "minted": false,
+          "kind": "narrower",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:48+00:00"
+        },
+        {
+          "paper_id": "W4386794314",
+          "why": "The headline loss is the masked-language-modelling loss of BERT-base on held-out text, tracked across checkpoints and shown to drop sharply when attention structure forms; the paper also reports UAS, BLiMP pseudo-log-likelihood accuracy and GLUE, but the loss curve itself is the cross-entropy-type measure.",
+          "minted": false,
+          "kind": "fits",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:48+00:00"
+        }
+      ]
     },
     "c:exact-match-metric": {
       "id": "c:exact-match-metric",
@@ -454,7 +737,48 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": [
+        {
+          "paper_id": "W4283026156",
+          "why": "Exact match is the metric for only two of the six tasks (modified arithmetic, word unscramble); IPA transliterate uses BLEU and the three classification tasks use accuracy. Figure 7 also shows other metrics (ROUGE, BLEURT, BLEU).",
+          "minted": false,
+          "kind": "partly",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:48+00:00"
+        },
+        {
+          "paper_id": "W4367628401",
+          "why": "Accuracy here scores an output only if every target digit matches exactly with no additions, deletions or substitutions, which is sequence-level exact match.",
+          "minted": false,
+          "kind": "fits",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:48+00:00"
+        },
+        {
+          "paper_id": "W4402671818",
+          "why": "Exact match is the metric only for Modified arithmetic, GSM8K and Codenames, and a relaxed contains-the-option variant in the adversarial prompt; most results use BERTScore accuracy, so it is not what most arms were scored by.",
+          "minted": false,
+          "kind": "partly",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:48+00:00"
+        }
+      ]
     },
     "e:wei-2022-few-shot-scaling-survey": {
       "id": "e:wei-2022-few-shot-scaling-survey",
@@ -472,7 +796,8 @@
         }
       ],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:wei-2022-random-then-well-above-random": {
       "id": "o:wei-2022-random-then-well-above-random",
@@ -483,7 +808,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:wei-2022-palm-62b-beats-larger-models": {
       "id": "o:wei-2022-palm-62b-beats-larger-models",
@@ -494,7 +820,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "e:wei-2022-cross-entropy-analysis": {
       "id": "e:wei-2022-cross-entropy-analysis",
@@ -505,7 +832,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:wei-2022-loss-improves-while-metric-random": {
       "id": "o:wei-2022-loss-improves-while-metric-random",
@@ -516,7 +844,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:wei-2022-elbow-in-loss-at-emergence": {
       "id": "o:wei-2022-elbow-in-loss-at-emergence",
@@ -527,7 +856,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "i:wei-2022-metrics-incomplete-explanation": {
       "id": "i:wei-2022-metrics-incomplete-explanation",
@@ -538,7 +868,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:multiple-choice-grade-metric": {
       "id": "c:multiple-choice-grade-metric",
@@ -549,7 +880,35 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": [
+        {
+          "paper_id": "W4393212671",
+          "why": "On MMLU and C-Eval the paper scores plain accuracy over four-option questions (1 or 0 per question), the standard multiple-choice accuracy, and compares it with two continuous metrics.",
+          "minted": false,
+          "kind": "fits",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:48+00:00"
+        },
+        {
+          "paper_id": "W4399510412",
+          "why": "Accuracy is true of the paper, but it is a per-datum 0/1 score from the LM Evaluation Harness, the argmax of choice-normalised log-likelihood over the available choices, for open pretrained model families. It is analysed per sample as a correlation with compute, alongside Brier score and correct-choice probability mass, not as an aggregate benchmark score.",
+          "minted": false,
+          "kind": "narrower",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:48+00:00"
+        }
+      ]
     },
     "c:token-edit-distance-metric": {
       "id": "c:token-edit-distance-metric",
@@ -560,7 +919,35 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": [
+        {
+          "paper_id": "W4367628401",
+          "why": "The paper defines token edit distance as a Levenshtein adaptation counting additions, deletions or substitutions over tokens, applied to the same fixed outputs.",
+          "minted": false,
+          "kind": "fits",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:48+00:00"
+        },
+        {
+          "paper_id": "W4402671818",
+          "why": "The paper adds string edit distance as a continuous metric alongside the others and reports it for the closed and open prompts; its role is as a secondary check that lack of emergence is not metric-driven.",
+          "minted": false,
+          "kind": "fits",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:48+00:00"
+        }
+      ]
     },
     "c:brier-score-metric": {
       "id": "c:brier-score-metric",
@@ -571,7 +958,35 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": [
+        {
+          "paper_id": "W4367628401",
+          "why": "Brier Score is the BIG-Bench continuous metric applied to LaMDA on tasks where it showed emergence under Multiple Choice Grade.",
+          "minted": false,
+          "kind": "fits",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:48+00:00"
+        },
+        {
+          "paper_id": "W4393212671",
+          "why": "The Brier score is computed unnormalised over the four options of MMLU and C-Eval, so the random-guess baseline is 0.75; the paper itself argues Schaeffer et al. probably normalised by option count, so values are not directly comparable.",
+          "minted": false,
+          "kind": "narrower",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:48+00:00"
+        }
+      ]
     },
     "c:arithmetic-tasks": {
       "id": "c:arithmetic-tasks",
@@ -582,7 +997,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:increased-test-set-resolution": {
       "id": "c:increased-test-set-resolution",
@@ -593,7 +1009,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:vision-tasks": {
       "id": "c:vision-tasks",
@@ -604,7 +1021,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "e:schaeffer-2023-instructgpt-arithmetic": {
       "id": "e:schaeffer-2023-instructgpt-arithmetic",
@@ -621,7 +1039,8 @@
       },
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:schaeffer-2023-sharp-under-accuracy": {
       "id": "o:schaeffer-2023-sharp-under-accuracy",
@@ -632,7 +1051,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:schaeffer-2023-smooth-under-edit-distance": {
       "id": "o:schaeffer-2023-smooth-under-edit-distance",
@@ -643,7 +1063,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:schaeffer-2023-above-chance-at-high-resolution": {
       "id": "o:schaeffer-2023-above-chance-at-high-resolution",
@@ -654,7 +1075,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "e:schaeffer-2023-big-bench-meta-analysis": {
       "id": "e:schaeffer-2023-big-bench-meta-analysis",
@@ -667,7 +1089,8 @@
       },
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:schaeffer-2023-emergence-confined-to-few-metrics": {
       "id": "o:schaeffer-2023-emergence-confined-to-few-metrics",
@@ -681,7 +1104,8 @@
       },
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:schaeffer-2023-lamda-smooth-under-brier": {
       "id": "o:schaeffer-2023-lamda-smooth-under-brier",
@@ -692,7 +1116,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "e:schaeffer-2023-induced-vision-emergence": {
       "id": "e:schaeffer-2023-induced-vision-emergence",
@@ -703,7 +1128,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:schaeffer-2023-emergence-induced-by-metric": {
       "id": "o:schaeffer-2023-emergence-induced-by-metric",
@@ -714,7 +1140,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "i:schaeffer-2023-metric-wholly-responsible": {
       "id": "i:schaeffer-2023-metric-wholly-responsible",
@@ -725,7 +1152,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "h:emergence-loss-threshold": {
       "id": "h:emergence-loss-threshold",
@@ -743,7 +1171,8 @@
         }
       ],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:intermediate-checkpoints": {
       "id": "c:intermediate-checkpoints",
@@ -754,7 +1183,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:pre-training-loss-as-x-axis": {
       "id": "c:pre-training-loss-as-x-axis",
@@ -765,7 +1195,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:fixed-corpus-tokenizer-architecture": {
       "id": "c:fixed-corpus-tokenizer-architecture",
@@ -776,7 +1207,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:mmlu": {
       "id": "c:mmlu",
@@ -787,7 +1219,35 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": [
+        {
+          "paper_id": "W4393212671",
+          "why": "MMLU is evaluated in full (test split, 14,042 examples) with few-shot prompting and accuracy, as the standard benchmark.",
+          "minted": false,
+          "kind": "fits",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:48+00:00"
+        },
+        {
+          "paper_id": "W4404987046",
+          "why": "The paper finetunes on the MMLU test set (no training split exists) and evaluates on the validation set, using small OpenLLaMA checkpoints and 5-shot harness prompts, so scores are not comparable with standard MMLU test evaluation.",
+          "minted": false,
+          "kind": "narrower",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:48+00:00"
+        }
+      ]
     },
     "c:c-eval": {
       "id": "c:c-eval",
@@ -798,7 +1258,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:gsm8k": {
       "id": "c:gsm8k",
@@ -809,7 +1270,35 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": [
+        {
+          "paper_id": "W4393212671",
+          "why": "GSM8K is evaluated on its full test split (1,319 examples) with few-shot chain-of-thought prompting and exact match, as the standard benchmark.",
+          "minted": false,
+          "kind": "fits",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:48+00:00"
+        },
+        {
+          "paper_id": "W4404987046",
+          "why": "GSM8K is used on intermediate OpenLLaMA checkpoints, with models finetuned to output the dataset's chain-of-thought traces and few-shot evaluation using a 6-shot CoT prompt; the focus is accuracy near chance (<3%) rather than standard-model performance.",
+          "minted": false,
+          "kind": "narrower",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:48+00:00"
+        }
+      ]
     },
     "e:du-2024-loss-vs-performance": {
       "id": "e:du-2024-loss-vs-performance",
@@ -839,7 +1328,8 @@
         }
       ],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:du-2024-random-until-loss-threshold": {
       "id": "o:du-2024-random-until-loss-threshold",
@@ -852,7 +1342,8 @@
       },
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:du-2024-threshold-persists-under-continuous-metrics": {
       "id": "o:du-2024-threshold-persists-under-continuous-metrics",
@@ -863,7 +1354,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:du-2024-other-tasks-track-loss-smoothly": {
       "id": "o:du-2024-other-tasks-track-loss-smoothly",
@@ -874,7 +1366,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "i:du-2024-brier-includes-incorrect-choices": {
       "id": "i:du-2024-brier-includes-incorrect-choices",
@@ -885,7 +1378,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "h:emergence-is-in-context-learning": {
       "id": "h:emergence-is-in-context-learning",
@@ -903,7 +1397,8 @@
         }
       ],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:zero-shot-prompting": {
       "id": "c:zero-shot-prompting",
@@ -914,7 +1409,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:non-instruction-tuned": {
       "id": "c:non-instruction-tuned",
@@ -925,7 +1421,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:instruction-tuned": {
       "id": "c:instruction-tuned",
@@ -936,7 +1433,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:model-family-llama": {
       "id": "c:model-family-llama",
@@ -947,7 +1445,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:model-family-falcon": {
       "id": "c:model-family-falcon",
@@ -958,7 +1457,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:model-family-t5": {
       "id": "c:model-family-t5",
@@ -969,7 +1469,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:bertscore-accuracy-metric": {
       "id": "c:bertscore-accuracy-metric",
@@ -980,7 +1481,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "e:lu-2024-emergence-without-icl": {
       "id": "e:lu-2024-emergence-without-icl",
@@ -1002,7 +1504,8 @@
         }
       ],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:lu-2024-two-tasks-emergent-without-icl": {
       "id": "o:lu-2024-two-tasks-emergent-without-icl",
@@ -1018,7 +1521,8 @@
       },
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:lu-2024-no-emergence-across-metrics": {
       "id": "o:lu-2024-no-emergence-across-metrics",
@@ -1029,7 +1533,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:lu-2024-other-families-predictable-or-below-baseline": {
       "id": "o:lu-2024-other-families-predictable-or-below-baseline",
@@ -1040,7 +1545,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "e:lu-2024-few-shot-validity-check": {
       "id": "e:lu-2024-few-shot-validity-check",
@@ -1051,7 +1557,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:lu-2024-emergence-replicates-with-icl": {
       "id": "o:lu-2024-emergence-replicates-with-icl",
@@ -1062,7 +1569,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:sparse-transformers": {
       "id": "c:sparse-transformers",
@@ -1073,7 +1581,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "e:srivastava-2022-big-bench-scaling": {
       "id": "e:srivastava-2022-big-bench-scaling",
@@ -1086,7 +1595,8 @@
       },
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:srivastava-2022-breakthrough-tasks": {
       "id": "o:srivastava-2022-breakthrough-tasks",
@@ -1097,7 +1607,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:massive-sampling-evaluation": {
       "id": "c:massive-sampling-evaluation",
@@ -1108,7 +1619,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:code-generation-tasks": {
       "id": "c:code-generation-tasks",
@@ -1119,7 +1631,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "e:hu-2023-passuntil": {
       "id": "e:hu-2023-passuntil",
@@ -1130,7 +1643,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:hu-2023-small-models-improve-below-resolution": {
       "id": "o:hu-2023-small-models-improve-below-resolution",
@@ -1141,7 +1655,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:hu-2023-task-performance-predicted": {
       "id": "o:hu-2023-task-performance-predicted",
@@ -1155,7 +1670,8 @@
       },
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:hu-2023-accelerated-emergence": {
       "id": "o:hu-2023-accelerated-emergence",
@@ -1166,7 +1682,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "i:hu-2023-multiple-circuits": {
       "id": "i:hu-2023-multiple-circuits",
@@ -1177,7 +1694,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:multiple-choice-benchmarks": {
       "id": "c:multiple-choice-benchmarks",
@@ -1188,7 +1706,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "e:schaeffer-2024-mcq-predictability": {
       "id": "e:schaeffer-2024-mcq-predictability",
@@ -1202,7 +1721,8 @@
       },
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:schaeffer-2024-transformations-degrade-scaling-relationship": {
       "id": "o:schaeffer-2024-transformations-degrade-scaling-relationship",
@@ -1213,7 +1733,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "i:schaeffer-2024-incorrect-choice-mass": {
       "id": "i:schaeffer-2024-incorrect-choice-mass",
@@ -1224,7 +1745,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:task-specific-finetuning": {
       "id": "c:task-specific-finetuning",
@@ -1235,7 +1757,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:commonsenseqa": {
       "id": "c:commonsenseqa",
@@ -1246,7 +1769,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:cola": {
       "id": "c:cola",
@@ -1257,7 +1781,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "e:snell-2024-emergence-prediction-by-finetuning": {
       "id": "e:snell-2024-emergence-prediction-by-finetuning",
@@ -1268,7 +1793,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:snell-2024-finetuning-shifts-emergence-point": {
       "id": "o:snell-2024-finetuning-shifts-emergence-point",
@@ -1279,7 +1805,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:snell-2024-emergence-predicted-4x-ahead": {
       "id": "o:snell-2024-emergence-predicted-4x-ahead",
@@ -1292,7 +1819,8 @@
       },
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "h:quantization-of-skills": {
       "id": "h:quantization-of-skills",
@@ -1310,7 +1838,8 @@
         }
       ],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "e:michaud-2023-quanta-decomposition": {
       "id": "e:michaud-2023-quanta-decomposition",
@@ -1321,7 +1850,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:michaud-2023-quanta-frequency-power-law": {
       "id": "o:michaud-2023-quanta-frequency-power-law",
@@ -1332,7 +1862,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:training-trajectory-analysis": {
       "id": "c:training-trajectory-analysis",
@@ -1343,7 +1874,35 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": [
+        {
+          "paper_id": "W4297412003",
+          "why": "Dozens of snapshots (200 per small model, 14-15 per full-scale model) are saved over training and the phase change is located within each model's run; the paper also compares sizes, but the recorded induction-head formation experiment is a within-run trajectory.",
+          "minted": false,
+          "kind": "fits",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:48+00:00"
+        },
+        {
+          "paper_id": "W4386794314",
+          "why": "All results come from checkpoints along BERT-base pretraining (3 seeds, up to 300K steps, plus MultiBERTs checkpoints) at fixed model size, with no comparison across model sizes.",
+          "minted": false,
+          "kind": "fits",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:48+00:00"
+        }
+      ]
     },
     "c:small-attention-only-models": {
       "id": "c:small-attention-only-models",
@@ -1354,7 +1913,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:masked-language-models": {
       "id": "c:masked-language-models",
@@ -1365,7 +1925,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "e:olsson-2022-induction-heads": {
       "id": "e:olsson-2022-induction-heads",
@@ -1376,7 +1937,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:olsson-2022-icl-phase-change": {
       "id": "o:olsson-2022-icl-phase-change",
@@ -1387,7 +1949,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "e:chen-2023-syntactic-attention-structure": {
       "id": "e:chen-2023-syntactic-attention-structure",
@@ -1398,7 +1961,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:chen-2023-abrupt-sas-with-loss-drop": {
       "id": "o:chen-2023-abrupt-sas-with-loss-drop",
@@ -1409,7 +1973,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:inverse-scaling-prize-tasks": {
       "id": "c:inverse-scaling-prize-tasks",
@@ -1420,7 +1985,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:chain-of-thought-prompting": {
       "id": "c:chain-of-thought-prompting",
@@ -1431,7 +1997,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:one-shot-prompting": {
       "id": "c:one-shot-prompting",
@@ -1442,7 +2009,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "e:wei-2023-inverse-scaling-at-540b": {
       "id": "e:wei-2023-inverse-scaling-at-540b",
@@ -1456,7 +2024,8 @@
       },
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:wei-2023-u-shaped-scaling": {
       "id": "o:wei-2023-u-shaped-scaling",
@@ -1471,7 +2040,8 @@
       },
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:wei-2023-prompting-mitigates": {
       "id": "o:wei-2023-prompting-mitigates",
@@ -1482,7 +2052,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "i:wei-2023-distractor-tasks": {
       "id": "i:wei-2023-distractor-tasks",
@@ -1493,7 +2064,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     }
   },
   "edges": [
@@ -4026,5 +4598,12 @@
       "note": ""
     }
   ],
-  "retracted": []
+  "retracted": [],
+  "swept": {
+    "W4367628401": "2026-10-04T09:47:31+00:00",
+    "W4402671818": "2026-10-04T09:47:33+00:00",
+    "W4393212671": "2026-10-04T09:47:35+00:00",
+    "W4283026156": "2026-10-04T09:47:37+00:00",
+    "W4387432280": "2026-10-04T09:47:39+00:00"
+  }
 }

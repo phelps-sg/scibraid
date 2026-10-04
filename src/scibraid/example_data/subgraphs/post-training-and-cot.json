@@ -12,7 +12,7 @@
     }
   ],
   "created": "2026-09-20T13:15:31+00:00",
-  "updated": "2026-09-20T16:13:31+00:00",
+  "updated": "2026-10-04T09:50:25+00:00",
   "papers": {
     "W4307079201": {
       "id": "W4307079201",
@@ -32,6 +32,9 @@
       "author_ids": [],
       "author_orcids": [],
       "venue": "arXiv (Cornell University)",
+      "volume": null,
+      "issue": null,
+      "pages": null,
       "url": "http://arxiv.org/abs/2210.11416",
       "cited_by_count": 1201,
       "source_tier": "grey",
@@ -40,7 +43,8 @@
       "oa_url": null,
       "arxiv_id": null,
       "pmcid": null,
-      "text_source": null
+      "text_source": null,
+      "is_retracted": false
     },
     "W4224308101": {
       "id": "W4224308101",
@@ -60,6 +64,9 @@
       "author_ids": [],
       "author_orcids": [],
       "venue": "arXiv (Cornell University)",
+      "volume": null,
+      "issue": null,
+      "pages": null,
       "url": "http://arxiv.org/abs/2204.02311",
       "cited_by_count": 2136,
       "source_tier": "grey",
@@ -68,7 +75,8 @@
       "oa_url": null,
       "arxiv_id": null,
       "pmcid": null,
-      "text_source": null
+      "text_source": null,
+      "is_retracted": false
     },
     "arxiv:2402.03300": {
       "id": "arxiv:2402.03300",
@@ -88,6 +96,9 @@
       "author_ids": [],
       "author_orcids": [],
       "venue": "arXiv",
+      "volume": null,
+      "issue": null,
+      "pages": null,
       "url": "http://arxiv.org/abs/2402.03300",
       "cited_by_count": null,
       "source_tier": "grey",
@@ -96,7 +107,8 @@
       "oa_url": null,
       "arxiv_id": null,
       "pmcid": null,
-      "text_source": null
+      "text_source": null,
+      "is_retracted": false
     },
     "W4385571157": {
       "id": "W4385571157",
@@ -116,6 +128,9 @@
       "author_ids": [],
       "author_orcids": [],
       "venue": null,
+      "volume": null,
+      "issue": null,
+      "pages": null,
       "url": "https://doi.org/10.18653/v1/2023.findings-acl.824",
       "cited_by_count": 244,
       "source_tier": "published",
@@ -124,7 +139,8 @@
       "oa_url": null,
       "arxiv_id": null,
       "pmcid": null,
-      "text_source": null
+      "text_source": null,
+      "is_retracted": false
     },
     "W4385571045": {
       "id": "W4385571045",
@@ -143,6 +159,9 @@
       "author_ids": [],
       "author_orcids": [],
       "venue": null,
+      "volume": null,
+      "issue": null,
+      "pages": null,
       "url": "https://doi.org/10.18653/v1/2023.acl-long.153",
       "cited_by_count": 113,
       "source_tier": "published",
@@ -151,7 +170,8 @@
       "oa_url": null,
       "arxiv_id": null,
       "pmcid": null,
-      "text_source": null
+      "text_source": null,
+      "is_retracted": false
     },
     "W4281557260": {
       "id": "W4281557260",
@@ -168,6 +188,9 @@
       "author_ids": [],
       "author_orcids": [],
       "venue": "arXiv (Cornell University)",
+      "volume": null,
+      "issue": null,
+      "pages": null,
       "url": "http://arxiv.org/abs/2205.11916",
       "cited_by_count": 1120,
       "source_tier": "grey",
@@ -176,7 +199,8 @@
       "oa_url": null,
       "arxiv_id": null,
       "pmcid": null,
-      "text_source": null
+      "text_source": null,
+      "is_retracted": false
     },
     "W4318908031": {
       "id": "W4318908031",
@@ -196,6 +220,9 @@
       "author_ids": [],
       "author_orcids": [],
       "venue": "arXiv (Cornell University)",
+      "volume": null,
+      "issue": null,
+      "pages": null,
       "url": "http://arxiv.org/abs/2301.13688",
       "cited_by_count": 113,
       "source_tier": "grey",
@@ -204,7 +231,8 @@
       "oa_url": "https://arxiv.org/pdf/2301.13688",
       "arxiv_id": "2301.13688",
       "pmcid": null,
-      "text_source": null
+      "text_source": null,
+      "is_retracted": false
     },
     "W4387221974": {
       "id": "W4387221974",
@@ -223,6 +251,9 @@
       "author_ids": [],
       "author_orcids": [],
       "venue": "arXiv (Cornell University)",
+      "volume": null,
+      "issue": null,
+      "pages": null,
       "url": "http://arxiv.org/abs/2309.16298",
       "cited_by_count": 3,
       "source_tier": "grey",
@@ -231,7 +262,8 @@
       "oa_url": "https://arxiv.org/pdf/2309.16298",
       "arxiv_id": "2309.16298",
       "pmcid": null,
-      "text_source": null
+      "text_source": null,
+      "is_retracted": false
     },
     "W4403011998": {
       "id": "W4403011998",
@@ -251,6 +283,9 @@
       "author_ids": [],
       "author_orcids": [],
       "venue": "arXiv (Cornell University)",
+      "volume": null,
+      "issue": null,
+      "pages": null,
       "url": "http://arxiv.org/abs/2408.10914",
       "cited_by_count": 3,
       "source_tier": "grey",
@@ -259,7 +294,8 @@
       "oa_url": "https://arxiv.org/pdf/2408.10914",
       "arxiv_id": "2408.10914",
       "pmcid": null,
-      "text_source": null
+      "text_source": null,
+      "is_retracted": false
     }
   },
   "nodes": {
@@ -288,7 +324,8 @@
           ]
         ]
       },
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "h:code-training-gives-models-multi-step-reasoning": {
       "id": "h:code-training-gives-models-multi-step-reasoning",
@@ -299,7 +336,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "h:instruction-tuning-is-what-makes-cot-work": {
       "id": "h:instruction-tuning-is-what-makes-cot-work",
@@ -310,7 +348,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "h:cot-data-in-finetuning-matters-not-instruction-tuning-as-such": {
       "id": "h:cot-data-in-finetuning-matters-not-instruction-tuning-as-such",
@@ -321,7 +360,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "h:rl-sharpens-reasoning-already-present": {
       "id": "h:rl-sharpens-reasoning-already-present",
@@ -332,7 +372,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:base-model-without-instruction-tuning": {
       "id": "c:base-model-without-instruction-tuning",
@@ -343,7 +384,35 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": [
+        {
+          "paper_id": "W4307079201",
+          "why": "The PaLM 540B rows of Table 4 are the pretrained checkpoint with no finetuning, evaluated with direct, CoT and CoT+self-consistency prompting using the benchmarks' given few-shot exemplars.",
+          "minted": false,
+          "kind": "fits",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:49+00:00"
+        },
+        {
+          "paper_id": "W4385571045",
+          "why": "The paper states it also tried original GPT-3 175B without instruction finetuning, as a preliminary run, and found CoT gave little gain over standard prompting; no numbers are reported, but the model description matches the label.",
+          "minted": false,
+          "kind": "fits",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:49+00:00"
+        }
+      ]
     },
     "c:instruction-tuned": {
       "id": "c:instruction-tuned",
@@ -354,7 +423,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:matched-scale-base-vs-tuned": {
       "id": "c:matched-scale-base-vs-tuned",
@@ -365,7 +435,35 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": [
+        {
+          "paper_id": "arxiv:2402.03300",
+          "why": "The comparison is not base versus tuned: it is DeepSeekMath-Instruct 7B (after SFT) versus DeepSeekMath-RL 7B (after GRPO on the GSM8K/MATH chain-of-thought subset of the SFT questions), evaluated with Maj@K and Pass@K on GSM8K and MATH.",
+          "minted": false,
+          "kind": "narrower",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:49+00:00"
+        },
+        {
+          "paper_id": "W4307079201",
+          "why": "The post-training is supervised instruction finetuning on a 1.8K-task mixture (no RLHF or other RL), costing only about 0.2% of pre-training compute, and the before/after pairs at 8B, 62B and 540B are PaLM against Flan-PaLM.",
+          "minted": false,
+          "kind": "fits",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-fable-5-1",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:49+00:00"
+        }
+      ]
     },
     "c:cot-data-in-finetuning-mixture": {
       "id": "c:cot-data-in-finetuning-mixture",
@@ -376,7 +474,35 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": [
+        {
+          "paper_id": "W4307079201",
+          "why": "The finetuning mixture includes a CoT mixture of nine human-annotated datasets (74,730 examples) alongside non-CoT mixtures, and ablations add or drop it.",
+          "minted": false,
+          "kind": "fits",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:49+00:00"
+        },
+        {
+          "paper_id": "W4318908031",
+          "why": "The paper's ablations include or remove the Chain-of-Thought task source in the T5-XL Flan 2022 instruction-tuning mixture (Table 1 '- CoT', Table 2 'All - CoT'), and the CoT sources are annotated datasets whose targets contain step-by-step explanations; this is the label's condition directly.",
+          "minted": false,
+          "kind": "fits",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:49+00:00"
+        }
+      ]
     },
     "c:instruction-tuning-without-cot-data": {
       "id": "c:instruction-tuning-without-cot-data",
@@ -387,7 +513,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:code-in-pre-training": {
       "id": "c:code-in-pre-training",
@@ -398,7 +525,61 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": [
+        {
+          "paper_id": "W4387221974",
+          "why": "Only the CODE (2.6B) and CC arms had code in pre-training, and that code is a single ~50GB Python corpus (CodeParrot) added on top of 100GB text; the NN/NC instruction-tuning arms use text-only PanGu pre-training, with code appearing only in tuning data.",
+          "minted": false,
+          "kind": "partly",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:49+00:00"
+        },
+        {
+          "paper_id": "W4403011998",
+          "why": "Code is a manipulated lever across several stages and amounts (0-100% code from scratch, code-initialised then continued on text with 10% code, 20% code in cooldown, plus synthetic and markup code), and the headline 8.2% gain is for the balanced-then-text recipe, so a comparison needs the stage and proportion.",
+          "minted": false,
+          "kind": "narrower",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:49+00:00"
+        },
+        {
+          "paper_id": "arxiv:2402.03300",
+          "why": "Code is introduced as a separate first stage of 400B code tokens before 150B math tokens, with a 400B general-token control, on DeepSeek-LLM 1.3B (not 7B); a one-stage code+math mixture arm hurt math without tools.",
+          "minted": false,
+          "kind": "narrower",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:49+00:00"
+        },
+        {
+          "paper_id": "W4224308101",
+          "why": "Code is a specific minority share of PaLM's pre-training mixture: about 5% of the mixture (39B tokens, 196GB from GitHub, non-copyleft licences, 24 languages, deduplicated), so comparisons with models trained on more or less code need that quantity.",
+          "minted": false,
+          "kind": "fits",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-fable-5-1",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:49+00:00"
+        }
+      ]
     },
     "c:matched-text-only-baseline": {
       "id": "c:matched-text-only-baseline",
@@ -409,7 +590,35 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": [
+        {
+          "paper_id": "W4387221974",
+          "why": "The text-only PanGu2.6B matches the text portion (100GB, same sources, 32 layers), but the code model sees that text plus ~50GB of code (code is added, not substituted) and uses a different tokenizer (130,044 vs 40,000 vocabulary), so total data and vocabulary are not matched.",
+          "minted": false,
+          "kind": "narrower",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:49+00:00"
+        },
+        {
+          "paper_id": "W4403011998",
+          "why": "The text-only baseline uses the same architecture and a 400B-token budget equal to the balanced and code-initialised recipes, with GitHub and StackExchange removed from SlimPajama.",
+          "minted": false,
+          "kind": "fits",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:49+00:00"
+        }
+      ]
     },
     "c:code-in-instruction-tuning": {
       "id": "c:code-in-instruction-tuning",
@@ -420,7 +629,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:palm-8b-62b-540b": {
       "id": "c:palm-8b-62b-540b",
@@ -431,7 +641,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:models-under-13b": {
       "id": "c:models-under-13b",
@@ -442,7 +653,48 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": [
+        {
+          "paper_id": "W4387221974",
+          "why": "All models are 2.6B or 13B GPT-style decoders (PanGu2.6B, PanGu13B, and the self-trained CodePanGu2.6B), so none exceeds 13B.",
+          "minted": false,
+          "kind": "fits",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:49+00:00"
+        },
+        {
+          "paper_id": "W4403011998",
+          "why": "All models trained are 470M or 2.8B parameter decoder-only transformers, both under 13B.",
+          "minted": false,
+          "kind": "fits",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:49+00:00"
+        },
+        {
+          "paper_id": "arxiv:2402.03300",
+          "why": "The code-before-math experiment was run on DeepSeek-LLM 1.3B, well under 13B; the 7B model is used only in the arXiv comparison and the main pipeline. The recorded experiment's '7B' wording is wrong but the label still holds.",
+          "minted": false,
+          "kind": "fits",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:49+00:00"
+        }
+      ]
     },
     "c:codex-code-davinci-002": {
       "id": "c:codex-code-davinci-002",
@@ -453,7 +705,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:original-gpt3-175b": {
       "id": "c:original-gpt3-175b",
@@ -464,7 +717,35 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": [
+        {
+          "paper_id": "W4281557260",
+          "why": "The recorded scale experiment runs original GPT-3 at four sizes (ada 0.3B, babbage 1.3B, curie 6.7B, davinci 175B), plus InstructGPT and PaLM; only the davinci arm is the 175B model, and the other arms are different models.",
+          "minted": false,
+          "kind": "partly",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:49+00:00"
+        },
+        {
+          "paper_id": "W4385571045",
+          "why": "The preliminary run used 'the original GPT-3 175B'; the paper does not say 'davinci' explicitly, but this is the model named, and the main experiments used text-davinci-002 instead.",
+          "minted": false,
+          "kind": "fits",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:49+00:00"
+        }
+      ]
     },
     "c:zero-shot-cot-prompting": {
       "id": "c:zero-shot-cot-prompting",
@@ -475,7 +756,35 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": [
+        {
+          "paper_id": "W4281557260",
+          "why": "The scale study appends the single trigger \"Let's think step by step\" to \"Q: [X]. A:\" with no exemplars, followed by a second answer-extraction prompt, which is the standard zero-shot chain-of-thought setup the label names.",
+          "minted": false,
+          "kind": "fits",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:49+00:00"
+        },
+        {
+          "paper_id": "W4307079201",
+          "why": "On BBH the models are prompted zero-shot with the trigger phrase 'let's think step-by-step' (Kojima et al.), and PaLM and Flan-PaLM are compared with and without it.",
+          "minted": false,
+          "kind": "fits",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:49+00:00"
+        }
+      ]
     },
     "c:few-shot-cot-prompting": {
       "id": "c:few-shot-cot-prompting",
@@ -486,7 +795,35 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": [
+        {
+          "paper_id": "W4385571045",
+          "why": "The paper's CoT setting gives few-shot (query, rationale, answer) exemplars from Wei et al. and Press et al. with slight editing, run greedily on GSM8K and Bamboogle; the GPT-3 preliminary run is described only as CoT versus standard prompting.",
+          "minted": false,
+          "kind": "fits",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:49+00:00"
+        },
+        {
+          "paper_id": "W4385571157",
+          "why": "The CoT exemplars are three hand-written per task, each CoT annotation is prefixed with the zero-shot phrase \"let's think step-by-step\", and the prompt also carries a task instruction and the answer options; a comparison with other few-shot CoT results would need to know this.",
+          "minted": false,
+          "kind": "narrower",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:49+00:00"
+        }
+      ]
     },
     "c:big-bench-hard": {
       "id": "c:big-bench-hard",
@@ -497,7 +834,35 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": [
+        {
+          "paper_id": "W4307079201",
+          "why": "BBH here is the 23-task subset of BIG-Bench, evaluated three-shot with both direct and CoT prompting and split into NLP and algorithmic tasks; in the scaling ablation it is one of four benchmarks pooled into a normalized average.",
+          "minted": false,
+          "kind": "narrower",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:49+00:00"
+        },
+        {
+          "paper_id": "W4385571157",
+          "why": "The paper itself defines BBH as the 23 BIG-Bench tasks (27 subtasks) where no prior result beat the average human-rater, which is what the label names; evaluation uses a 250-example random subset per task except three tasks used in full.",
+          "minted": false,
+          "kind": "fits",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:49+00:00"
+        }
+      ]
     },
     "c:gsm8k": {
       "id": "c:gsm8k",
@@ -508,7 +873,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:rl-post-training": {
       "id": "c:rl-post-training",
@@ -519,7 +885,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:sampling-k-responses": {
       "id": "c:sampling-k-responses",
@@ -530,7 +897,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "e:chung-2022-flan-palm-vs-palm": {
       "id": "e:chung-2022-flan-palm-vs-palm",
@@ -541,7 +909,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:chung-2022-base-palm-540b-gains-from-cot": {
       "id": "o:chung-2022-base-palm-540b-gains-from-cot",
@@ -561,7 +930,8 @@
       },
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:chung-2022-instruction-tuning-without-cot-degrades-reasoning": {
       "id": "o:chung-2022-instruction-tuning-without-cot-degrades-reasoning",
@@ -572,7 +942,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:chung-2022-cot-finetuning-unlocks-zero-shot-cot": {
       "id": "o:chung-2022-cot-finetuning-unlocks-zero-shot-cot",
@@ -583,7 +954,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "e:ma-2023-code-at-each-training-stage": {
       "id": "e:ma-2023-code-at-each-training-stage",
@@ -599,7 +971,8 @@
       },
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:ma-2023-code-in-pretraining-improves-general-reasoning": {
       "id": "o:ma-2023-code-in-pretraining-improves-general-reasoning",
@@ -610,7 +983,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:ma-2023-code-at-instruction-tuning-is-task-specific": {
       "id": "o:ma-2023-code-at-instruction-tuning-is-task-specific",
@@ -621,7 +995,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "e:aryabumi-2024-code-in-pretraining-ablations": {
       "id": "e:aryabumi-2024-code-in-pretraining-ablations",
@@ -632,7 +1007,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:aryabumi-2024-code-raises-nl-reasoning": {
       "id": "o:aryabumi-2024-code-raises-nl-reasoning",
@@ -645,18 +1021,29 @@
       },
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "e:shao-2024-code-before-math": {
       "id": "e:shao-2024-code-before-math",
       "type": "experiment",
-      "label": "Shao et al. 2024 (DeepSeekMath): code training before math training, 7B models",
+      "label": "Shao et al. 2024 (DeepSeekMath): code training before math training, ablation on DeepSeek-LLM 1.3B",
       "description": "",
       "outcome": null,
-      "attrs": {},
+      "attrs": {
+        "relabelled_from": [
+          {
+            "label": "Shao et al. 2024 (DeepSeekMath): code training before math training, 7B models",
+            "reason": "The label said 7B models. The ablation was run on a general 1.3B model ('We apply math training to a general pre-trained language model with 1.3B parameters'); 7B is the size of the released DeepSeekMath model, not of this experiment.",
+            "when": "2026-10-04T09:50:25+00:00",
+            "by": "claude-fable-5-1"
+          }
+        ]
+      },
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:shao-2024-code-training-improves-math-reasoning": {
       "id": "o:shao-2024-code-training-improves-math-reasoning",
@@ -667,7 +1054,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "e:shao-2024-rl-maj-vs-pass": {
       "id": "e:shao-2024-rl-maj-vs-pass",
@@ -678,7 +1066,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:shao-2024-rl-raises-maj-not-pass": {
       "id": "o:shao-2024-rl-raises-maj-not-pass",
@@ -689,7 +1078,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "e:suzgun-2022-bbh-across-model-families": {
       "id": "e:suzgun-2022-bbh-across-model-families",
@@ -700,7 +1090,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:suzgun-2022-codex-gains-most-from-cot": {
       "id": "o:suzgun-2022-codex-gains-most-from-cot",
@@ -715,7 +1106,8 @@
       },
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "e:wang-2023-base-gpt3-preliminary": {
       "id": "e:wang-2023-base-gpt3-preliminary",
@@ -726,7 +1118,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:wang-2023-base-gpt3-gains-little-from-cot": {
       "id": "o:wang-2023-base-gpt3-gains-little-from-cot",
@@ -737,7 +1130,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "e:kojima-2022-zero-shot-cot-by-size": {
       "id": "e:kojima-2022-zero-shot-cot-by-size",
@@ -748,7 +1142,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:kojima-2022-original-gpt3-gains-with-scale": {
       "id": "o:kojima-2022-original-gpt3-gains-with-scale",
@@ -759,7 +1154,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "e:longpre-2023-flan-collection-ablations": {
       "id": "e:longpre-2023-flan-collection-ablations",
@@ -770,7 +1166,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:longpre-2023-mixed-prompt-settings-help-everywhere": {
       "id": "o:longpre-2023-mixed-prompt-settings-help-everywhere",
@@ -781,7 +1178,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     }
   },
   "edges": [
@@ -1954,5 +2352,11 @@
       "note": ""
     }
   ],
-  "retracted": []
+  "retracted": [],
+  "swept": {
+    "W4307079201": "2026-10-04T09:47:41+00:00",
+    "W4387221974": "2026-10-04T09:47:44+00:00",
+    "W4385571045": "2026-10-04T09:47:46+00:00",
+    "W4403011998": "2026-10-04T09:47:47+00:00"
+  }
 }

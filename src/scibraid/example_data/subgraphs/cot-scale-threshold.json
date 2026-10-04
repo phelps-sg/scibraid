@@ -12,7 +12,7 @@
     }
   ],
   "created": "2026-09-20T08:26:25+00:00",
-  "updated": "2026-09-20T16:11:01+00:00",
+  "updated": "2026-10-04T09:49:49+00:00",
   "papers": {
     "W4404394948": {
       "id": "W4404394948",
@@ -32,6 +32,9 @@
       "author_ids": [],
       "author_orcids": [],
       "venue": "arXiv (Cornell University)",
+      "volume": null,
+      "issue": null,
+      "pages": null,
       "url": "http://arxiv.org/abs/2409.12183",
       "cited_by_count": 13,
       "source_tier": "grey",
@@ -40,7 +43,8 @@
       "oa_url": null,
       "arxiv_id": null,
       "pmcid": null,
-      "text_source": null
+      "text_source": null,
+      "is_retracted": false
     },
     "W4281557260": {
       "id": "W4281557260",
@@ -57,6 +61,9 @@
       "author_ids": [],
       "author_orcids": [],
       "venue": "arXiv (Cornell University)",
+      "volume": null,
+      "issue": null,
+      "pages": null,
       "url": "http://arxiv.org/abs/2205.11916",
       "cited_by_count": 1120,
       "source_tier": "grey",
@@ -65,7 +72,8 @@
       "oa_url": null,
       "arxiv_id": null,
       "pmcid": null,
-      "text_source": null
+      "text_source": null,
+      "is_retracted": false
     },
     "W4385571157": {
       "id": "W4385571157",
@@ -85,6 +93,9 @@
       "author_ids": [],
       "author_orcids": [],
       "venue": null,
+      "volume": null,
+      "issue": null,
+      "pages": null,
       "url": "https://doi.org/10.18653/v1/2023.findings-acl.824",
       "cited_by_count": 244,
       "source_tier": "published",
@@ -93,7 +104,8 @@
       "oa_url": null,
       "arxiv_id": null,
       "pmcid": null,
-      "text_source": null
+      "text_source": null,
+      "is_retracted": false
     },
     "W4385571045": {
       "id": "W4385571045",
@@ -112,6 +124,9 @@
       "author_ids": [],
       "author_orcids": [],
       "venue": null,
+      "volume": null,
+      "issue": null,
+      "pages": null,
       "url": "https://doi.org/10.18653/v1/2023.acl-long.153",
       "cited_by_count": 113,
       "source_tier": "published",
@@ -120,7 +135,8 @@
       "oa_url": null,
       "arxiv_id": null,
       "pmcid": null,
-      "text_source": null
+      "text_source": null,
+      "is_retracted": false
     },
     "W4318719086": {
       "id": "W4318719086",
@@ -137,6 +153,9 @@
       "author_ids": [],
       "author_orcids": [],
       "venue": "arXiv (Cornell University)",
+      "volume": null,
+      "issue": null,
+      "pages": null,
       "url": "http://arxiv.org/abs/2301.12726",
       "cited_by_count": 45,
       "source_tier": "grey",
@@ -145,7 +164,8 @@
       "oa_url": null,
       "arxiv_id": null,
       "pmcid": null,
-      "text_source": null
+      "text_source": null,
+      "is_retracted": false
     },
     "W4385571260": {
       "id": "W4385571260",
@@ -162,6 +182,9 @@
       "author_ids": [],
       "author_orcids": [],
       "venue": null,
+      "volume": null,
+      "issue": null,
+      "pages": null,
       "url": "https://doi.org/10.18653/v1/2023.acl-short.151",
       "cited_by_count": 119,
       "source_tier": "published",
@@ -170,7 +193,8 @@
       "oa_url": null,
       "arxiv_id": null,
       "pmcid": null,
-      "text_source": null
+      "text_source": null,
+      "is_retracted": false
     },
     "W4385571219": {
       "id": "W4385571219",
@@ -185,6 +209,9 @@
       "author_ids": [],
       "author_orcids": [],
       "venue": null,
+      "volume": null,
+      "issue": null,
+      "pages": null,
       "url": "https://doi.org/10.18653/v1/2023.acl-long.830",
       "cited_by_count": 114,
       "source_tier": "published",
@@ -193,7 +220,8 @@
       "oa_url": null,
       "arxiv_id": null,
       "pmcid": null,
-      "text_source": null
+      "text_source": null,
+      "is_retracted": false
     },
     "W4385571831": {
       "id": "W4385571831",
@@ -208,6 +236,9 @@
       "author_ids": [],
       "author_orcids": [],
       "venue": null,
+      "volume": null,
+      "issue": null,
+      "pages": null,
       "url": "https://doi.org/10.18653/v1/2023.findings-acl.441",
       "cited_by_count": 71,
       "source_tier": "published",
@@ -216,7 +247,8 @@
       "oa_url": null,
       "arxiv_id": null,
       "pmcid": null,
-      "text_source": null
+      "text_source": null,
+      "is_retracted": false
     },
     "W4389519396": {
       "id": "W4389519396",
@@ -232,6 +264,9 @@
       "author_ids": [],
       "author_orcids": [],
       "venue": null,
+      "volume": null,
+      "issue": null,
+      "pages": null,
       "url": "https://doi.org/10.18653/v1/2023.emnlp-main.963",
       "cited_by_count": 21,
       "source_tier": "published",
@@ -240,7 +275,8 @@
       "oa_url": null,
       "arxiv_id": null,
       "pmcid": null,
-      "text_source": null
+      "text_source": null,
+      "is_retracted": false
     },
     "W7133224126": {
       "id": "W7133224126",
@@ -260,6 +296,9 @@
       "author_ids": [],
       "author_orcids": [],
       "venue": null,
+      "volume": null,
+      "issue": null,
+      "pages": null,
       "url": "https://doi.org/10.52202/068431-1800",
       "cited_by_count": 2123,
       "source_tier": "published",
@@ -268,7 +307,8 @@
       "oa_url": "https://arxiv.org/pdf/2201.11903",
       "arxiv_id": "2201.11903",
       "pmcid": null,
-      "text_source": null
+      "text_source": null,
+      "is_retracted": false
     }
   },
   "nodes": {
@@ -288,7 +328,8 @@
         }
       ],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "h:cot-success-composite-of-scale-dependent-skills": {
       "id": "h:cot-success-composite-of-scale-dependent-skills",
@@ -306,7 +347,8 @@
         }
       ],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:few-shot-cot-prompting": {
       "id": "c:few-shot-cot-prompting",
@@ -317,7 +359,48 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": [
+        {
+          "paper_id": "W4385571045",
+          "why": "The recorded arm is not ordinary CoT exemplars: every demonstration rationale was hand-rewritten so the steps after the copied premises do not logically derive the answer, though the final answer stays correct. Results under it are not comparable with valid-exemplar CoT.",
+          "minted": false,
+          "kind": "narrower",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:48+00:00"
+        },
+        {
+          "paper_id": "W7133224126",
+          "why": "The exemplars were a single set of eight chains of thought hand-written by one co-author (Annotator A), with four AQuA exemplars taken from the training set, and decoding was greedy; the paper itself shows results vary with annotator, so the exact exemplar set matters for comparison.",
+          "minted": false,
+          "kind": "fits",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-fable-5-1",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:49+00:00"
+        },
+        {
+          "paper_id": "W4385571157",
+          "why": "Each task gets exactly three hand-written CoT exemplars, with \"let's think step-by-step\" prepended to every CoT annotation, plus a task instruction and the answer options in the prompt; the exemplar prompts themselves are in Appendix C but their text is missing from the supplied file.",
+          "minted": false,
+          "kind": "fits",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-fable-5-1",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:49+00:00"
+        }
+      ]
     },
     "c:gsm8k": {
       "id": "c:gsm8k",
@@ -328,7 +411,61 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": [
+        {
+          "paper_id": "W4281557260",
+          "why": "GSM8K (1319 test items) is used only for the PaLM 8B/62B/540B scale curve (Table 27); the GPT-3 and InstructGPT size curves (Table 26) were run on MultiArith, not GSM8K, so the recorded model-size experiment is GSM8K for only one of its arms.",
+          "minted": false,
+          "kind": "partly",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:48+00:00"
+        },
+        {
+          "paper_id": "W4385571260",
+          "why": "The GSM8K experiments use the official train/test split with the last 10% of training held out for validation; nothing about the benchmark use differs from standard GSM8K evaluation (finetuning examples were filtered to correct CoT, but that belongs to the distillation condition).",
+          "minted": false,
+          "kind": "fits",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:48+00:00"
+        },
+        {
+          "paper_id": "W4385571831",
+          "why": "The Socratic CoT experiments span three datasets (GSM8K, StrategyQA, SVAMP), so only the GSM8K arms are GSM8K math word problems; StrategyQA is binary factual yes/no and SVAMP students are trained on ASDiv problems. The GSM8K arms also use the 7.5K train and 1K test split with GPT-2 students.",
+          "minted": false,
+          "kind": "partly",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:48+00:00"
+        },
+        {
+          "paper_id": "W7133224126",
+          "why": "GSM8K is one of the five benchmarks, evaluated on its 1,319 test problems with the model-size comparison, and it is the dataset for the LaMDA error analysis and the stated context of the PaLM 62B vs 540B error analysis.",
+          "minted": false,
+          "kind": "fits",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:48+00:00"
+        }
+      ]
     },
     "c:math-word-problems": {
       "id": "c:math-word-problems",
@@ -339,7 +476,48 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": [
+        {
+          "paper_id": "W4318719086",
+          "why": "Training and test tasks are grade-school math word problem sets (GSM8K in-distribution; MultiArith, ASDiv, SVAMP out-of-distribution) requiring multi-step chain-of-thought answers. BigBench Hard is also evaluated, but only as a generic-ability cost measure, not as a recorded condition.",
+          "minted": false,
+          "kind": "fits",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:48+00:00"
+        },
+        {
+          "paper_id": "W4385571045",
+          "why": "True of the GSM8K arm (800 of 1319 test problems), but the same recorded experiment also covers Bamboogle, a 125-question multi-hop factual QA set that is not a math task.",
+          "minted": false,
+          "kind": "partly",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:48+00:00"
+        },
+        {
+          "paper_id": "W7133224126",
+          "why": "Of the five math benchmarks, several are not multi-step: MAWPS includes the one-step SingleOp subset where gains were negative or tiny, and AQuA is multiple-choice algebra with different exemplars; the multi-step label fits mainly GSM8K and the harder sets.",
+          "minted": false,
+          "kind": "partly",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:48+00:00"
+        }
+      ]
     },
     "c:symbolic-reasoning-tasks": {
       "id": "c:symbolic-reasoning-tasks",
@@ -350,7 +528,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:lamda-models": {
       "id": "c:lamda-models",
@@ -361,7 +540,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:gpt3-instructgpt-models": {
       "id": "c:gpt3-instructgpt-models",
@@ -372,7 +552,61 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": [
+        {
+          "paper_id": "W4281557260",
+          "why": "The paper ran original GPT-3 (ada, babbage, curie, davinci) and InstructGPT (text-ada-001 to text-davinci-002) via the OpenAI API with greedy decoding, matching the label's range.",
+          "minted": false,
+          "kind": "fits",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:48+00:00"
+        },
+        {
+          "paper_id": "W4385571045",
+          "why": "The recorded arm used one model, the 175B instruction-tuned text-davinci-002, not a range from ada to davinci; the paper notes plain GPT-3 175B gave little CoT gain. Other models (davinci-003, PaLM, Flan-PaLM) appear only in the appendix.",
+          "minted": false,
+          "kind": "narrower",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:48+00:00"
+        },
+        {
+          "paper_id": "W4385571157",
+          "why": "The OpenAI scale sweep is InstructGPT text-ada-001 to text-davinci-002, which matches, but the paper's headline OpenAI results and a second scale sweep use Codex (code-cushman-001, code-davinci-002), a code-trained family not described by the label.",
+          "minted": false,
+          "kind": "partly",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:48+00:00"
+        },
+        {
+          "paper_id": "W7133224126",
+          "why": "The GPT-3 family used was text-ada-001 through text-davinci-002 via the public API, which the paper itself equates presumably with InstructGPT 350M to 175B; no base GPT-3 checkpoints were used.",
+          "minted": false,
+          "kind": "fits",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:48+00:00"
+        }
+      ]
     },
     "c:palm-models": {
       "id": "c:palm-models",
@@ -383,7 +617,48 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": [
+        {
+          "paper_id": "W4281557260",
+          "why": "PaLM 8B, 62B and 540B were run zero-shot with and without the CoT trigger on GSM8K (Table 27), as the label says; only decoding detail differs (TopK=1, max_tokens 256).",
+          "minted": false,
+          "kind": "fits",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:48+00:00"
+        },
+        {
+          "paper_id": "W4385571157",
+          "why": "The paper evaluates exactly PaLM 8B, 62B and 540B with both answer-only and CoT prompting, using greedy decoding and a 2,048 input length; nothing differs from the label.",
+          "minted": false,
+          "kind": "fits",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:48+00:00"
+        },
+        {
+          "paper_id": "W7133224126",
+          "why": "PaLM was evaluated at 8B, 62B and 540B on the math benchmarks, and the 62B and 540B models are the ones in the error analysis.",
+          "minted": false,
+          "kind": "fits",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:48+00:00"
+        }
+      ]
     },
     "c:small-models": {
       "id": "c:small-models",
@@ -394,7 +669,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "e:wei-2022-cot-across-scales": {
       "id": "e:wei-2022-cot-across-scales",
@@ -419,7 +695,8 @@
       },
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:wei-2022-cot-gains-only-near-100b": {
       "id": "o:wei-2022-cot-gains-only-near-100b",
@@ -430,7 +707,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:wei-2022-small-models-illogical-cot": {
       "id": "o:wei-2022-small-models-illogical-cot",
@@ -441,7 +719,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:wei-2022-small-models-fail-symbol-mapping": {
       "id": "o:wei-2022-small-models-fail-symbol-mapping",
@@ -452,7 +731,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:wei-2022-small-models-unparseable-answers": {
       "id": "o:wei-2022-small-models-unparseable-answers",
@@ -463,7 +743,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "e:wei-2022-palm-62b-error-analysis": {
       "id": "e:wei-2022-palm-62b-error-analysis",
@@ -479,7 +760,8 @@
       },
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:wei-2022-540b-fixes-62b-errors": {
       "id": "o:wei-2022-540b-fixes-62b-errors",
@@ -490,7 +772,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "i:wei-2022-cot-scale-is-composite": {
       "id": "i:wei-2022-cot-scale-is-composite",
@@ -501,7 +784,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "h:cot-benefit-confined-to-math-and-symbolic": {
       "id": "h:cot-benefit-confined-to-math-and-symbolic",
@@ -519,7 +803,8 @@
         }
       ],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:zero-shot-cot-prompting": {
       "id": "c:zero-shot-cot-prompting",
@@ -530,7 +815,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:commonsense-reasoning-tasks": {
       "id": "c:commonsense-reasoning-tasks",
@@ -541,7 +827,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:original-gpt3-models": {
       "id": "c:original-gpt3-models",
@@ -552,7 +839,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "e:kojima-2022-zero-shot-cot-model-size": {
       "id": "e:kojima-2022-zero-shot-cot-model-size",
@@ -565,7 +853,8 @@
       },
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:kojima-2022-flat-without-cot-steep-with": {
       "id": "o:kojima-2022-flat-without-cot-steep-with",
@@ -576,7 +865,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:kojima-2022-no-gain-on-commonsense": {
       "id": "o:kojima-2022-no-gain-on-commonsense",
@@ -587,7 +877,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:big-bench-hard": {
       "id": "c:big-bench-hard",
@@ -600,7 +891,8 @@
       },
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:answer-only-prompting": {
       "id": "c:answer-only-prompting",
@@ -611,7 +903,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:codex-models": {
       "id": "c:codex-models",
@@ -622,7 +915,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "e:suzgun-2022-bbh-cot-by-scale": {
       "id": "e:suzgun-2022-bbh-cot-by-scale",
@@ -633,7 +927,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:suzgun-2022-cot-zero-or-negative-for-small-models": {
       "id": "o:suzgun-2022-cot-zero-or-negative-for-small-models",
@@ -644,7 +939,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:suzgun-2022-cot-unlocks-flat-tasks": {
       "id": "o:suzgun-2022-cot-unlocks-flat-tasks",
@@ -655,7 +951,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "h:cot-demonstrations-specify-format": {
       "id": "h:cot-demonstrations-specify-format",
@@ -673,7 +970,8 @@
         }
       ],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:invalid-reasoning-demonstrations": {
       "id": "c:invalid-reasoning-demonstrations",
@@ -684,7 +982,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:base-model-without-instruction-tuning": {
       "id": "c:base-model-without-instruction-tuning",
@@ -695,7 +994,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:multi-hop-factual-qa": {
       "id": "c:multi-hop-factual-qa",
@@ -706,7 +1006,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "e:wang-2023-invalid-reasoning-ablation": {
       "id": "e:wang-2023-invalid-reasoning-ablation",
@@ -717,7 +1018,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:wang-2023-invalid-demos-keep-most-of-gain": {
       "id": "o:wang-2023-invalid-demos-keep-most-of-gain",
@@ -730,7 +1032,8 @@
       },
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:wang-2023-relevance-and-order-matter": {
       "id": "o:wang-2023-relevance-and-order-matter",
@@ -741,7 +1044,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:wang-2023-base-gpt3-175b-little-cot-gain": {
       "id": "o:wang-2023-base-gpt3-175b-little-cot-gain",
@@ -752,7 +1056,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "i:wang-2023-demos-specify-format": {
       "id": "i:wang-2023-demos-specify-format",
@@ -763,7 +1068,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "h:cot-reasoning-transferable-to-small-models": {
       "id": "h:cot-reasoning-transferable-to-small-models",
@@ -781,7 +1087,8 @@
         }
       ],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:cot-distillation-finetuning": {
       "id": "c:cot-distillation-finetuning",
@@ -792,7 +1099,61 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": [
+        {
+          "paper_id": "W4318719086",
+          "why": "The student is trained by distribution matching (KL to the teacher's top-5 token probabilities, with tokenizer alignment by dynamic programming) on code-davinci-002 solutions filtered to the correct answers, and the tuning data mixes four formats, including answer-only and in-context variants, not only CoT outputs. These details change how results compare with plain sample-matching CoT finetuning.",
+          "minted": false,
+          "kind": "narrower",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:48+00:00"
+        },
+        {
+          "paper_id": "W4385571831",
+          "why": "Students (GPT-2 124M to 1.5B) are fine-tuned on GPT-3 175B outputs, but what the teacher generates varies by arm: CoT steps, subquestion-solution pairs, subquestions only, or facts. On GSM8K the Socratic arm pairs GPT-3 subquestions with human-annotated solutions, and the iterative student is split into a question generator and a question answerer.",
+          "minted": false,
+          "kind": "partly",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:48+00:00"
+        },
+        {
+          "paper_id": "W4385571260",
+          "why": "Teacher chains of thought were generated with 8-shot prompts that also reveal the target answer after the question, and every CoT with a wrong final answer was discarded (GSM8K 6725 to 5337 examples), so the student sees only answer-verified, answer-conditioned teacher CoT.",
+          "minted": false,
+          "kind": "fits",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-fable-5-1",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:49+00:00"
+        },
+        {
+          "paper_id": "W4385571219",
+          "why": "Students (GPT-3 ada/babbage/curie, plus GPT-2, T5, Flan-T5) are fine-tuned on rationales from a 175B GPT-3/InstructGPT teacher elicited by zero-shot CoT, and only samples whose final answer matches the ground truth are kept; the headline results also multiply the data with several temperature-0.7 rationales per question (diverse reasoning, D up to 64), which changes how results compare with a single-rationale setup.",
+          "minted": false,
+          "kind": "fits",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-fable-5-1",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:49+00:00"
+        }
+      ]
     },
     "c:t5-models": {
       "id": "c:t5-models",
@@ -803,7 +1164,35 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": [
+        {
+          "paper_id": "W4318719086",
+          "why": "The students are raw T5 and instruction-tuned FlanT5 at Base 250M, Large 760M, XL 3B and XXL 11B, matching the label's family and size range.",
+          "minted": false,
+          "kind": "fits",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:48+00:00"
+        },
+        {
+          "paper_id": "W4385571260",
+          "why": "Students are plain T5 (not Flan-T5) in sizes small, base, XL and XXL (11B), within the label's range; only the Flan-T5 half of the label is unused.",
+          "minted": false,
+          "kind": "fits",
+          "by": {
+            "person": null,
+            "agent": "claude-code",
+            "model": "claude-sonnet-5",
+            "session": null
+          },
+          "when": "2026-10-04T09:49:48+00:00"
+        }
+      ]
     },
     "c:svamp": {
       "id": "c:svamp",
@@ -814,7 +1203,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:strategyqa": {
       "id": "c:strategyqa",
@@ -825,7 +1215,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "e:fu-2023-model-specialization": {
       "id": "e:fu-2023-model-specialization",
@@ -836,7 +1227,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:fu-2023-small-model-scaling-curve-lifted": {
       "id": "o:fu-2023-small-model-scaling-curve-lifted",
@@ -847,7 +1239,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:fu-2023-ability-tradeoff": {
       "id": "o:fu-2023-ability-tradeoff",
@@ -858,7 +1251,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "e:magister-2022-cot-distillation": {
       "id": "e:magister-2022-cot-distillation",
@@ -869,7 +1263,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:magister-2022-t5-xxl-gsm8k-gain": {
       "id": "o:magister-2022-t5-xxl-gsm8k-gain",
@@ -884,7 +1279,8 @@
       },
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "e:ho-2023-fine-tune-cot": {
       "id": "e:ho-2023-fine-tune-cot",
@@ -895,7 +1291,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:ho-2023-small-models-beat-prompted-baselines": {
       "id": "o:ho-2023-small-models-beat-prompted-baselines",
@@ -906,7 +1303,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "e:shridhar-2023-socratic-cot": {
       "id": "e:shridhar-2023-socratic-cot",
@@ -917,7 +1315,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:shridhar-2023-gpt2-large-beats-gpt3-6b": {
       "id": "o:shridhar-2023-gpt2-large-beats-gpt3-6b",
@@ -928,7 +1327,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:mmlu": {
       "id": "c:mmlu",
@@ -939,7 +1339,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:direct-answer-prompting": {
       "id": "c:direct-answer-prompting",
@@ -950,7 +1351,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "e:sprague-2024-cot-meta-analysis": {
       "id": "e:sprague-2024-cot-meta-analysis",
@@ -965,7 +1367,8 @@
       },
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:sprague-2024-gains-mainly-math-and-logic": {
       "id": "o:sprague-2024-gains-mainly-math-and-logic",
@@ -976,7 +1379,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:sprague-2024-mmlu-gain-only-with-equals-sign": {
       "id": "o:sprague-2024-mmlu-gain-only-with-equals-sign",
@@ -987,7 +1391,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "i:sprague-2024-gain-is-symbolic-execution": {
       "id": "i:sprague-2024-gain-is-symbolic-execution",
@@ -998,7 +1403,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "c:inverse-scaling-prize-tasks": {
       "id": "c:inverse-scaling-prize-tasks",
@@ -1009,7 +1415,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "e:wei-2023-inverse-scaling-with-cot": {
       "id": "e:wei-2023-inverse-scaling-with-cot",
@@ -1023,7 +1430,8 @@
       },
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     },
     "o:wei-2023-cot-mitigates-inverse-scaling": {
       "id": "o:wei-2023-cot-mitigates-inverse-scaling",
@@ -1034,7 +1442,8 @@
       "attrs": {},
       "provenance": [],
       "derived_from": null,
-      "framed": false
+      "framed": false,
+      "fits": []
     }
   },
   "edges": [
@@ -2687,5 +3096,12 @@
       "note": ""
     }
   ],
-  "retracted": []
+  "retracted": [],
+  "swept": {
+    "W7133224126": "2026-10-04T09:47:21+00:00",
+    "W4385571045": "2026-10-04T09:47:23+00:00",
+    "W4281557260": "2026-10-04T09:47:26+00:00",
+    "W4385571157": "2026-10-04T09:47:28+00:00",
+    "W4318719086": "2026-10-04T09:47:29+00:00"
+  }
 }
