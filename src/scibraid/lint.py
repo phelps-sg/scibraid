@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections import Counter
 
-from . import sweep
+from . import store, sweep
 from .models import AssertedBy, NodeType, Outcome, Relation, Subgraph
 
 
@@ -71,6 +71,12 @@ def lint(sg: Subgraph) -> list[str]:
             "no negative, null or inconclusive observations: search for failed replications, "
             "null results and boundary conditions before treating this as complete"
         )
+    lumped = sorted(((len(missing), nid) for nid, node in sg.nodes.items()
+                     if node.type is NodeType.CONDITION and (missing := store.unexplained(sg, nid))), reverse=True)
+    if lumped:
+        worst = ", ".join(f"{nid} ({n})" for n, nid in lumped[:5])
+        findings.append(f"{len(lumped)} condition(s) hold papers that never said why they belong there (most: {worst}): "
+                        "`scibraid fit list <slug> --unexplained` sets each paper's passage side by side; record a reason with `scibraid fit add`, or give the paper an id of its own")
     if stale := sweep.unswept(sg):
         findings.append(f"{len(stale)} load-bearing paper(s) not yet swept for later work that cites them ({', '.join(stale[:5])}): run `scibraid sweep`")
     for pid, paper in sg.papers.items():

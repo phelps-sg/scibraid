@@ -154,6 +154,23 @@ class Derivation(BaseModel):
     alignments: list[tuple[str, str]] = []
 
 
+class Fit(BaseModel):
+    """Why a paper belongs under an id it did not coin.
+
+    Within a subgraph two papers share a condition only because their readers chose the same id,
+    so the choice is a judgement that the two are one thing. It is recorded here, where a later
+    reader can dispute it. `minted` marks the paper the id was written for, which needs no reason.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    paper_id: str
+    why: str = ""
+    minted: bool = False
+    by: Builder | None = None
+    when: str = Field(default_factory=lambda: _now())
+
+
 class Node(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -170,6 +187,8 @@ class Node(BaseModel):
     # Put there when the question was posed, before any paper was read: a hypothesis to be tested or a
     # distinction the extractors were asked to keep. It says what was looked for, not what was found.
     framed: bool = False
+    # One entry per paper recorded under this id: the paper it was coined for, and each paper that reused it, with its reason.
+    fits: list[Fit] = []
 
     @model_validator(mode="after")
     def _outcome_only_on_observations(self) -> Node:
@@ -198,6 +217,16 @@ class Edge(BaseModel):
         return (self.source, self.relation.value, self.target)
 
 
+class Reuse(BaseModel):
+    """An extractor's reason for putting its paper under an id that was already there."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    id: str
+    why: str = Field(min_length=15)
+    paper_id: str | None = None  # needed only when a batch carries more than one paper
+
+
 class Batch(BaseModel):
     """What the extracting agent hands to `scibraid add`: usually one paper's worth."""
 
@@ -205,6 +234,8 @@ class Batch(BaseModel):
 
     nodes: list[Node] = []
     edges: list[Edge] = []
+    # Required when a paper is put under a condition that already exists: why its condition is that one.
+    reuses: list[Reuse] = []
 
 
 def _now() -> str:

@@ -23,7 +23,7 @@ from pydantic import ValidationError
 
 from . import align, bibtex, doctor, draft, embed, example, fulltext, identity, openalex, store, sweep
 from .lint import lint
-from .models import Alignment, Batch, Builder, Lead, Paper, Subgraph
+from .models import Alignment, Batch, Builder, Lead, NodeType, Paper, Subgraph, surname
 from .pool import get_pool
 
 
@@ -313,9 +313,9 @@ def cmd_add(args: argparse.Namespace) -> int:
         return 1
     with store.subgraph_lock(args.slug):
         sg = store.load_subgraph(args.slug)
-        report = store.add_batch(sg, batch)
+        builder = _builder(args)
+        report = store.add_batch(sg, batch, by=builder)
         if report.ok:
-            builder = _builder(args)
             if builder not in sg.builders:
                 sg.builders.append(builder)
             store.save_subgraph(sg)
@@ -409,8 +409,77 @@ def cmd_sweep(args: argparse.Namespace) -> int:
     return 0
 
 
+def _shared(sg: Subgraph, node_id: str | None = None) -> list[dict]:
+    """Conditions and hypotheses that more than one paper is recorded under, with each paper's reason and a passage."""
+    out = []
+    for nid, node in sg.nodes.items():
+        if node_id is not None and nid != node_id:
+            continue
+        if node_id is None and node.type is not NodeType.CONDITION:
+            continue
+        papers = store.evidencing(sg, nid)
+        if node_id is None and len(papers) < 2:
+            continue
+        fits = {f.paper_id: f for f in node.fits}
+        rows = []
+        for pid, passages in sorted(papers.items()):
+            paper, fit = sg.papers.get(pid), fits.get(pid)
+            rows.append({"paper": pid, "cited_as": f"{surname((paper.authors or ['?'])[0])} {paper.year}" if paper else pid,
+                         "status": "coined for this paper" if fit and fit.minted else "reason given" if fit else "no reason recorded",
+                         "why": fit.why if fit else "", "by": (fit.by.model or "") if fit and fit.by else "", "passage": passages[0].passage})
+        out.append({"id": nid, "label": node.label, "framed": node.framed, "papers": rows, "unexplained": store.unexplained(sg, nid)})
+    return sorted(out, key=lambda item: (-len(item["unexplained"]), -len(item["papers"]), item["id"]))
+
+
+def cmd_fit_list(args: argparse.Namespace) -> int:
+    sg = store.load_subgraph(args.slug)
+    if args.node and args.node not in sg.nodes:
+        print(f"unknown node {args.node!r}", file=sys.stderr)
+        return 1
+    shared = _shared(sg, args.node)
+    if args.unexplained:
+        shared = [item for item in shared if item["unexplained"]]
+    if args.format == "json":
+        _emit(shared)
+        return 0
+    for item in shared:
+        print(f"{item['id']}{' [framed]' if item['framed'] else ''}: {item['label']}")
+        for row in item["papers"]:
+            reason = f": {row['why']}" if row["why"] else ""
+            print(f"  {row['cited_as']} ({row['paper']}) [{row['status']}]{reason}")
+            print(f"      \u201c{row['passage'] if len(row['passage']) <= 220 else row['passage'][:217] + '...'}\u201d")
+    open_ = sum(1 for item in shared if item["unexplained"])
+    print(f"\n{len(shared)} id(s) shared by more than one paper; {open_} with a paper that never said why it fits")
+    return 0
+
+
+def cmd_fit_add(args: argparse.Namespace) -> int:
+    with store.subgraph_lock(args.slug):
+        sg = store.load_subgraph(args.slug)
+        errors = store.record_fit(sg, args.node, args.paper, args.why, _builder(args))
+        if not errors:
+            store.save_subgraph(sg)
+    _emit({"ok": not errors, "errors": errors, "node": args.node, "paper": args.paper})
+    return 1 if errors else 0
+
+
+def _verdict_findings(slug: str | None = None, only: set[str] | None = None) -> list[dict]:
+    """Alignment verdicts that cannot all be right, for one subgraph, for some nodes, or for the pool."""
+    pool = get_pool()
+    found = align.inconsistencies(pool.subgraphs(), pool.alignments())
+    if slug is not None:
+        found = [f for f in found if any(key.startswith(slug + "/") for key in (f["a"], f["b"]))]
+    if only is not None:
+        found = [f for f in found if only & ({f["a"], f["b"]} | {k for link in f["chain"] for k in (link["a"], link["b"])})]
+    return found
+
+
 def cmd_lint(args: argparse.Namespace) -> int:
     findings = lint(store.load_subgraph(args.slug))
+    try:
+        findings += [align.inconsistency_text(f) for f in _verdict_findings(args.slug)]
+    except httpx.HTTPError:
+        findings.append("the pool could not be reached, so its alignment verdicts were not checked for consistency")
     for finding in findings:
         print(f"- {finding}")
     print(f"{len(findings)} finding(s)")
@@ -787,7 +856,22 @@ def cmd_align_add(args: argparse.Namespace) -> int:
     for verdict in verdicts:
         verdict.judge = judge
     pool.add_alignments(verdicts)
-    _emit({"ok": True, "added": len(verdicts), "verdicts": Counter(v.verdict.value for v in verdicts)})
+    # Recorded all the same: the new verdict may be the right one, and an earlier one wrong.
+    clash = _verdict_findings(only={key for v in verdicts for key in (v.a, v.b)})
+    _emit({"ok": True, "added": len(verdicts), "verdicts": Counter(v.verdict.value for v in verdicts),
+           "inconsistent": [align.inconsistency_text(f) for f in clash]})
+    return 0
+
+
+def cmd_align_check(args: argparse.Namespace) -> int:
+    found = _verdict_findings(args.slug)
+    if args.format == "json":
+        _emit(found)
+        return 0
+    for item in found:
+        print(f"- {align.inconsistency_text(item)}")
+    kinds = Counter(item["kind"] for item in found)
+    print(f"{len(found)} finding(s): {kinds['contradicted']} contradicted verdict(s), {kinds['duplicate']} implied duplicate(s)")
     return 0
 
 
@@ -1083,6 +1167,22 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--format", choices=["summary", "json", "mermaid", "markdown"], default="summary")
     p.set_defaults(func=cmd_show)
 
+    ft = sub.add_parser("fit", help="why each paper belongs under an id that several papers share")
+    ft_sub = ft.add_subparsers(dest="fit_command", required=True)
+    p = ft_sub.add_parser("list", help="shared conditions, with each paper's reason and a passage side by side")
+    p.add_argument("slug")
+    p.add_argument("node", nargs="?", help="one node (of any type) instead of every shared condition")
+    p.add_argument("--unexplained", action="store_true", help="only ids with a paper that gave no reason")
+    p.add_argument("--format", choices=["text", "json"], default="text")
+    p.set_defaults(func=cmd_fit_list)
+    p = ft_sub.add_parser("add", help="record, after the fact, why a paper belongs under an id")
+    p.add_argument("slug")
+    p.add_argument("node")
+    p.add_argument("paper")
+    p.add_argument("--why", required=True)
+    p.add_argument("--model", help="the language model doing this work (the tool cannot see it)")
+    p.set_defaults(func=cmd_fit_add)
+
     p = sub.add_parser("sweep", help="the newest works citing the papers a subgraph rests on, and those reporting failures")
     p.add_argument("slug")
     p.add_argument("--paper", nargs="*", help="which papers to sweep (default: the load-bearing ones)")
@@ -1207,6 +1307,10 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("file", help="JSON file, or - for stdin")
     p.add_argument("--model", help="the language model doing this work (the tool cannot see it)")
     p.set_defaults(func=cmd_align_add)
+    p = al_sub.add_parser("check", help="verdicts that cannot all be right: a pair judged different that 'same' verdicts join, or two nodes of one subgraph made one")
+    p.add_argument("slug", nargs="?", help="only findings that touch this subgraph")
+    p.add_argument("--format", choices=["text", "json"], default="text")
+    p.set_defaults(func=cmd_align_check)
     p = al_sub.add_parser("list", help="print the pool's alignment verdicts")
     p.add_argument("--format", choices=["text", "markdown"], default="text")
     p.set_defaults(func=cmd_align_list)

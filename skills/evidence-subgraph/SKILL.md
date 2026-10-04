@@ -84,6 +84,8 @@ Every edge needs `confidence` (0-1), `asserted_by`, and provenance from exactly 
 
 **Failures are first-class.** Null results, failed replications, abandoned approaches and "did not reach significance" are constraints on hypothesis space, and the literature under-reports them. Record them with the same care as positive results, with their conditions: a failure is only informative alongside the circumstances it failed under.
 
+**Reusing a condition id is a judgement, and it is recorded.** Within a subgraph two papers share a condition only because their readers chose the same id; nothing else decides that the two are one thing. So a paper put under a condition that was already there (another paper's, or one framed with the question) must say why, in the batch's `reuses`, and `add` refuses it otherwise. The paper an id was coined for needs no reason. `scibraid fit list <slug>` sets the reasons side by side with a passage from each paper, which is how an id that lumps two things is found; `lint` counts the conditions holding a paper that never gave one.
+
 **Conditions are the alignment surface.** Record every condition the source gives you, even ones that seem irrelevant to this question. Whatever was studied is a condition too, and the one most often left in a label or an `attrs` list where the pool cannot see it: the model (`c:gpt-4`, labelled "Model: GPT-4"), the species or cell line, the compound, the dataset. Give each its own condition node at the granularity the paper reports results for, with the plainest id you can (`c:gpt-4`, not `c:gpt-4-as-pricing-agent`), so that another question's subgraph, which studied the same thing for a different reason, meets yours there. Put quantities in `attrs` (`{"n": 2141, "labs": 23, "dose_mg_kg": 5}`) and keep the label human-readable.
 
 **Do not smooth over disagreement.** If two papers conflict, record both and a `contradicts` edge between the observations. Do not pick a winner.
@@ -120,8 +122,14 @@ For a source OpenAlex does not have (try `scibraid paper get` first), write a pa
      "note": "Authors frame it as failure to replicate one paradigm, not refutation.",
      "provenance": [{"paper_id": "W2499154041", "location": "abstract",
                      "passage": "<verbatim quote>"}]}
+  ],
+  "reuses": [
+    {"id": "c:preregistered",
+     "why": "The protocol was registered before data collection, which is what the label names."}
   ]
 }
 ```
+
+`reuses` is needed only for a condition that was in the subgraph before this batch and under which this paper has not been recorded. In the example it would be needed if an earlier paper had coined `c:preregistered`.
 
 Nodes may carry provenance too (useful for experiments and observations); edges must. Re-adding an existing node id merges provenance; re-adding an edge from the same paper replaces it, so correcting an edge's confidence, note or passage is just another `add`. An edge or node that should not be there at all is taken out with `scibraid retract <slug> --edge <source> <relation> <target> --reason "..."` (add `--paper <id>` when several papers evidence the relation) or `--node <id>`, which also removes the node's edges. The retraction is kept on the subgraph with its reason, so the correction can be seen; do not leave a wrong edge in place at a low confidence instead.

@@ -8,7 +8,7 @@ import threading
 from scibraid import align, bibtex, draft, fulltext, identity, main, openalex, store
 from scibraid.cli import _md_table, make_server
 from scibraid.lint import lint
-from scibraid.models import Alignment, AssertedBy, Batch, Builder, Lead, Paper, Relation, Subgraph
+from scibraid.models import Alignment, AssertedBy, Batch, Builder, Fit, Lead, Paper, Relation, Subgraph
 from scibraid.pool import HttpPool, LocalPool
 
 ABSTRACT = (
@@ -541,6 +541,83 @@ def test_lead_must_be_checked_before_it_is_judged():
     with pytest.raises(ValueError, match="say where"):
         lead(status="known", checks=checks)
     assert lead(status="known", checks=checks, known_in=["W9"]).status == "known"
+
+
+def test_a_paper_put_under_an_existing_condition_must_say_why(capsys):
+    sg = Subgraph(slug="q", question="Does X work?")
+    assert store.add_batch(sg, batch()).ok
+    hypoxia = sg.nodes["c:hypoxia"]
+    assert [(f.paper_id, f.minted) for f in hypoxia.fits] == [("W1", True)]  # the paper the id was coined for needs no reason
+    assert store.add_batch(sg, batch()).ok  # the same paper again: a correction, not a reuse
+
+    store.save_paper(Paper(id="W5", title="Drug Y in low oxygen", abstract="Under low oxygen, drug Y failed to slow growth.", year=2021, authors=["Cy Park"]))
+    second = {
+        "nodes": [{"id": "e:y-low-oxygen", "type": "experiment", "label": "Y under low oxygen"}],
+        "edges": [{"source": "e:y-low-oxygen", "target": "c:hypoxia", "relation": "performed_under", "confidence": 0.9,
+                   "asserted_by": "author", "provenance": prov("Under low oxygen", "W5")}],
+    }
+    refused = store.add_batch(sg, Batch.model_validate(second))
+    assert not refused.ok and "W5 has not been recorded under it" in refused.errors[0] and "an id of its own" in refused.errors[0]
+    assert "e:y-low-oxygen" not in sg.nodes  # all or nothing
+    assert not store.add_batch(sg, Batch.model_validate({**second, "reuses": [{"id": "c:nowhere", "why": "There is no such node at all."}]})).ok
+    second["reuses"] = [{"id": "c:hypoxia", "why": "Low oxygen in culture is the hypoxia the id names; no level is given in either paper."}]
+    assert store.add_batch(sg, Batch.model_validate(second), by=Builder(model="a-model")).ok
+    assert [(f.paper_id, f.minted, f.by.model if f.by else None) for f in hypoxia.fits] == [("W1", True, None), ("W5", False, "a-model")]
+    assert store.unexplained(sg, "c:hypoxia") == [] and not any("never said why" in f for f in lint(sg))
+
+    # a graph made before reasons were kept: one paper is taken to be the one the id was coined for
+    hypoxia.fits = []
+    assert store.unexplained(sg, "c:hypoxia") == ["W5"] and any("1 condition(s) hold papers that never said why" in f for f in lint(sg))
+    store.save_subgraph(sg)
+    assert main(["fit", "list", "q", "--unexplained"]) == 0
+    out = capsys.readouterr().out
+    assert "c:hypoxia" in out and "[no reason recorded]" in out and "Under low oxygen" in out and "1 with a paper that never said why" in out
+    assert main(["fit", "add", "q", "c:hypoxia", "W9", "--why", "Not a paper under this node."]) == 1
+    assert main(["fit", "add", "q", "c:hypoxia", "W5", "--why", "Low oxygen in culture is hypoxia.", "--model", "m"]) == 0
+    assert store.unexplained(store.load_subgraph("q"), "c:hypoxia") == []
+
+    # merging carries the reasons with it
+    sg = store.load_subgraph("q")
+    sg.nodes["c:low-o2"] = sg.nodes["c:hypoxia"].model_copy(update={"id": "c:low-o2", "fits": [Fit(paper_id="W7", why="A third paper's reason.")]})
+    assert store.merge_nodes(sg, "c:hypoxia", "c:low-o2") == [] and {f.paper_id for f in sg.nodes["c:hypoxia"].fits} == {"W5", "W7"}
+
+
+def test_verdicts_that_cannot_all_be_right_are_found(capsys):
+    from scibraid.models import Node
+
+    def graph(slug, *ids):
+        return Subgraph(slug=slug, question="A question?", nodes={i: Node(id=i, type="condition", label=i) for i in ids})
+
+    graphs = [graph("p", "c:low-o2", "c:anoxia"), graph("q", "c:hypoxia"), graph("r", "c:oxygen-poor")]
+
+    def verdict(a, b, kind, confidence=0.9):
+        return Alignment(a=a, b=b, verdict=kind, confidence=confidence, rationale="Judged by reading both labels.")
+
+    chain = [verdict("p/c:low-o2", "q/c:hypoxia", "same"), verdict("q/c:hypoxia", "r/c:oxygen-poor", "same", 0.75)]
+    assert align.inconsistencies(graphs, chain) == []
+    # judged different, though two 'same' verdicts make them one thing
+    found = align.inconsistencies(graphs, chain + [verdict("p/c:low-o2", "r/c:oxygen-poor", "different")])
+    assert [f["kind"] for f in found] == ["contradicted"] and found[0]["verdict"] == "different"
+    assert found[0]["weakest"]["confidence"] == 0.75 and len(found[0]["chain"]) == 2
+    text = align.inconsistency_text(found[0])
+    assert "p/c:low-o2 = q/c:hypoxia = r/c:oxygen-poor" in text and "judged different" in text
+    # a weak 'same' is not read transitively, so it joins nothing
+    weak = [chain[0], verdict("q/c:hypoxia", "r/c:oxygen-poor", "same", 0.5), verdict("p/c:low-o2", "r/c:oxygen-poor", "different")]
+    assert align.inconsistencies(graphs, weak) == []
+    # two nodes of one subgraph that 'same' verdicts make one
+    found = align.inconsistencies(graphs, [chain[0], verdict("p/c:anoxia", "q/c:hypoxia", "same")])
+    assert [(f["kind"], f["subgraph"]) for f in found] == [("duplicate", "p")] and "scibraid merge" in align.inconsistency_text(found[0])
+
+    # the commands: recording a clashing verdict reports it, lint lists it for the subgraphs it touches
+    pool = pooled_pair()
+    clash = [{"a": "q/c:hypoxia", "b": "y/c:normoxia", "verdict": "same", "confidence": 0.9, "rationale": "Wrongly judged the same."}]
+    path = store.home() / "verdicts.json"
+    path.write_text(json.dumps(clash))
+    capsys.readouterr()
+    assert main(["align", "add", str(path)]) == 0
+    assert "two nodes of `y`" in json.loads(capsys.readouterr().out)["inconsistent"][0]
+    assert main(["lint", "y"]) == 0 and "'same' verdicts make one thing" in capsys.readouterr().out
+    assert main(["align", "check"]) == 0 and "1 implied duplicate(s)" in capsys.readouterr().out
 
 
 def test_lead_cannot_be_surer_than_its_weakest_alignment():
@@ -1204,8 +1281,12 @@ def test_a_question_can_be_framed_with_hypotheses_conditions_and_a_brief(tmp_pat
     data = batch().model_dump()
     data["nodes"].append({"id": "c:told-partner-is-same-model", "type": "condition", "label": "told same model"})
     data["edges"][1]["target"] = "c:told-partner-is-same-model"
+    refused = store.add_batch(sg, Batch.model_validate(data))  # a framed id was written by whoever posed the question, not for this paper
+    assert not refused.ok and "say why this paper's condition is that one" in refused.errors[0]
+    data["reuses"] = [{"id": "c:told-partner-is-same-model", "why": "The prompt tells each agent its partner runs the same model."}]
     assert store.add_batch(sg, Batch.model_validate(data)).ok
     assert sg.nodes["c:told-partner-is-same-model"].label == "Agents are told their partner is the same model"
+    assert [(f.paper_id, f.minted) for f in sg.nodes["c:told-partner-is-same-model"].fits] == [("W1", False)]
     store.save_subgraph(sg)
 
     assert main(["frame", "told", "--condition", "Agents are told nothing about their partner", "--hypothesis", "c:oops=Not a hypothesis"]) == 1

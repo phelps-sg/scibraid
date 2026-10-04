@@ -11,7 +11,7 @@ from contextlib import contextmanager
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from .models import ALLOWED_ENDPOINTS, AssertedBy, Batch, Paper, Subgraph, _now
+from .models import ALLOWED_ENDPOINTS, AssertedBy, Batch, Builder, Fit, NodeType, Paper, Provenance, Subgraph, _now
 
 
 def home() -> Path:
@@ -180,7 +180,39 @@ class AddReport:
         return not self.errors
 
 
-def add_batch(sg: Subgraph, batch: Batch) -> AddReport:
+def evidencing(sg: Subgraph, node_id: str) -> dict[str, list[Provenance]]:
+    """paper id -> the passages by which that paper is recorded under a node."""
+    found: dict[str, list[Provenance]] = {}
+    for prov in sg.nodes[node_id].provenance if node_id in sg.nodes else []:
+        found.setdefault(prov.paper_id, []).append(prov)
+    for edge in sg.edges:
+        if node_id in (edge.source, edge.target):
+            for prov in edge.provenance:
+                found.setdefault(prov.paper_id, []).append(prov)
+    return found
+
+
+def unexplained(sg: Subgraph, node_id: str) -> list[str]:
+    """Papers recorded under a node with no reason given. A node made before reasons were kept has
+    no paper marked as the one it was coined for, so one unexplained paper is allowed for."""
+    node = sg.nodes[node_id]
+    explained = {f.paper_id for f in node.fits}
+    missing = sorted(set(evidencing(sg, node_id)) - explained)
+    return missing if any(f.minted for f in node.fits) else missing[1:]
+
+
+def record_fit(sg: Subgraph, node_id: str, paper_id: str, why: str, by: Builder | None = None) -> list[str]:
+    """Say, after the fact, why a paper belongs under an id."""
+    if node_id not in sg.nodes:
+        return [f"unknown node {node_id!r}"]
+    if paper_id not in evidencing(sg, node_id):
+        return [f"{paper_id} is not recorded under {node_id}"]
+    node = sg.nodes[node_id]
+    node.fits = [f for f in node.fits if f.paper_id != paper_id] + [Fit(paper_id=paper_id, why=why, by=by)]
+    return []
+
+
+def add_batch(sg: Subgraph, batch: Batch, by: Builder | None = None) -> AddReport:
     """Validate a batch against the subgraph and apply it. All-or-nothing."""
     report = AddReport()
     types = {nid: n.type for nid, n in sg.nodes.items()}
@@ -219,6 +251,35 @@ def add_batch(sg: Subgraph, batch: Batch) -> AddReport:
             report.errors.append(
                 f"{name}: one edge is one paper's evidence; split it into an edge per paper"
             )
+
+    # Which papers this batch puts under which nodes. A paper put under a condition that was already
+    # there, and under which it has not been recorded before, must say why its condition is that one.
+    touching: dict[str, set[str]] = {}
+    for node in batch.nodes:
+        for prov in node.provenance:
+            touching.setdefault(node.id, set()).add(prov.paper_id)
+    for edge in batch.edges:
+        for end in (edge.source, edge.target):
+            for prov in edge.provenance:
+                touching.setdefault(end, set()).add(prov.paper_id)
+    reasons: dict[tuple[str, str], str] = {}
+    for reuse in batch.reuses:
+        if reuse.id not in sg.nodes:
+            report.errors.append(f"reuses {reuse.id!r}: there is no such node yet, so nothing is being reused")
+            continue
+        for paper_id in [reuse.paper_id] if reuse.paper_id else sorted(touching.get(reuse.id, ())):
+            reasons[(reuse.id, paper_id)] = reuse.why
+    for nid in sorted(touching):
+        if nid not in sg.nodes or types.get(nid) is not NodeType.CONDITION:
+            continue
+        held = set(evidencing(sg, nid)) | {f.paper_id for f in sg.nodes[nid].fits}
+        for paper_id in sorted(touching[nid] - held):
+            if (nid, paper_id) not in reasons:
+                report.errors.append(
+                    f"condition {nid!r} is already in the graph ({sg.nodes[nid].label!r}) and {paper_id} has not been recorded under it: "
+                    f'say why this paper\'s condition is that one, in "reuses": [{{"id": "{nid}", "why": "..."}}]. '
+                    "If the paper's condition is narrower than the label, or differs from it, give it an id of its own instead"
+                )
 
     papers: dict[str, Paper] = {}
     items = [(f"node {n.id}", n.provenance) for n in batch.nodes]
@@ -259,8 +320,13 @@ def add_batch(sg: Subgraph, batch: Batch) -> AddReport:
             )
 
     sg.papers.update(papers)
+    for (nid, paper_id), why in reasons.items():
+        node = sg.nodes[nid]
+        node.fits = [f for f in node.fits if f.paper_id != paper_id] + [Fit(paper_id=paper_id, why=why, by=by)]
     for node in batch.nodes:
         if (existing := sg.nodes.get(node.id)) is None:
+            if node.type is NodeType.CONDITION:
+                node.fits = [Fit(paper_id=paper_id, minted=True, by=by) for paper_id in sorted(touching.get(node.id, ()))]
             sg.nodes[node.id] = node
             report.nodes_added += 1
             continue
@@ -308,6 +374,7 @@ def merge_nodes(sg: Subgraph, keep: str, drop: str) -> list[str]:
     kept.provenance += [p for p in dropped.provenance if (p.paper_id, p.passage) not in seen]
     kept.description = kept.description or dropped.description
     kept.framed = kept.framed or dropped.framed
+    kept.fits += [f for f in dropped.fits if f.paper_id not in {k.paper_id for k in kept.fits}]
     kept.attrs = {**dropped.attrs, **kept.attrs}
     kept.attrs["merged_from"] = [*kept.attrs.get("merged_from", []), *dropped.attrs.get("merged_from", []), drop]
     del sg.nodes[drop]
@@ -377,6 +444,10 @@ def reidentify_paper(old: str, paper: Paper) -> tuple[list[str], list[str]]:
                 for prov in item.provenance:
                     if prov.paper_id == old:
                         prov.paper_id = paper.id
+            for node in sg.nodes.values():
+                for fit in node.fits:
+                    if fit.paper_id == old:
+                        fit.paper_id = paper.id
             save_subgraph(sg)
     for folder, suffix in (("papers", ".json"), ("fulltext", ".txt")):
         (home() / folder / f"{_safe(old)}{suffix}").unlink(missing_ok=True)

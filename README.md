@@ -274,6 +274,8 @@ Graphs can be filtered by node type, who asserted a relationship and confidence.
 | `lint <slug>` | Find structural gaps and unverified evidence |
 | `duplicates <slug>` | List conditions and hypotheses within a subgraph that may be one thing under two ids |
 | `merge <slug> <keep> <drop>` | Fold one node into another, moving its links and passages |
+| `fit list <slug> [node] [--unexplained]` | For each condition several papers share, each paper's reason for being under it and a passage from it, side by side |
+| `fit add <slug> <node> <paper> --why "..."` | Record, after the fact, why a paper belongs under an id |
 | `retract <slug> --edge <source> <relation> <target> \| --node <id> --reason "..."` | Take out a wrong link, or a node with its links, keeping a record of what it was and why |
 | `view [slug ...] [--example]` | Browse a graph in the browser, or the bundled example |
 | `example [dir]` | Write the bundled example pool to a data directory of its own, to try the other commands on it |
@@ -281,7 +283,8 @@ Graphs can be filtered by node type, who asserted a relationship and confidence.
 | `pool <slug>` | Add a subgraph to the pool |
 | `candidates [--budget N] [--type T] [--lexical]` | Rank unjudged cross-graph pairs |
 | `hypotheses` | Show hypothesis lists for pooled subgraphs |
-| `align add\|list` | Record or inspect alignment judgements |
+| `align add\|list` | Record or inspect alignment judgements. `add` reports any verdict it records that clashes with those already held |
+| `align check [slug]` | Verdicts that cannot all be right: a pair judged different that a chain of `same` verdicts joins, or two nodes of one subgraph that such a chain makes one |
 | `observe [--new]` | Find candidate observations in the aligned pool |
 | `lead add\|list` | Record or inspect checked leads |
 | `followups` | Show follow-up questions raised by leads |
@@ -313,6 +316,8 @@ The core graph contains five node types:
 - `interpretation`
 
 Links describe relationships such as `tests`, `performed_under`, `yields`, `observed_under`, `supports`, `contradicts`, `explains`, `proposes`, `competes_with` and `fails_to_replicate`.
+
+Within a subgraph, two papers share a condition only because their readers chose the same id, so the choice is a judgement that the two are one thing. It is recorded as one. A batch that puts a paper under a condition already in the graph must say why (`reuses`), `add` refuses it otherwise, and the reason is kept on the node with who gave it. `fit list` sets the reasons and a passage from each paper side by side, which is where an id that lumps two different things shows. Across subgraphs the same judgement is an alignment verdict.
 
 Each piece of evidence remains attached to the paper that provides it. If two papers support the same relationship, they create two links rather than one aggregated fact. This allows later evidence to strengthen, qualify or weaken an earlier claim.
 
@@ -382,6 +387,8 @@ The current system is a research prototype.
 - A check that a lead is already known, or that a question has already been asked, is a brief agent search, not a systematic literature review. `holds`, `open` and "not found posed anywhere" therefore mean that nothing was found, not that nothing exists.
 - OpenAlex merges duplicate records without notice, and the old id then answers to nothing. `doctor` reports cached ids that have vanished and `paper reid` moves a paper's citations to the surviving record; sixteen of the first 582 records cached were merged away within weeks.
 - Retraction is taken from OpenAlex's `is_retracted` flag, which lags the retraction notices and misses preprints; a paper withdrawn on arXiv is not flagged. A retracted paper's evidence is kept and marked, not removed.
+- A reason for reusing an id is required of conditions only, and only from now on. Hypotheses are reused without one, on the ground that a `supports` or `contradicts` link already carries its own passage; graphs built before reasons were required hold none, and `lint` counts the conditions affected. A reason is a sentence from the reader, not a check: it makes lumping visible to the next reader and does not prevent it.
+- Whether two nodes are the same thing is a judgement, made pair by pair, and judgements made separately can disagree. `align check` and `lint` find the disagreements that follow from the verdicts alone (a pair judged different that `same` verdicts join; two nodes of one subgraph made one), with the chain and its weakest link. They cannot find a wrong `same` that nothing else contradicts.
 - Quote verification establishes that a passage exists in the source. It does not establish that the passage actually supports the relationship the agent attached to it.
 - The example graphs were built and aligned by the same agent in one session, so they are not independent in the way reviews produced by different researchers would be. The tool now reports this (`same reader`) instead of leaving it to be remembered.
 - The model tiers rest on a single five-paper comparison on one question. Whether hypothesis alignment or the checking of leads can move to a cheaper model has not been tested, so both are pinned to the top model. Framing, retrieval and the judging of candidate pairs run on the session's model, and have only been tried with the top model as the session.

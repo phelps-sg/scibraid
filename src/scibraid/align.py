@@ -231,6 +231,89 @@ def check_alignments(subgraphs: list[Subgraph], alignments: list[Alignment]) -> 
     return errors
 
 
+# --- consistency of the verdicts ------------------------------------------------
+
+def inconsistencies(subgraphs: list[Subgraph], alignments: list[Alignment], min_confidence: float = 0.7) -> list[dict]:
+    """Verdicts that cannot all be right.
+
+    'Same' verdicts are read transitively (a same b, b same c: one thing), so two failures follow
+    from the verdicts alone. A pair judged different, broader, narrower or merely related that a
+    chain of 'same' verdicts nonetheless joins is *contradicted*: a link of the chain is wrong, or
+    the other verdict is. Two nodes of one subgraph joined by such a chain are an implied
+    *duplicate*: either the subgraph holds one thing under two ids, or the chain has merged two.
+    Each finding gives the chain, since the weakest link is the one to read again.
+    """
+    index = PoolIndex.build(subgraphs)
+    known = [x for x in alignments if x.a in index.nodes and x.b in index.nodes]
+    same: dict[str, dict[str, Alignment]] = defaultdict(dict)
+    for x in known:
+        if x.verdict is Verdict.SAME and x.confidence >= min_confidence:
+            same[x.a][x.b] = same[x.b][x.a] = x
+
+    def chain(start: str, end: str) -> list[Alignment] | None:
+        """The shortest run of 'same' verdicts from one node to the other."""
+        came: dict[str, tuple[str, Alignment] | None] = {start: None}
+        queue = [start]
+        for node in queue:
+            if node == end:
+                break
+            for other, verdict in same[node].items():
+                if other not in came:
+                    came[other] = (node, verdict)
+                    queue.append(other)
+        if end not in came:
+            return None
+        path, node = [], end
+        while (step := came[node]) is not None:
+            path.append(step[1])
+            node = step[0]
+        return path[::-1]
+
+    def describe(path: list[Alignment]) -> dict:
+        weakest = min(path, key=lambda x: x.confidence)
+        return {"chain": [{"a": x.a, "b": x.b, "confidence": x.confidence} for x in path],
+                "weakest": {"a": weakest.a, "b": weakest.b, "confidence": weakest.confidence}}
+
+    found: list[dict] = []
+    for x in known:
+        if x.verdict is Verdict.SAME or (x.a not in same and x.b not in same):
+            continue
+        if (path := chain(x.a, x.b)) is not None:
+            found.append({"kind": "contradicted", "a": x.a, "b": x.b, "verdict": x.verdict.value, "confidence": x.confidence, **describe(path)})
+
+    clusters = _Clusters(list(index.nodes))
+    for a, others in same.items():
+        for b, x in others.items():
+            clusters.union(a, b, x.confidence)
+    members: dict[tuple[str, str], list[str]] = defaultdict(list)
+    for key in same:
+        members[(clusters.find(key), index.slug_of[key])].append(key)
+    for (_, slug), keys in sorted(members.items()):
+        for a, b in combinations(sorted(keys), 2):
+            if (path := chain(a, b)) is not None:
+                found.append({"kind": "duplicate", "a": a, "b": b, "subgraph": slug, **describe(path)})
+    return found
+
+
+def inconsistency_text(item: dict) -> str:
+    via = " = ".join(_walk(item))
+    weakest = item["weakest"]
+    weak = f"weakest link {weakest['a']} ~ {weakest['b']} at {weakest['confidence']:.2f}"
+    if item["kind"] == "contradicted":
+        return (f"{item['a']} ~ {item['b']}: judged {item['verdict']} ({item['confidence']:.2f}), but 'same' verdicts join them: "
+                f"{via} ({weak}). One of these verdicts is wrong; read the weakest again")
+    return (f"{item['a']} and {item['b']}: two nodes of `{item['subgraph']}` that 'same' verdicts make one thing: {via} ({weak}). "
+            f"Merge them (`scibraid merge`) if they are one, or correct the verdict that joined them")
+
+
+def _walk(item: dict) -> list[str]:
+    """The nodes of a chain in the order it passes through them, from `a` to `b`."""
+    nodes = [item["a"]]
+    for link in item["chain"]:
+        nodes.append(link["b"] if link["a"] == nodes[-1] else link["a"])
+    return nodes
+
+
 # --- observation -------------------------------------------------------------
 
 
